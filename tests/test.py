@@ -19,38 +19,39 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 @year: 2023
 """
 from pydsphtools import *
+import os
 
 NUMBER_OF_TESTS = 12
 
 
 def testing() -> int:
-    dirout = "test"
+    test_dir, _ = os.path.split(__file__)
 
     # Test build-in types
-    assert get_dp(dirout) == 0.003
-    assert get_usr_def_var(dirout, "BoulderRho", int) == 2800
-    assert get_usr_def_var(dirout, "BoulderVol", float) == -6.75e-06
-    assert get_chrono_mass(dirout, "boulder") == 0.02646
-    assert get_chrono_property(dirout, "boulder", "MkBound") == 50
-    assert get_chrono_property(dirout, "boulder", "Mass") == 0.02646
-    assert get_chrono_property(dirout, "boulder", "ModelFile") == "boulder_mkb0050.obj"
+    assert get_dp(test_dir) == 0.003
+    assert get_usr_def_var(test_dir, "BoulderRho", int) == 2800
+    assert get_usr_def_var(test_dir, "BoulderVol", float) == -6.75e-06
+    assert get_chrono_mass(test_dir, "boulder") == 0.02646
+    assert get_chrono_property(test_dir, "boulder", "MkBound") == 50
+    assert get_chrono_property(test_dir, "boulder", "Mass") == 0.02646
+    assert get_chrono_property(test_dir, "boulder", "ModelFile") == "boulder_mkb0050.obj"
 
     # Test numpy arrays
     assert np.array_equal(
-        get_chrono_inertia(dirout, "boulder"),
+        get_chrono_inertia(test_dir, "boulder"),
         np.array([2.44094e-06, 1.42884e-06, 2.91722e-06]),
     )
     assert np.array_equal(
-        get_chrono_property(dirout, "boulder", "Center"),
+        get_chrono_property(test_dir, "boulder", "Center"),
         np.array([-0.0325, 0.1515, 0.0135]),
     )
     assert np.array_equal(
-        get_chrono_property(dirout, "boulder", "Inertia"),
+        get_chrono_property(test_dir, "boulder", "Inertia"),
         np.array([2.44094e-06, 1.42884e-06, 2.91722e-06]),
     )
 
     # Test StringIO stream
-    stream = read_and_fix_csv(dirout)
+    stream = read_and_fix_csv(test_dir)
     df = pd.read_csv(stream, sep=";")
     CONFIGURATION = (
         "CaseKfric46 - 3D - mDBC(DBC vel=0 - FastSingle) - Symplectic"
