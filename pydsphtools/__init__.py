@@ -17,4 +17,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 @github: https://github.com/konmenel
 @year: 2023
 """
-from .main import *
+from .main import (
+    RE_PATTERNS,
+    get_chrono_mass,
+    get_chrono_inertia,
+    get_chrono_property,
+    get_dp,
+    get_usr_def_var,
+)

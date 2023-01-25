@@ -2,7 +2,7 @@
 Some functions I often reuse for post processing DualSPHysics cases. I am slowly adding functionality as I need it.
 
 # Dependencies
-- Python 3.10
+- Python 3.8
 - Numpy
 - Pandas
 

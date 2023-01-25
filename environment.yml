@@ -2,6 +2,6 @@ name: pydsphtools
 channels:
   - defaults
 dependencies:
-  - numpy=1.23.5=py310hd5efca6_0
-  - pandas=1.5.2=py310h1128e8f_0
-  - python=3.10
+  - numpy=1.23.5
+  - pandas=1.5.2
+  - python=3.8

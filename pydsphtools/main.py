@@ -20,7 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import io
 import re
 import pathlib
-from typing import Callable, TypeVar
+from typing import Callable, TypeVar, Union
 
 import numpy as np
 import pandas as pd
@@ -29,7 +29,7 @@ import pandas as pd
 #   which causes the Shifting(_txt_,_num_,_num_,_txt_) in the configure section to become
 #   Shifting(_txt_;_num_;_num_;_txt_). This causes a parsing bug with `pandas.read_csv` (any csv parser really)
 
-R = TypeVar("R")
+_R = TypeVar("_R")
 
 
 class RE_PATTERNS:
@@ -62,7 +62,7 @@ class NotFoundInOutput(Exception):
         super().__init__(self.message)
 
 
-def read_and_fix_csv(dirout: str | pathlib.Path) -> io.StringIO:
+def read_and_fix_csv(dirout: Union[str, pathlib.Path]) -> io.StringIO:
     """Fixed the bug with the csv where if shifting is present in the `Run.csv` it has key that are
     `;` separated, e.g. Shifting(_txt_;_num_;_num_;_txt_). This causes a parsing bug with `pandas.read_csv`
     (any csv parser really). This function reads the data in fixes the bug in memory.
@@ -90,7 +90,7 @@ def read_and_fix_csv(dirout: str | pathlib.Path) -> io.StringIO:
         return io.StringIO(txt)
 
 
-def get_dp(dirout: str | pathlib.Path) -> float:
+def get_dp(dirout: Union[str, pathlib.Path]) -> float:
     """Gets the inital particle distance of the simulation, aka `Dp`.
 
     Parameters
@@ -125,8 +125,8 @@ def get_dp(dirout: str | pathlib.Path) -> float:
 
 
 def get_usr_def_var(
-    dirout: str | pathlib.Path, var: str, dtype: Callable[[str], R] = float
-) -> R:
+    dirout: Union[str, pathlib.Path], var: str, dtype: Callable[[str], _R] = float
+) -> _R:
     """Finds and parses the value of any user defined variable from the simulation output.
 
     Parameters
@@ -164,7 +164,7 @@ def get_usr_def_var(
     raise NotFoundInOutput(f"User defined variable `{var}`")
 
 
-def get_chrono_mass(dirout: str | pathlib.Path, bname: str) -> float:
+def get_chrono_mass(dirout: Union[str, pathlib.Path], bname: str) -> float:
     """Finds the mass of a floating chrono body.
 
     Parameters
@@ -204,7 +204,7 @@ def get_chrono_mass(dirout: str | pathlib.Path, bname: str) -> float:
     raise NotFoundInOutput(f'Chrono floating mass for "{bname}"')
 
 
-def get_chrono_inertia(dirout: str | pathlib.Path, bname: str) -> np.ndarray:
+def get_chrono_inertia(dirout: Union[str, pathlib.Path], bname: str) -> np.ndarray:
     """Finds the inertia tensor of a floating chrono body (only diagonal elements).
 
     Parameters
@@ -245,8 +245,8 @@ def get_chrono_inertia(dirout: str | pathlib.Path, bname: str) -> np.ndarray:
 
 
 def get_chrono_property(
-    dirout: str | pathlib.Path, bname: str, pname: str
-) -> float | np.ndarray | str:
+    dirout: Union[str, pathlib.Path], bname: str, pname: str
+) -> Union[float, np.ndarray, str]:
     """Finds and returns any property for a specified chrono floating body.
 
     Parameters
@@ -292,7 +292,7 @@ def get_chrono_property(
                     return float(value)
 
                 except ValueError as e:
-                    if value[0] == '(':
+                    if value[0] == "(":
                         elems = re.search(ELEM_PAT, value)
                         elems = elems.groups()
                         return np.array([float(i) for i in elems])
