@@ -25,6 +25,8 @@ from typing import Callable, TypeVar, Union
 import numpy as np
 import pandas as pd
 
+from pydsphtools.exceptions import NotFoundInOutput
+
 # BUG: There is a bug with the way DualSPHysics creates the `Run.csv`. It replaces all `,` with `;`
 #   which causes the Shifting(_txt_,_num_,_num_,_txt_) in the configure section to become
 #   Shifting(_txt_;_num_;_num_;_txt_). This causes a parsing bug with `pandas.read_csv` (any csv parser really)
@@ -39,27 +41,6 @@ class RE_PATTERNS:
     # Pattern to captures the chrono floating section of the output. Returns the
     # "ID" and "name" of the chorno object floating
     FLOATING = r"Body_(?P<ID>\d+) \"(?P<name>\w*)\" -  type: Floating"
-
-
-class NotFoundInOutput(Exception):
-    """Raised when a variable is not found in the output file.
-
-    Attributes
-    ----------
-    missing : str
-        What was not found.
-    filename : str, optional
-        The name of the output file (either `Run.out` or `Run.csv`). By default, `Run.out`.
-    """
-
-    missing: str
-    filename: str
-
-    def __init__(self, missing: str, filename: str = "Run.out") -> None:
-        self.missing = missing
-        self.filename = filename
-        self.message = f"{missing} not found in `{self.filename}`"
-        super().__init__(self.message)
 
 
 def read_and_fix_csv(dirout: Union[str, pathlib.Path]) -> io.StringIO:
