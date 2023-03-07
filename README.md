@@ -5,6 +5,7 @@ Some functions I often reuse for post processing DualSPHysics cases. I am slowly
 - Python 3.8
 - Numpy
 - Pandas
+- Scipy
 
 # Installation
 ## Download the package
