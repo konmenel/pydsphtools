@@ -604,18 +604,19 @@ def generate_ricker_signal(
         - Unknown angle units are passed to `angle_units`.
         - An unknown wavemaker type is passed to `wv_type`.
     """
-    if angle_units.lower() not in ("rad", "deg"):
+    wv_type = wv_type.lower()
+    angle_units = angle_units.lower()
+    if angle_units not in ("rad", "deg"):
         raise Exception(
             f"The `angle_units` can either be 'rad' or 'deg'. '{angle_units}' was found."
         )
-    wv_type = wv_type.lower()
 
-    wp = 2 * np.pi * peak_frequency
+    wp = 2.0 * np.pi * peak_frequency
     depth = 0.35
     freq = np.linspace(1e-6, peak_frequency * 5, 5000)
     omega = 2.0 * np.pi * freq
     wavenumbers = find_wavenumber(omega, depth)
-    spectrum = amplitude * ricker_spectrum_simple(omega, wp)
+    spectrum = 2.0 * amplitude * ricker_spectrum_simple(omega, wp)
     height_stroke = wavemaker_transfer_func(wavenumbers, depth, wv_type=wv_type)
 
     slowest_wave = wavenumbers[-1]
@@ -628,6 +629,7 @@ def generate_ricker_signal(
 
     signal = np.zeros_like(time)
     stroke = spectrum / height_stroke
+    max_elev = (spectrum * domega).sum()
 
     if wv_type == "flap":
         stroke /= depth
@@ -664,6 +666,7 @@ def generate_ricker_signal(
         )
 
     print(f"Focusing should happen at xf={xf:.2f} m and tf={tf:.2f} sec")
+    print(f"Predicted elevation {max_elev:.2f} m")
     return signal
 
 
