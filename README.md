@@ -1,5 +1,5 @@
 # PyDSPHtools
-Some functions I often reuse for post processing DualSPHysics cases. I am slowly adding functionality as I need it.
+Some functions I often re-use for DualSPHysics cases. I am slowly adding functionality as I need it.
 
 # Dependencies
 - Python 3.8
