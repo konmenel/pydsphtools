@@ -1,27 +1,28 @@
 from typing import Union, Tuple, Optional
 
 import numpy as np
+from numpy.typing import ArrayLike
 from scipy import optimize
 
 from pydsphtools.main import RAD2DEG, DEG2RAD
 
 
 def find_wavenumber(
-    omega: Union[float, np.ndarray], depth: float
+    omega: Union[float, ArrayLike], depth: float
 ) -> Union[float, np.ndarray]:
     """Solves the dispersion relation for a given angular frequency and depth
     and finds the wavenumber.
 
     Parameters
     ----------
-    omega : float or numpy.ndarray
-        The angular frequency. Either a float or a numpy array may be passed.
+    omega : float or numpy array-like
+        The angular frequency. Either a float or an array-like may be passed.
     depth : float
         The water depth.
 
     Returns
     -------
-    float or numpy.ndarray
+    float or numpy array
         The solution to the dispersion equation (the wavenumber). The angular
         frequency is a float then the wavenumber will be a float as well. If
         a numpy array is passed then the wavenumber will be a numpy array for
@@ -33,26 +34,29 @@ def find_wavenumber(
 
     ..math:: \\omega^2 = gk*\\tanh(kh)
     """
-
-    def func(wavenumber: float, omega: float, depth: float) -> float:
+    def _func(wavenumber, omega, depth):
         return omega * omega - 9.81 * wavenumber * np.tanh(wavenumber * depth)
 
-    def fprime(wavenumber: float, _: float, depth: float) -> float:
+    def _fprime(wavenumber, _, depth):
         tanh = np.tanh(wavenumber * depth)
         return -9.81 * tanh - 9.81 * wavenumber * depth * (1.0 - tanh * tanh)
 
-    x0 = 1.0 if isinstance(omega, float) else np.ones(omega.size)
-    return optimize.newton(func, x0, fprime=fprime, args=(omega, depth))
+    omega = np.asarray(omega, dtype=np.float64)
+    x0 = np.ones(omega.size)
+    ret = optimize.newton(_func, x0, fprime=_fprime, args=(omega, depth))
+    if ret.size == 1:
+        return ret[0]
+    return ret
 
 
 def find_celerity(
-    wavenumber: Union[float, np.ndarray], depth: float
+    wavenumber: Union[float, ArrayLike], depth: float
 ) -> Union[float, np.ndarray]:
     """Calculates the celerity for a given wavenumber.
 
     Parameters
     ----------
-    wavenumber : float or numpy array
+    wavenumber : float or numpy array-like
         The wavenumber.
     depth : float
         The water depth.
@@ -60,7 +64,7 @@ def find_celerity(
     Returns
     -------
     float or numpy array
-        The culculated celerity. If a numpy array is passed in `wavenumber`
+        The culculated celerity. If an array-like is passed in `wavenumber`
         a numppy array is returned.
     """
     return np.sqrt(9.81 * np.tanh(wavenumber * depth) / wavenumber)
@@ -73,7 +77,7 @@ def ricker_spectrum(
 
     Parameters
     ----------
-    omega : float or numpy array
+    omega : float or numpy array-like
         The angular frequency.
     Ar : float
         The parameter that controls the amplitude.
@@ -114,7 +118,7 @@ def ricker_spectrum_simple(
 
     Parameters
     ----------
-    omega : float or numpy array
+    omega : float or numpy array-like
         The angular frequency.
     omegap : float
         The peak angular frequency
@@ -142,7 +146,7 @@ def ricker_wavelet_simple(
 
     Parameters
     ----------
-    t : float or numpy array
+    t : float or numpy array-like
         The parameter 't' (usually time) of the wavelet.
     omegap : float
         The peak angular frequency
@@ -161,7 +165,6 @@ def wavemaker_transfer_func(
     wavenumber: Union[float, np.ndarray],
     depth: float,
     wv_type: str = "flap",
-    *,
     hinge: Optional[float] = None,
 ) -> Union[float, np.ndarray]:
     """For a given wavenumber and depth calculates the stroke to wave height
@@ -169,8 +172,8 @@ def wavemaker_transfer_func(
 
     Parameters
     ----------
-    wavenumber : float or np.ndarray
-        The wavenumber. Either a float or a numpy array may be passed.
+    wavenumber : float or numpy array-like
+        The wavenumber. Either a float or a numpy array-like may be passed.
     depth : float
         The water depth.
     wv_type : str, optional
@@ -181,7 +184,7 @@ def wavemaker_transfer_func(
 
     Returns
     -------
-    float or np.ndarray
+    float or numpy array
         The height to stroke ratio (H/S), ie the transfer function, of the wavemaker. If
         the wavenumber is passed as a numpy array the return will also be a number array
         with the same dimensions.
@@ -232,11 +235,13 @@ def wavemaker_transfer_func(
 
 def generate_ricker_signal(
     focus_loc: float,
+    depth: float,
     amplitude: float,
     peak_frequency: float,
     wv_type: str,
     *,
     filepath: str = None,
+    hinge: Optional[float] = None,
     angle_units: str = "rad",
     nwaves: int = 5000,
 ) -> Tuple[np.ndarray, np.ndarray]:
@@ -248,6 +253,8 @@ def generate_ricker_signal(
     ----------
     focus_loc : float
         The location of the focusing from the wavemaker.
+    depth : float
+        The water depth
     amplitude : float
         The amplitude of the focused wave
     peak_frequency : float
@@ -256,6 +263,9 @@ def generate_ricker_signal(
         The type of the wavemaker, either "piston" or "flap". By default "flap"
     filepath : str, optional
         The name of the output file. The path may also be passed. By default "output"
+    hinge: float, optional
+        The distance to the bottom of the wavemaker from the still water free surface. If
+        `None` is passed, `hinge` is assumed to be equal to `depth`. By default `None`.
     angle_units : str, optional
         The angle units that will be used, either "rad" or "deg" for the output of a
         flap waverider is used. By default "rad"
@@ -274,6 +284,7 @@ def generate_ricker_signal(
     ------
     Exception
         Raises exception if:
+        - The hinge is less than or equal to zero.
         - Unknown angle units are passed to `angle_units`.
         - An unknown wavemaker type is passed to `wv_type`.
     """
@@ -285,12 +296,11 @@ def generate_ricker_signal(
         )
 
     wp = 2.0 * np.pi * peak_frequency
-    depth = 0.35
     freq = np.linspace(1e-6, peak_frequency * 5, nwaves)
     omega = 2.0 * np.pi * freq
     wavenumbers = find_wavenumber(omega, depth)
     spectrum = 2.0 * amplitude * ricker_spectrum_simple(omega, wp)
-    height_stroke = wavemaker_transfer_func(wavenumbers, depth, wv_type=wv_type)
+    height_stroke = wavemaker_transfer_func(wavenumbers, depth, wv_type, hinge)
 
     slowest_wave = wavenumbers[-1]
     slowes_speed = find_celerity(slowest_wave, depth)
@@ -304,7 +314,7 @@ def generate_ricker_signal(
     max_elev = (spectrum * domega).sum()
 
     if wv_type == "flap":
-        stroke /= depth
+        stroke /= depth if hinge is None else hinge
 
     for i in range(nwaves):
         signal[i] = (
