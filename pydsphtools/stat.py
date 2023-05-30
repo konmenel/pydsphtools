@@ -1,8 +1,8 @@
 import numpy as np
-from numpy.typing import ArrayLike
+import numpy.typing as npt
 
 
-def agreement_idx(obs: ArrayLike, pred: ArrayLike, c: float = 2) -> float:
+def agreement_idx(obs: npt.ArrayLike, pred: npt.ArrayLike, c: float = 2) -> float:
     """Calulcates the index of agreement (dr) following the paper by Willmott et al. [1].
     
     References:
