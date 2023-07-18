@@ -588,6 +588,7 @@ def mlpistons2D_from_dsph(
     smoothz: int = 0,
     smoothy: int = 0,
     file_prefix: str = "MLPiston2D_SPH_velx",
+    dirout: str = "MLPiston2D",
     binpath: str = None,
 ) -> None:
     """Create the nessesary csv file to run a DualSPHysics Multi-Layer 2D Piston
@@ -618,9 +619,12 @@ def mlpistons2D_from_dsph(
     smoothz : int, optional
         Smooth motion level in Y (xml attribute), by default 0.
     smoothy : int, optional
-        Smooth motion level in Y (xml attribute), by default 0
+        Smooth motion level in Y (xml attribute), by default 0.
+    dirout : str 
+    The name of the folder where the csv files will be placed. 
+    By default "MLPiston2D".
     file_prefix : str, optional
-        The prefix of the csv files, by default "MLPiston2D_SPH_velx"
+        The prefix of the csv files, by default "MLPiston2D_SPH_velx".
     binpath : str, optional
         The path of the binary folder of DualSPHysics. If not defined the an
         environment variable "DUALSPH_HOME" must be defined. By default None.
@@ -697,7 +701,7 @@ def mlpistons2D_from_dsph(
         points_per_time.append(pnts)
 
     # Find velocity data from the points and create the dataframe
-    outfiles_dir = f"{xmldir}/MLPiston2D"
+    outfiles_dir = f"{xmldir}/{dirout}"
     if not os.path.exists(outfiles_dir):
         os.mkdir(outfiles_dir)
 
@@ -806,5 +810,7 @@ def mlpistons2D_from_dsph(
     tree.write(xmlfile)
 
     # Clean-up
-    os.remove(rawdata_fpath)
-    os.remove(f"{dirin}/measuretool/{rawdata_fname}_PointsDef.vtk")
+    if os.path.exists(rawdata_fpath):
+        os.remove(rawdata_fpath)
+    if os.path.exists(f"{dirin}/measuretool/{rawdata_fname}_PointsDef.vtk"):
+        os.remove(f"{dirin}/measuretool/{rawdata_fname}_PointsDef.vtk")
