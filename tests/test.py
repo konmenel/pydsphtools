@@ -63,6 +63,7 @@ def testing() -> int:
     )
     assert df["Configuration"][0] == CONFIGURATION
 
+    print("All test were successful!")
     return 0
 
 

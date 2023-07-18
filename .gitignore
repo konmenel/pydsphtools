@@ -1,3 +1,6 @@
+# DualSPHysics doc file symlink
+DSPH_docs
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

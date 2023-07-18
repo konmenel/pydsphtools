@@ -17,13 +17,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 @github: https://github.com/konmenel
 @year: 2023
 """
+import os
 import io
 import re
+import errno
 import pathlib
-from typing import Callable, TypeVar, Union
+import platform
+import subprocess
+from typing import Callable, TypeVar, Union, Tuple, List, Dict
 
 import numpy as np
 import pandas as pd
+import lxml.etree as ET
 
 from pydsphtools.exceptions import NotFoundInOutput
 
@@ -286,3 +291,520 @@ def get_chrono_property(
                     return value
 
     raise NotFoundInOutput(f'Property "{pname}" for chrono body "{bname}"')
+
+
+def run_measuretool(
+    dirin: str,
+    *,
+    first_file: int = None,
+    last_file: int = None,
+    file_nums: List[int] = None,
+    dirout: str = None,
+    savecsv: str = "Measure",
+    saveascii: str = None,
+    savevtk: str = None,
+    csvsep: bool = None,
+    onlypos: Dict[str, Tuple[float, float, float]] = None,
+    onlymk: int = None,
+    onlyid: int = None,
+    include_types: List[str] = None,
+    exclude_types: List[str] = None,
+    points_file=None,
+    pt_list: np.ndarray = None,
+    ptls_list: np.ndarray = None,
+    ptels_list: np.ndarray = None,
+    elevations: Union[bool, float] = None,
+    enable_hvars: List[str] = None,
+    disable_hvars: List[str] = None,
+    enable_vars: List[str] = None,
+    disable_vars: List[str] = None,
+    binpath: str = None,
+    options: str = None,
+) -> None:
+    """A python wrapper of "measuretool" of DualSPHysics.
+
+    Parameters
+    ----------
+    dirin : str
+        Indicates the directory with particle data.
+    first_file : int, optional
+        Indicates the first file to be computed. By default None
+    last_file : int, optional
+        Indicates the last file to be computed. By default None
+    file_nums : List[int], optional
+        Indicates the number of files to be processed. By default None
+    dirout : str, optional
+        The directory of the output of measuretool. By default None
+    savecsv : str, optional
+        Generates one CSV file with the time history of the obtained values.
+        By default "Measure"
+    saveascii : str, optional
+        Generates one ASCII file without headers with the time history of the
+        obtained values. By default None
+    savevtk : str, optional
+        Generates VTK(polydata) file with the given interpolation points.
+        By default None
+    csvsep : bool, optional
+        Separator character in CSV files (0=semicolon, 1=coma)
+        (value by default is read from DsphConfig.xml or 0). By default None
+    onlypos : Dict[str, Tuple[float, float, float]], optional
+        Indicates limits of particles. By default None
+    onlymk : int, optional
+        Indicates the mk of selected particles. By default None
+    onlyid : int, optional
+        Indicates the id of selected particles. By default None
+    include_types : List[str], optional
+        Indicates the type of selected particles to be included. Accepted values:
+        "all", "bound", "fixed", "moving", "floating", "fluid". By default "all"
+    exclude_types : List[str], optional
+        Indicates the type of selected particles to be excluded. Accepted values:
+        "all", "bound", "fixed", "moving", "floating", "fluid". By default None
+    points_file : _type_, optional
+        Defines the points where interpolated data will be computed (each value
+        separated by space or a new line). By default None
+    pt_list : np.ndarray, optional
+        A list of points to where interpolated data will be computed. The shape
+        of the array should be (n, 3) or should be a valid array for the numpy
+        function `numpy.reshape((-1, 3))` to be used.  By default None
+    ptls_list : np.ndarray, optional
+        A list of "POINTSLIST" in the format:
+        [[<x0>,<dx>:<nx>],
+         [<y0>:<dy>:<ny>],
+         [<z0>:<dz>:<nz>]].
+        The shape of the array should be (n, 3, 3) or should be a valid array for
+        the numpy function `numpy.reshape((-1, 3, 3))` to be used. 
+        By default None By default None
+    ptels_list : np.ndarray, optional
+        A list of "POINTSENDLIST" in the format:
+        [[<x0>,<dx>:<nx>],
+         [<y0>:<dy>:<ny>],
+         [<z0>:<dz>:<nz>]].
+        The shape of the array should be (n, 3, 3) or should be a valid array for
+        the numpy function `numpy.reshape((-1, 3, 3))` to be used. 
+        By default None By default None
+    elevations : Union[bool, float], optional
+        Fluid elevation is calculated starting from mass values for each point
+        x,y. The reference mass to obtain the elevation is calculated according 
+        to the mass values of the selected particles. By default 0.5 in 3D (half
+        the mass) and 0.4 in 2D.
+    enable_hvars : List[str], optional
+        Enable height values to be computed. By default None
+    disable_hvars : List[str], optional
+        Disable height values to be computed. By default "All"
+    enable_vars : List[str], optional
+        Enable the variables or magnitudes that are going to be computed as an
+        interpolation of the selected particles around a given position. By 
+        default vel,rhop or empty when elevation/tke calculation is enabled.
+    disable_vars : List[str], optional
+        Enable the variables or magnitudes that are going to be computed as an
+        interpolation of the selected particles around a given position.
+    binpath : str, optional
+        The path of the binary folder of DualSPHysics. If not defined the an
+        environment variable "DUALSPH_HOME" must be defined. By default None.
+    options : str, optional
+        A string of the command line option to be pass. If this argument is pass
+        all other arguments are ignored. By default None.
+
+    Raises
+    ------
+    Exception
+        If a binary path is not passed and an environment variable "DUALSPH_HOME"
+        doesn't exist.
+    """
+    if binpath is None and "DUALSPH_HOME" not in os.environ:
+        err_msg = (
+            '"DUALSPH_HOME" environment variable not specified '
+            + "and `binpath` not specified. Please specify one of them."
+        )
+        raise Exception(err_msg)
+
+    if binpath is None:
+        binpath = f"{os.environ['DUALSPH_HOME']}/bin"
+
+    plat = platform.system()
+    if plat == "Linux":
+        dirbin = f"{binpath}/linux"
+        binary = f"{dirbin}/MeasureTool_linux64"
+    elif plat == "Windows":
+        dirbin = f"{binpath}/windows"
+        binary = f"{dirbin}/MeasureTool_win64"
+
+    # If `options are specified run use those.
+    if options is not None:
+        subprocess.run([binary, *options.split(" ")])
+        return
+
+    if dirout is None:
+        dirout = f"{dirin}/measuretool"
+
+    opts = ["-dirin", f"{dirin}/data"]
+    types = []
+    vars = []
+    hvars = []
+    pointsdef = None
+
+    # Input options
+    if first_file is not None:
+        opts.append(f"-first:{first_file}")
+
+    if last_file is not None:
+        opts.append(f"-last:{last_file}")
+
+    if file_nums is not None:
+        files_to_str = ",".join(map(str, file_nums))
+        opts.append(f"-files:{files_to_str}")
+
+    # Save options
+    if savecsv is not None:
+        opts.extend(("-savecsv", f"{dirout}/{savecsv}"))
+
+    if savevtk is not None:
+        opts.extend(("-savevtk", f"{dirout}/{savevtk}"))
+
+    if saveascii is not None:
+        opts.extend(("-saveascii", f"{dirout}/{saveascii}"))
+
+    if csvsep is not None:
+        opts.append(f"-csvsep:{int(savecsv)}")
+
+    # Point definitions options
+    if pt_list is not None:
+        pointsdef = "-pointsdef:"
+        points_array = np.array(pt_list)
+        if points_array.ndim != 2:
+            points_array = points_array.reshape((-1, 3))
+        tmp_iter = (":".join(map(str, point)) for point in points_array)
+        pointsdef += "pt=" + ",pt=".join(tmp_iter)
+
+    if ptls_list is not None:
+        if pointsdef is None:
+            pointsdef = "-pointsdef:"
+        else:
+            pointsdef += ","
+        grid_array = np.array(ptls_list)
+        if grid_array.ndim != 3:
+            grid_array = grid_array.reshape((-1, 3, 3))
+
+        array_to_str_list = []
+        for grid in grid_array:
+            array_to_str = "ptls["
+            for a, prefix in zip(grid, ("x=", ",y=", ",z=")):
+                array_to_str += prefix + ":".join(map(str, a))
+            array_to_str += "]"
+            array_to_str_list.append(array_to_str)
+        pointsdef += ",".join(array_to_str_list)
+
+    if ptels_list is not None:
+        if pointsdef is None:
+            pointsdef = "-pointsdef:"
+        else:
+            pointsdef += ","
+        grid_array = np.array(ptels_list)
+        if grid_array.ndim != 3:
+            grid_array = grid_array.reshape((-1, 3, 3))
+
+        array_to_str_list = []
+        for grid in grid_array:
+            array_to_str = "ptels["
+            for a, prefix in zip(grid, ("x=", ",y=", ",z=")):
+                array_to_str += prefix + ":".join(map(str, a))
+            array_to_str += "]"
+            array_to_str_list.append(array_to_str)
+        pointsdef += ",".join(array_to_str_list)
+
+    if pointsdef is not None:
+        opts.append(pointsdef)
+
+    if points_file is not None:
+        opts.extend(("-points", points_file))
+
+    # Filter options
+    if onlymk is not None:
+        opts.append(f"-onlymk:{onlymk}")
+
+    if onlyid is not None:
+        opts.append(f"-onlyid:{onlyid}")
+
+    if onlypos is not None:
+        pts_to_str = (
+            "-onlypos:"
+            + ":".join(map(str, onlypos["min"]))
+            + ":"
+            + ":".join(map(str, onlypos["max"]))
+        )
+        opts.append(pts_to_str)
+
+    if exclude_types is not None:
+        types.extend((f"-{t}" for t in exclude_types))
+
+    if include_types is not None:
+        types.extend((f"+{t}" for t in include_types))
+
+    if types:
+        types_to_str = "-onlytype:" + ",".join(types)
+        opts.append(types_to_str)
+
+    # Calculations variables options
+    if elevations:
+        tmp = "-elevation"
+        if isinstance(elevations, (float, int)):
+            tmp += f":{elevations}"
+        opts.append(tmp)
+        opts.append("-elevationoutput:all")
+
+    if disable_vars is not None:
+        vars.extend((f"-{t}" for t in disable_vars))
+
+    if enable_vars is not None:
+        vars.extend((f"+{t}" for t in enable_vars))
+
+    if vars:
+        vars_to_str = "-vars:" + ",".join(vars)
+        opts.append(vars_to_str)
+
+    if disable_hvars is not None:
+        hvars.extend((f"-{t}" for t in disable_hvars))
+
+    if enable_hvars is not None:
+        hvars.extend((f"+{t}" for t in enable_hvars))
+
+    if hvars:
+        hvars_to_str = "-hvars:" + ",".join(hvars)
+        opts.append(hvars_to_str)
+
+    subprocess.run([binary, *opts])
+
+
+def mlpistons2D_from_dsph(
+    xmlfile: str,
+    dirin: str,
+    xloc: float,
+    yrange: Tuple[float, float],
+    zrange: Tuple[float, float],
+    ylayers: int,
+    zlayers: int,
+    mkbound: int,
+    *,
+    smoothz: int = 0,
+    smoothy: int = 0,
+    file_prefix: str = "MLPiston2D_SPH_velx",
+    binpath: str = None,
+) -> None:
+    """Create the nessesary csv file to run a DualSPHysics Multi-Layer 2D Piston
+    simulation using data from a previous DualSPHysics simulation. The function
+    uses "measuretool" to find the surface elevation at a specific x-location
+    and creates a grid at every timestep with a given number of vertical layers.
+
+    Parameters
+    ----------
+    xmlfile : str
+        The xml file that defines the simulation. The file will be modified to 
+        create the "mlayerpistons" element. If no extention is provided the
+        code assumes a ".xml" at the end.
+    dirin : str
+        The output directory of the old simulation.
+    xloc : float
+        The x-location where the velocities will be interpolated.
+    yrange : Tuple[float, float]
+        The domain limits of the fluid in the y-direction.
+    zrange : Tuple[float, float]
+        The domain limits of the fluid in the z-direction.
+    ylayers : int
+        The number of layers in the lateral direction.
+    zlayers : int
+        The number of layers in the vertical direction.
+    mkbound : int
+        The mk value of the piston particles.
+    smoothz : int, optional
+        Smooth motion level in Y (xml attribute), by default 0.
+    smoothy : int, optional
+        Smooth motion level in Y (xml attribute), by default 0
+    file_prefix : str, optional
+        The prefix of the csv files, by default "MLPiston2D_SPH_velx"
+    binpath : str, optional
+        The path of the binary folder of DualSPHysics. If not defined the an
+        environment variable "DUALSPH_HOME" must be defined. By default None.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the xml file could not be found. The rest of the code will still
+        run but modification will not be made no valid xml is provided.
+    """
+    xmlfile = os.path.abspath(xmlfile)
+    xmldir, _ = os.path.split(xmlfile)
+
+    dp = get_dp(dirin)
+    ylen = yrange[1] - yrange[0]
+    dy = ylen / ylayers
+    y0 = yrange[0] + 0.5 * dy
+
+    # Save configuration
+    config = pd.DataFrame(
+        {"NoLayers_y": [ylayers], "NoLayers_z": [zlayers], "xLocation": [xloc]}
+    )
+
+    # Find the free surface for each column (y-direction)
+    ptels_list = [[xloc, 0, xloc], [y0, dy, yrange[1]], [0, 0.0001, zrange[1]]]
+    exclude_list = ["all"]
+    include_list = ["fluid"]
+    disable_hvars = ["all"]
+    enable_hvars = ["eta"]
+
+    freesurface_fname = "MLPiston_freesurf"
+    freesurface_fpath = f"{dirin}/measuretool/{freesurface_fname}_Elevation.csv"
+
+    config_fpath = f"{dirin}/measuretool/MLPiston_config.csv"
+    old_config = None
+    if os.path.exists(config_fpath):
+        old_config = np.loadtxt(config_fpath, delimiter=";", skiprows=1)
+    if (
+        not os.path.exists(freesurface_fpath)
+        or old_config is None
+        or (old_config != config.iloc[0].values).any()
+    ):
+        config.to_csv(config_fpath, index=False, sep=";")
+        run_measuretool(
+            dirin,
+            savecsv=freesurface_fname,
+            ptels_list=ptels_list,
+            include_types=include_list,
+            exclude_types=exclude_list,
+            elevations=True,
+            enable_hvars=enable_hvars,
+            disable_hvars=disable_hvars,
+            binpath=binpath,
+        )
+
+    # Read elevations and create the point list for with the layers
+    df_fs = pd.read_csv(freesurface_fpath, header=3, sep=";")
+    # remove units, eg `Vel [m/s^2]` -> `Vel`
+    df_fs.columns = df_fs.columns.map(
+        lambda x: re.sub(r"\ \[[A-Za-z\^0-9/]*\]$", "", x)
+    )
+    # time_series = df_fs.Time
+    points_per_time = []
+    ys = np.arange(y0, ylen, dy)
+    for _, row in df_fs.iterrows():
+        row = row.drop(["Time", "Part"])
+        pnts = np.zeros((ylayers, zlayers, 3))
+        pnts[:, :, 0] = xloc
+        pnts[:, :, 1] = np.tile(ys, (zlayers, 1)).T
+        for j, elevation in enumerate(row):
+            highest_point = elevation - 2.5 * dp
+            dz = highest_point / zlayers
+            pnts[j, :, 2] = np.linspace(dz, highest_point, zlayers)
+        points_per_time.append(pnts)
+
+    # Find velocity data from the points and create the dataframe
+    outfiles_dir = f"{xmldir}/MLPiston2D"
+    if not os.path.exists(outfiles_dir):
+        os.mkdir(outfiles_dir)
+
+    rawdata_fname = "MLPiston_data_raw"
+    rawdata_fpath = f"{dirin}/measuretool/{rawdata_fname}_Vel.csv"
+    disable_vars = ["all"]
+    enable_vars = ["vel"]
+
+    columns = pd.Series(
+        [
+            "Time",
+            *(f"pz_{i}" for i in range(zlayers)),
+            *(f"vel_{i}" for i in range(zlayers)),
+        ]
+    )
+    dfs = pd.DataFrame(columns=columns, index=range(len(df_fs.Part)))
+    outfiles = {f"px:{xloc};py:{y}": dfs.copy() for y in ys}
+
+    for i, pnts in enumerate(points_per_time):
+        if os.path.exists(f"{outfiles_dir}/{file_prefix}_y00.csv"):
+            break
+
+        run_measuretool(
+            dirin,
+            savecsv=rawdata_fname,
+            file_nums=(i,),
+            pt_list=pnts,
+            include_types=include_list,
+            exclude_types=exclude_list,
+            enable_vars=enable_vars,
+            disable_vars=disable_vars,
+            binpath=binpath,
+        )
+        df_vel = pd.read_csv(rawdata_fpath, header=1, sep=";")
+        time = df_vel.loc[0, "Time [s]"]
+        df_vel = df_vel.loc[:, df_vel.columns.str.contains("x")]
+
+        for j, y in enumerate(ys):
+            key = f"px:{xloc};py:{y}"
+            zs = points_per_time[i][j, :, 2]
+            free_surface = max(zs) + 2 * dp
+            outfiles[key].iloc[i, 0] = time
+            outfiles[key].iloc[i, 1 : zlayers + 1] = free_surface - zs
+            outfiles[key].iloc[i, zlayers + 1 :] = df_vel.iloc[
+                0, j * zlayers : (j + 1) * zlayers
+            ]
+
+    # Save the input files
+    for i in range(len(ys)):
+        key = f"px:{xloc};py:{ys[i]}"
+        fname = f"{outfiles_dir}/{file_prefix}_y{i:02d}.csv"
+        with open(fname, "a") as f:
+            f.write(f"{key}\n")
+            outfiles[key].to_csv(f, sep=";", index=False)
+
+    # Check if the xml exist
+    if not os.path.exists(xmlfile):
+        if xmlfile.endswith(".xml"):
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), xmlfile)
+
+    xmlfile = f"{xmlfile}.xml"
+    if not os.path.exists(xmlfile):
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), xmlfile)
+
+    # Add the files to the xml
+    tree = ET.parse(xmlfile)
+    # Getting or creating parent elements
+    elem_exec = tree.find("execution")
+    elem_special = elem_exec.find("special")
+    if elem_special is None:
+        elem_special = ET.SubElement(elem_special, "special")
+
+    # Creating the elements
+    mlayer_elem = ET.SubElement(elem_special, "mlayerpistons")
+    piston2d = ET.SubElement(mlayer_elem, "piston2d")
+    ET.SubElement(
+        piston2d,
+        "mkbound",
+        attrib={"value": str(mkbound), "comment": "Mk-Bound of selected particles"},
+    )
+    ET.SubElement(
+        piston2d,
+        "smoothz",
+        attrib={"value": str(smoothz), "comment": "Smooth motion level in Z (def=0)"},
+    )
+    ET.SubElement(
+        piston2d,
+        "smoothy",
+        attrib={"value": str(smoothy), "comment": "Smooth motion level in Y (def=0)"},
+    )
+    for i in range(ylayers):
+        fname = f"{outfiles_dir}/{file_prefix}_y{i:02d}.csv"
+        veldata = ET.SubElement(piston2d, "veldata")
+        ET.SubElement(
+            veldata,
+            "filevelx",
+            attrib={"value": fname, "comment": "File name with X velocity"},
+        )
+        ET.SubElement(
+            veldata,
+            "posy",
+            attrib={"value": str(ys[i]), "comment": "Position Y of data"},
+        )
+
+    ET.indent(tree, " " * 4)
+    tree.write(xmlfile)
+
+    # Clean-up
+    os.remove(rawdata_fpath)
+    os.remove(f"{dirin}/measuretool/{rawdata_fname}_PointsDef.vtk")
