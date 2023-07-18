@@ -691,13 +691,13 @@ def mlpistons2D_from_dsph(
     ys = np.arange(y0, ylen, dy)
     for _, row in df_fs.iterrows():
         row = row.drop(["Time", "Part"])
-        pnts = np.zeros((ylayers, zlayers, 3))
+        pnts = np.zeros((zlayers, ylayers, 3))
         pnts[:, :, 0] = xloc
-        pnts[:, :, 1] = np.tile(ys, (zlayers, 1)).T
+        pnts[:, :, 1] = np.tile(ys, (zlayers, 1))
         for j, elevation in enumerate(row):
-            highest_point = elevation - 2.5 * dp
+            highest_point = elevation
             dz = highest_point / zlayers
-            pnts[j, :, 2] = np.linspace(dz, highest_point, zlayers)
+            pnts[:, j, 2] = np.linspace(1.5*dp, highest_point, zlayers)
         points_per_time.append(pnts)
 
     # Find velocity data from the points and create the dataframe
@@ -741,16 +741,19 @@ def mlpistons2D_from_dsph(
 
         for j, y in enumerate(ys):
             key = f"px:{xloc};py:{y}"
-            zs = points_per_time[i][j, :, 2]
-            free_surface = max(zs) + 2 * dp
+            zs = pnts[:, j, 2]
+            free_surface = zs.max()
             outfiles[key].iloc[i, 0] = time
-            outfiles[key].iloc[i, 1 : zlayers + 1] = free_surface - zs
+            outfiles[key].iloc[i, 1 : zlayers + 1] = zs - free_surface
             outfiles[key].iloc[i, zlayers + 1 :] = df_vel.iloc[
                 0, j * zlayers : (j + 1) * zlayers
             ]
 
     # Save the input files
     for i in range(len(ys)):
+        if os.path.exists(fname):
+            break
+
         key = f"px:{xloc};py:{ys[i]}"
         fname = f"{outfiles_dir}/{file_prefix}_y{i:02d}.csv"
         with open(fname, "a") as f:
@@ -762,9 +765,9 @@ def mlpistons2D_from_dsph(
         if xmlfile.endswith(".xml"):
             raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), xmlfile)
 
-    xmlfile = f"{xmlfile}.xml"
-    if not os.path.exists(xmlfile):
-        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), xmlfile)
+        xmlfile = f"{xmlfile}.xml"
+        if not os.path.exists(xmlfile):
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), xmlfile)
 
     # Add the files to the xml
     tree = ET.parse(xmlfile)
@@ -794,6 +797,7 @@ def mlpistons2D_from_dsph(
     )
     for i in range(ylayers):
         fname = f"{outfiles_dir}/{file_prefix}_y{i:02d}.csv"
+        fname = os.path.relpath(fname, xmldir)
         veldata = ET.SubElement(piston2d, "veldata")
         ET.SubElement(
             veldata,
