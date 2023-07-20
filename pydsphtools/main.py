@@ -24,7 +24,7 @@ import errno
 import pathlib
 import platform
 import subprocess
-from typing import Callable, TypeVar, Union, Tuple, List, Dict
+from typing import Callable, TypeVar, Union, Tuple, List, Dict, Iterable
 
 import numpy as np
 import pandas as pd
@@ -372,7 +372,7 @@ def run_measuretool(
          [<y0>:<dy>:<ny>],
          [<z0>:<dz>:<nz>]].
         The shape of the array should be (n, 3, 3) or should be a valid array for
-        the numpy function `numpy.reshape((-1, 3, 3))` to be used. 
+        the numpy function `numpy.reshape((-1, 3, 3))` to be used.
         By default None By default None
     ptels_list : np.ndarray, optional
         A list of "POINTSENDLIST" in the format:
@@ -380,11 +380,11 @@ def run_measuretool(
          [<y0>:<dy>:<ny>],
          [<z0>:<dz>:<nz>]].
         The shape of the array should be (n, 3, 3) or should be a valid array for
-        the numpy function `numpy.reshape((-1, 3, 3))` to be used. 
+        the numpy function `numpy.reshape((-1, 3, 3))` to be used.
         By default None By default None
     elevations : Union[bool, float], optional
         Fluid elevation is calculated starting from mass values for each point
-        x,y. The reference mass to obtain the elevation is calculated according 
+        x,y. The reference mass to obtain the elevation is calculated according
         to the mass values of the selected particles. By default 0.5 in 3D (half
         the mass) and 0.4 in 2D.
     enable_hvars : List[str], optional
@@ -393,7 +393,7 @@ def run_measuretool(
         Disable height values to be computed. By default "All"
     enable_vars : List[str], optional
         Enable the variables or magnitudes that are going to be computed as an
-        interpolation of the selected particles around a given position. By 
+        interpolation of the selected particles around a given position. By
         default vel,rhop or empty when elevation/tke calculation is enabled.
     disable_vars : List[str], optional
         Enable the variables or magnitudes that are going to be computed as an
@@ -599,7 +599,7 @@ def mlpistons2D_from_dsph(
     Parameters
     ----------
     xmlfile : str
-        The xml file that defines the simulation. The file will be modified to 
+        The xml file that defines the simulation. The file will be modified to
         create the "mlayerpistons" element. If no extention is provided the
         code assumes a ".xml" at the end.
     dirin : str
@@ -620,8 +620,8 @@ def mlpistons2D_from_dsph(
         Smooth motion level in Y (xml attribute), by default 0.
     smoothy : int, optional
         Smooth motion level in Y (xml attribute), by default 0.
-    dirout : str 
-    The name of the folder where the csv files will be placed. 
+    dirout : str
+    The name of the folder where the csv files will be placed.
     By default "MLPiston2D".
     file_prefix : str, optional
         The prefix of the csv files, by default "MLPiston2D_SPH_velx".
@@ -697,7 +697,7 @@ def mlpistons2D_from_dsph(
         for j, elevation in enumerate(row):
             highest_point = elevation
             dz = highest_point / zlayers
-            pnts[:, j, 2] = np.linspace(1.5*dp, highest_point, zlayers)
+            pnts[:, j, 2] = np.linspace(1.5 * dp, highest_point, zlayers)
         points_per_time.append(pnts)
 
     # Find velocity data from the points and create the dataframe
@@ -712,13 +712,14 @@ def mlpistons2D_from_dsph(
 
     columns = pd.Series(
         [
-            "Time",
+            "time",
             *(f"pz_{i}" for i in range(zlayers)),
             *(f"vel_{i}" for i in range(zlayers)),
         ]
     )
+    _get_key_fmt = lambda x, y: f"px:;{x};py:;{y}"
     dfs = pd.DataFrame(columns=columns, index=range(len(df_fs.Part)))
-    outfiles = {f"px:{xloc};py:{y}": dfs.copy() for y in ys}
+    outfiles = {_get_key_fmt(xloc, y): dfs.copy() for y in ys}
 
     for i, pnts in enumerate(points_per_time):
         if os.path.exists(f"{outfiles_dir}/{file_prefix}_y00.csv"):
@@ -740,7 +741,7 @@ def mlpistons2D_from_dsph(
         df_vel = df_vel.loc[:, df_vel.columns.str.contains("x")]
 
         for j, y in enumerate(ys):
-            key = f"px:{xloc};py:{y}"
+            key = _get_key_fmt(xloc, y)
             zs = pnts[:, j, 2]
             free_surface = zs.max()
             outfiles[key].iloc[i, 0] = time
@@ -751,15 +752,34 @@ def mlpistons2D_from_dsph(
 
     # Save the input files
     for i in range(len(ys)):
+        fname = f"{outfiles_dir}/{file_prefix}_y{i:02d}.csv"
+        key = _get_key_fmt(xloc, ys[i])
         if os.path.exists(fname):
             break
 
-        key = f"px:{xloc};py:{ys[i]}"
-        fname = f"{outfiles_dir}/{file_prefix}_y{i:02d}.csv"
         with open(fname, "a") as f:
             f.write(f"{key}\n")
             outfiles[key].to_csv(f, sep=";", index=False)
 
+    velfiles = (f"{outfiles_dir}/{file_prefix}_y{i:02d}.csv" for i in range(ylayers))
+    write_mlpiston_xml(xmlfile, mkbound, velfiles, ys, smoothz=smoothz, smoothy=smoothy)
+
+    # Clean-up
+    if os.path.exists(rawdata_fpath):
+        os.remove(rawdata_fpath)
+    if os.path.exists(f"{dirin}/measuretool/{rawdata_fname}_PointsDef.vtk"):
+        os.remove(f"{dirin}/measuretool/{rawdata_fname}_PointsDef.vtk")
+
+
+def write_mlpiston_xml(
+    xmlfile: str,
+    mkbound: int,
+    velfiles: Iterable[str],
+    yvals: Iterable[float],
+    *,
+    smoothz: int = 0,
+    smoothy: int = 0,
+) -> None:
     # Check if the xml exist
     if not os.path.exists(xmlfile):
         if xmlfile.endswith(".xml"):
@@ -769,16 +789,37 @@ def mlpistons2D_from_dsph(
         if not os.path.exists(xmlfile):
             raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), xmlfile)
 
-    # Add the files to the xml
+    xmldir, _ = os.path.split(xmlfile)
     tree = ET.parse(xmlfile)
-    # Getting or creating parent elements
-    elem_exec = tree.find("execution")
-    elem_special = elem_exec.find("special")
-    if elem_special is None:
-        elem_special = ET.SubElement(elem_special, "special")
 
-    # Creating the elements
-    mlayer_elem = ET.SubElement(elem_special, "mlayerpistons")
+    # Add to `motion` section
+    elem_casedef = xml_get_or_create_subelement(tree, "casedef")
+    elem_motion = xml_get_or_create_subelement(elem_casedef, "motion")
+    elem_objreal = ET.SubElement(
+        elem_motion,
+        "objreal",
+        attrib={"ref": str(mkbound)},
+    )
+    ET.SubElement(
+        elem_objreal,
+        "begin",
+        attrib={"mov": "100", "start": "0"},
+    )
+    ET.SubElement(
+        elem_objreal,
+        "mvnull",
+        attrib={"id": "100"},
+    )
+    print("[xml file] `motion` section updated.")
+
+    # Add to `special` section
+    elem_exec = xml_get_or_create_subelement(tree, "execution")
+    elem_special = xml_get_or_create_subelement(elem_exec, "special")
+
+    mlayer_elem = xml_get_or_create_subelement(elem_special, "mlayerpistons")
+    if mlayer_elem.find("piston2d") is not None:
+        print("*WARNING* [xml file]`piston2d` already exist in xml. Exitting without modifying the xml.")
+        return
     piston2d = ET.SubElement(mlayer_elem, "piston2d")
     ET.SubElement(
         piston2d,
@@ -795,8 +836,7 @@ def mlpistons2D_from_dsph(
         "smoothy",
         attrib={"value": str(smoothy), "comment": "Smooth motion level in Y (def=0)"},
     )
-    for i in range(ylayers):
-        fname = f"{outfiles_dir}/{file_prefix}_y{i:02d}.csv"
+    for fname, y in zip(velfiles, yvals):
         fname = os.path.relpath(fname, xmldir)
         veldata = ET.SubElement(piston2d, "veldata")
         ET.SubElement(
@@ -807,14 +847,17 @@ def mlpistons2D_from_dsph(
         ET.SubElement(
             veldata,
             "posy",
-            attrib={"value": str(ys[i]), "comment": "Position Y of data"},
+            attrib={"value": str(y), "comment": "Position Y of data"},
         )
+    print("[xml file] `special` section updated. `piston2d` added.")
 
     ET.indent(tree, " " * 4)
     tree.write(xmlfile)
 
-    # Clean-up
-    if os.path.exists(rawdata_fpath):
-        os.remove(rawdata_fpath)
-    if os.path.exists(f"{dirin}/measuretool/{rawdata_fname}_PointsDef.vtk"):
-        os.remove(f"{dirin}/measuretool/{rawdata_fname}_PointsDef.vtk")
+
+def xml_get_or_create_subelement(parent_elem, child: str):
+    child_elem = parent_elem.find(child)
+    if child_elem is None:
+        child_elem = ET.SubElement(parent_elem, child)
+
+    return child_elem
