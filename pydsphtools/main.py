@@ -689,16 +689,15 @@ def mlpistons2D_from_dsph(
     # time_series = df_fs.Time
     points_per_time = []
     ys = np.arange(y0, ylen, dy)
+    grid_y = np.tile(ys, (zlayers, 1))
     for _, row in df_fs.iterrows():
         row = row.drop(["Time", "Part"])
-        pnts = np.zeros((zlayers, ylayers, 3))
-        pnts[:, :, 0] = xloc
-        pnts[:, :, 1] = np.tile(ys, (zlayers, 1))
+        grid_z = np.zeros((zlayers, ylayers))
         for j, elevation in enumerate(row):
-            highest_point = elevation
-            dz = highest_point / zlayers
-            pnts[:, j, 2] = np.linspace(1.5 * dp, highest_point, zlayers)
-        points_per_time.append(pnts)
+            highest_point = elevation - 3*dp
+            # dz = highest_point / zlayers
+            grid_z[:, j] = np.linspace(highest_point, dp, zlayers)
+        points_per_time.append((grid_y, grid_z))
 
     # Find velocity data from the points and create the dataframe
     outfiles_dir = f"{xmldir}/{dirout}"
@@ -721,7 +720,7 @@ def mlpistons2D_from_dsph(
     dfs = pd.DataFrame(columns=columns, index=range(len(df_fs.Part)))
     outfiles = {_get_key_fmt(xloc, y): dfs.copy() for y in ys}
 
-    for i, pnts in enumerate(points_per_time):
+    for i, (grid_y, grid_z) in enumerate(points_per_time):
         if os.path.exists(f"{outfiles_dir}/{file_prefix}_y00.csv"):
             break
 
@@ -729,7 +728,11 @@ def mlpistons2D_from_dsph(
             dirin,
             savecsv=rawdata_fname,
             file_nums=(i,),
-            pt_list=pnts,
+            pt_list=[
+                (xloc, grid_y[i, j], grid_z[i, j])
+                for i in range(zlayers)
+                for j in range(ylayers)
+            ],
             include_types=include_list,
             exclude_types=exclude_list,
             enable_vars=enable_vars,
@@ -742,13 +745,11 @@ def mlpistons2D_from_dsph(
 
         for j, y in enumerate(ys):
             key = _get_key_fmt(xloc, y)
-            zs = pnts[:, j, 2]
-            free_surface = zs.max()
+            zs = grid_z[:, j]
+            free_surface = zs.max() + 3*dp
             outfiles[key].iloc[i, 0] = time
             outfiles[key].iloc[i, 1 : zlayers + 1] = zs - free_surface
-            outfiles[key].iloc[i, zlayers + 1 :] = df_vel.iloc[
-                0, j * zlayers : (j + 1) * zlayers
-            ]
+            outfiles[key].iloc[i, zlayers + 1 :] = df_vel.iloc[0, j::ylayers]
 
     # Save the input files
     for i in range(len(ys)):
@@ -760,6 +761,7 @@ def mlpistons2D_from_dsph(
         with open(fname, "a") as f:
             f.write(f"{key}\n")
             outfiles[key].to_csv(f, sep=";", index=False)
+    print(f"Csv input files created in directory \"{outfiles_dir}\".")
 
     velfiles = (f"{outfiles_dir}/{file_prefix}_y{i:02d}.csv" for i in range(ylayers))
     write_mlpiston_xml(xmlfile, mkbound, velfiles, ys, smoothz=smoothz, smoothy=smoothy)
@@ -818,7 +820,9 @@ def write_mlpiston_xml(
 
     mlayer_elem = xml_get_or_create_subelement(elem_special, "mlayerpistons")
     if mlayer_elem.find("piston2d") is not None:
-        print("*WARNING* [xml file]`piston2d` already exist in xml. Exitting without modifying the xml.")
+        print(
+            "*WARNING* [xml file]`piston2d` already exist in xml. Exitting without modifying the xml."
+        )
         return
     piston2d = ET.SubElement(mlayer_elem, "piston2d")
     ET.SubElement(
