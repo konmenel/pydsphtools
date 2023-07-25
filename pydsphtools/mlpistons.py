@@ -1,0 +1,558 @@
+"""Copyright (C) 2023 Constantinos Menelaou <https://github.com/konmenel>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+@author: Constantinos Menelaou
+@github: https://github.com/konmenel
+@year: 2023
+"""
+from .imports import *
+
+from pydsphtools.main import *
+
+
+def mlpistons2d_from_dsph(
+    xmlfile: str,
+    dirin: str,
+    xloc: float,
+    yrange: Tuple[float, float],
+    zrange: Tuple[float, float],
+    ylayers: int,
+    zlayers: int,
+    mkbound: int,
+    *,
+    smoothz: int = 0,
+    smoothy: int = 0,
+    file_prefix: str = "MLPiston2D_SPH_velx",
+    dirout: str = "MLPiston2D",
+    binpath: str = None,
+) -> None:
+    """Create the nessesary csv file to run a DualSPHysics Multi-Layer 2D Piston
+    simulation using data from a previous DualSPHysics simulation. The function
+    uses "measuretool" to find the surface elevation at a specific x-location
+    and creates a grid at every timestep with a given number of vertical layers.
+
+    Parameters
+    ----------
+    xmlfile : str
+        The xml file that defines the simulation. The file will be modified to
+        create the "mlayerpistons" element. If no extention is provided the
+        code assumes a ".xml" at the end.
+    dirin : str
+        The output directory of the old simulation.
+    xloc : float
+        The x-location where the velocities will be interpolated.
+    yrange : Tuple[float, float]
+        The domain limits of the fluid in the y-direction.
+    zrange : Tuple[float, float]
+        The domain limits of the fluid in the z-direction.
+    ylayers : int
+        The number of layers in the lateral direction.
+    zlayers : int
+        The number of layers in the vertical direction.
+    mkbound : int
+        The mk value of the piston particles.
+    smoothz : int, optional
+        Smooth motion level in Z (xml attribute), by default 0.
+    smoothy : int, optional
+        Smooth motion level in Y (xml attribute), by default 0.
+    dirout : str
+    The name of the folder where the csv files will be placed.
+    By default "MLPiston2D".
+    file_prefix : str, optional
+        The prefix of the csv files, by default "MLPiston2D_SPH_velx".
+    binpath : str, optional
+        The path of the binary folder of DualSPHysics. If not defined the an
+        environment variable "DUALSPH_HOME" must be defined. By default None.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the xml file could not be found. The rest of the code will still
+        run but modification will not be made no valid xml is provided.
+    """
+    # File and directory names
+    xmlfile = os.path.abspath(xmlfile)
+    xmldir, _ = os.path.split(xmlfile)
+    config_fpath = f"{dirin}/measuretool/MLPiston2D_config.csv"
+    rawdata_fname = "MLPiston2D_data_raw"
+    rawdata_fpath = f"{dirin}/measuretool/{rawdata_fname}_Vel.csv"
+    freesurface_fname = "MLPiston2D_freesurf"
+    freesurface_fpath = f"{dirin}/measuretool/{freesurface_fname}_Elevation.csv"
+
+    dp = get_dp(dirin)
+    ylen = yrange[1] - yrange[0]
+    dy = ylen / ylayers
+    y0 = yrange[0] + 0.5 * dy
+
+    # Save configuration
+    config = pd.DataFrame(
+        {"NoLayers_y": [ylayers], "NoLayers_z": [zlayers], "xLocation": [xloc]}
+    )
+
+    # Find the free surface for each column (y-direction)
+    ptels_list = [[xloc, 0, xloc], [y0, dy, yrange[1]], [0, 0.0001, zrange[1]]]
+    exclude_list = ["all"]
+    include_list = ["fluid"]
+    disable_hvars = ["all"]
+    enable_hvars = ["eta"]
+
+    old_config = None
+    if os.path.exists(config_fpath):
+        old_config = np.loadtxt(config_fpath, delimiter=";", skiprows=1)
+    if (
+        not os.path.exists(freesurface_fpath)
+        or old_config is None
+        or (old_config != config.iloc[0].values).any()
+    ):
+        config.to_csv(config_fpath, index=False, sep=";")
+        run_measuretool(
+            dirin,
+            savecsv=freesurface_fname,
+            ptels_list=ptels_list,
+            include_types=include_list,
+            exclude_types=exclude_list,
+            elevations=True,
+            enable_hvars=enable_hvars,
+            disable_hvars=disable_hvars,
+            binpath=binpath,
+        )
+
+    # Read elevations and create the point list for with the layers
+    df_fs = pd.read_csv(freesurface_fpath, header=3, sep=";")
+    # remove units, eg `Vel [m/s^2]` -> `Vel`
+    df_fs.columns = df_fs.columns.map(
+        lambda x: re.sub(r"\ \[[A-Za-z\^0-9/]*\]$", "", x)
+    )
+    # time_series = df_fs.Time
+    points_per_time = []
+    ys = np.arange(y0, ylen, dy)
+    grid_y = np.tile(ys, (zlayers, 1))
+    for _, row in df_fs.iterrows():
+        row = row.drop(["Time", "Part"])
+        grid_z = np.zeros((zlayers, ylayers))
+        for j, elevation in enumerate(row):
+            highest_point = elevation - 3 * dp
+            # dz = highest_point / zlayers
+            grid_z[:, j] = np.linspace(highest_point, dp, zlayers)
+        points_per_time.append((grid_y, grid_z))
+
+    # Find velocity data from the points and create the dataframe
+    outfiles_dir = f"{xmldir}/{dirout}"
+    if not os.path.exists(outfiles_dir):
+        os.mkdir(outfiles_dir)
+
+    disable_vars = ["all"]
+    enable_vars = ["vel"]
+
+    columns = pd.Series(
+        [
+            "time",
+            *(f"pz_{i}" for i in range(zlayers)),
+            *(f"vel_{i}" for i in range(zlayers)),
+        ]
+    )
+    _get_key_fmt = lambda x, y: f"px:;{x};py:;{y}"
+    dfs = pd.DataFrame(columns=columns, index=range(len(df_fs.Part)))
+    outfiles = {_get_key_fmt(xloc, y): dfs.copy() for y in ys}
+
+    for i, (grid_y, grid_z) in enumerate(points_per_time):
+        if os.path.exists(f"{outfiles_dir}/{file_prefix}_y00.csv"):
+            break
+
+        run_measuretool(
+            dirin,
+            savecsv=rawdata_fname,
+            file_nums=(i,),
+            pt_list=[
+                (xloc, grid_y[i, j], grid_z[i, j])
+                for i in range(zlayers)
+                for j in range(ylayers)
+            ],
+            include_types=include_list,
+            exclude_types=exclude_list,
+            enable_vars=enable_vars,
+            disable_vars=disable_vars,
+            binpath=binpath,
+        )
+        df_vel = pd.read_csv(rawdata_fpath, header=1, sep=";")
+        time = df_vel.loc[0, "Time [s]"]
+        df_vel = df_vel.loc[:, df_vel.columns.str.contains("x")]
+
+        for j, y in enumerate(ys):
+            key = _get_key_fmt(xloc, y)
+            zs = grid_z[:, j]
+            free_surface = zs.max() + 3 * dp
+            outfiles[key].iloc[i, 0] = time
+            outfiles[key].iloc[i, 1 : zlayers + 1] = zs - free_surface
+            outfiles[key].iloc[i, zlayers + 1 :] = df_vel.iloc[0, j::ylayers]
+
+    # Save the input files
+    for i in range(len(ys)):
+        fname = f"{outfiles_dir}/{file_prefix}_y{i:02d}.csv"
+        key = _get_key_fmt(xloc, ys[i])
+        if os.path.exists(fname):
+            break
+
+        with open(fname, "a") as f:
+            f.write(f"{key}\n")
+            outfiles[key].to_csv(f, sep=";", index=False)
+    print(f'Csv input files created in directory "{outfiles_dir}".')
+
+    velfiles = (f"{outfiles_dir}/{file_prefix}_y{i:02d}.csv" for i in range(ylayers))
+    write_mlpiston2d_xml(
+        xmlfile, mkbound, velfiles, ys, smoothz=smoothz, smoothy=smoothy
+    )
+
+    # Clean-up
+    if os.path.exists(rawdata_fpath):
+        os.remove(rawdata_fpath)
+    if os.path.exists(f"{dirin}/measuretool/{rawdata_fname}_PointsDef.vtk"):
+        os.remove(f"{dirin}/measuretool/{rawdata_fname}_PointsDef.vtk")
+
+
+def write_mlpiston2d_xml(
+    xmlfile: str,
+    mkbound: int,
+    velfiles: Iterable[str],
+    yvals: Iterable[float],
+    *,
+    smoothz: int = 0,
+    smoothy: int = 0,
+) -> None:
+    # Check if the xml exist
+    if not os.path.exists(xmlfile):
+        if xmlfile.endswith(".xml"):
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), xmlfile)
+
+        xmlfile = f"{xmlfile}.xml"
+        if not os.path.exists(xmlfile):
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), xmlfile)
+
+    xmldir, _ = os.path.split(xmlfile)
+    tree = ET.parse(xmlfile)
+
+    # Add to `motion` section
+    elem_casedef = xml_get_or_create_subelement(tree, "casedef")
+    elem_motion = xml_get_or_create_subelement(elem_casedef, "motion")
+    elem_objreal = ET.SubElement(
+        elem_motion,
+        "objreal",
+        attrib={"ref": str(mkbound)},
+    )
+    ET.SubElement(
+        elem_objreal,
+        "begin",
+        attrib={"mov": "100", "start": "0"},
+    )
+    ET.SubElement(
+        elem_objreal,
+        "mvnull",
+        attrib={"id": "100"},
+    )
+    print("[xml file] `motion` section updated.")
+
+    # Add to `special` section
+    elem_exec = xml_get_or_create_subelement(tree, "execution")
+    elem_special = xml_get_or_create_subelement(elem_exec, "special")
+
+    mlayer_elem = xml_get_or_create_subelement(elem_special, "mlayerpistons")
+    if mlayer_elem.find("piston2d") is not None:
+        print(
+            "*WARNING* [xml file]`piston2d` already exist in xml. Exitting without modifying the xml."
+        )
+        return
+    piston2d = ET.SubElement(mlayer_elem, "piston2d")
+    ET.SubElement(
+        piston2d,
+        "mkbound",
+        attrib={"value": str(mkbound), "comment": "Mk-Bound of selected particles"},
+    )
+    ET.SubElement(
+        piston2d,
+        "smoothz",
+        attrib={"value": str(smoothz), "comment": "Smooth motion level in Z (def=0)"},
+    )
+    ET.SubElement(
+        piston2d,
+        "smoothy",
+        attrib={"value": str(smoothy), "comment": "Smooth motion level in Y (def=0)"},
+    )
+    for fname, y in zip(velfiles, yvals):
+        fname = os.path.relpath(fname, xmldir)
+        veldata = ET.SubElement(piston2d, "veldata")
+        ET.SubElement(
+            veldata,
+            "filevelx",
+            attrib={"value": fname, "comment": "File name with X velocity"},
+        )
+        ET.SubElement(
+            veldata,
+            "posy",
+            attrib={"value": str(y), "comment": "Position Y of data"},
+        )
+    print("[xml file] `special` section updated. `piston2d` added.")
+
+    ET.indent(tree, " " * 4)
+    tree.write(xmlfile)
+
+
+def mlpistons1d_from_dsph(
+    xmlfile: str,
+    dirin: str,
+    xloc: float,
+    yrange: Tuple[float, float],
+    zrange: Tuple[float, float],
+    layers: int,
+    mkbound: int,
+    *,
+    smooth: int = 0,
+    file_prefix: str = "MLPiston1D_SPH_velx",
+    dirout: str = "MLPiston1D",
+    binpath: str = None,
+) -> None:
+    """Create the nessesary csv file to run a DualSPHysics Multi-Layer 2D Piston
+    simulation using data from a previous DualSPHysics simulation. The function
+    uses "measuretool" to find the surface elevation at a specific x-location
+    and creates a grid at every timestep with a given number of vertical layers.
+
+    Parameters
+    ----------
+    xmlfile : str
+        The xml file that defines the simulation. The file will be modified to
+        create the "mlayerpistons" element. If no extention is provided the
+        code assumes a ".xml" at the end.
+    dirin : str
+        The output directory of the old simulation.
+    xloc : float
+        The x-location where the velocities will be interpolated.
+    yrange : Tuple[float, float]
+        The domain limits of the fluid in the y-direction.
+    zrange : Tuple[float, float]
+        The domain limits of the fluid in the z-direction.
+    layers : int
+        The number of layers in the vertical direction.
+    mkbound : int
+        The mk value of the piston particles.
+    smooth : int, optional
+        Smooth motion level between layers (xml attribute), by default 0.
+    dirout : str
+    The name of the folder where the csv files will be placed.
+    By default "MLPiston2D".
+    file_prefix : str, optional
+        The prefix of the csv files, by default "MLPiston2D_SPH_velx".
+    binpath : str, optional
+        The path of the binary folder of DualSPHysics. If not defined the an
+        environment variable "DUALSPH_HOME" must be defined. By default None.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the xml file could not be found. The rest of the code will still
+        run but modification will not be made no valid xml is provided.
+    """
+    # File and directory names
+    xmlfile = os.path.abspath(xmlfile)
+    xmldir, _ = os.path.split(xmlfile)
+    config_fpath = f"{dirin}/measuretool/MLPiston1D_config.csv"
+    freesurface_fname = "MLPiston1D_freesurf"
+    freesurface_fpath = f"{dirin}/measuretool/{freesurface_fname}_Elevation.csv"
+    rawdata_fname = "MLPiston1D_data_raw"
+    rawdata_fpath = f"{dirin}/measuretool/{rawdata_fname}_Vel.csv"
+
+    dp = get_dp(dirin)
+    ylen = yrange[1] - yrange[0]
+    yloc = ylen / 2
+
+    # Save configuration
+    config = pd.DataFrame(
+        {"yLocation": [yloc], "NoLayers": [layers], "xLocation": [xloc]}
+    )
+
+    # Find the free surface for each column (y-direction)
+    ptels_list = [[xloc, 0, xloc], [yloc, 0, yloc], [0, 0.0001, zrange[1]]]
+    exclude_list = ["all"]
+    include_list = ["fluid"]
+    disable_hvars = ["all"]
+    enable_hvars = ["eta"]
+
+    old_config = None
+    if os.path.exists(config_fpath):
+        old_config = np.loadtxt(config_fpath, delimiter=";", skiprows=1)
+    if (
+        not os.path.exists(freesurface_fpath)
+        or old_config is None
+        or (old_config != config.iloc[0].values).any()
+    ):
+        config.to_csv(config_fpath, index=False, sep=";")
+        run_measuretool(
+            dirin,
+            savecsv=freesurface_fname,
+            ptels_list=ptels_list,
+            include_types=include_list,
+            exclude_types=exclude_list,
+            elevations=True,
+            enable_hvars=enable_hvars,
+            disable_hvars=disable_hvars,
+            binpath=binpath,
+        )
+
+    # Read elevations and create the point list for with the layers
+    df_fs = pd.read_csv(freesurface_fpath, header=3, sep=";")
+    # remove units, eg `Vel [m/s^2]` -> `Vel`
+    df_fs.columns = df_fs.columns.map(
+        lambda x: re.sub(r"\ \[[A-Za-z\^0-9/]*\]$", "", x)
+    )
+    points_per_time = []
+    for _, row in df_fs.iterrows():
+        row = row.drop(["Time", "Part"])
+        grid_z = np.zeros(layers)
+        elevation = row.iloc[0]
+        highest_point = elevation - 3 * dp
+        zs = np.linspace(highest_point, dp, layers)
+        points_per_time.append(zs)
+
+    # Find velocity data from the points and create the dataframe
+    outfiles_dir = f"{xmldir}/{dirout}"
+    if not os.path.exists(outfiles_dir):
+        os.mkdir(outfiles_dir)
+
+    disable_vars = ["all"]
+    enable_vars = ["vel"]
+
+    columns = pd.Series(
+        [
+            "time",
+            *(f"pz_{i}" for i in range(layers)),
+            *(f"vel_{i}" for i in range(layers)),
+        ]
+    )
+    _get_key_fmt = lambda x, y: f"px:;{x};py:;{y}"
+    df = pd.DataFrame(columns=columns, index=range(len(df_fs.Part)))
+    outfile = {_get_key_fmt(xloc, yloc): df.copy()}
+
+    for i, zs in enumerate(points_per_time):
+        if os.path.exists(f"{outfiles_dir}/{file_prefix}_y00.csv"):
+            break
+
+        run_measuretool(
+            dirin,
+            savecsv=rawdata_fname,
+            file_nums=(i,),
+            pt_list=[(xloc, yloc, z) for z in zs],
+            include_types=include_list,
+            exclude_types=exclude_list,
+            enable_vars=enable_vars,
+            disable_vars=disable_vars,
+            binpath=binpath,
+        )
+        df_vel = pd.read_csv(rawdata_fpath, header=1, sep=";")
+        time = df_vel.loc[0, "Time [s]"]
+        df_vel = df_vel.loc[:, df_vel.columns.str.contains("x")]
+
+        key = _get_key_fmt(xloc, yloc)
+        free_surface = zs.max() + 3 * dp
+        outfile[key].iloc[i, 0] = time
+        outfile[key].iloc[i, 1 : layers + 1] = zs - free_surface
+        outfile[key].iloc[i, layers + 1 :] = df_vel.iloc[0, :]
+
+    # Save the input file
+    fname = f"{outfiles_dir}/{file_prefix}_y00.csv"
+    key = _get_key_fmt(xloc, yloc)
+    if not os.path.exists(fname):
+        with open(fname, "a") as f:
+            f.write(f"{key}\n")
+            outfile[key].to_csv(f, sep=";", index=False)
+    print(f'Csv input files created in directory "{outfiles_dir}".')
+
+    velfile = f"{outfiles_dir}/{file_prefix}_y00.csv"
+    write_mlpiston1d_xml(xmlfile, mkbound, velfile, smooth=smooth)
+
+    # Clean-up
+    if os.path.exists(rawdata_fpath):
+        os.remove(rawdata_fpath)
+    if os.path.exists(f"{dirin}/measuretool/{rawdata_fname}_PointsDef.vtk"):
+        os.remove(f"{dirin}/measuretool/{rawdata_fname}_PointsDef.vtk")
+
+
+def write_mlpiston1d_xml(
+    xmlfile: str,
+    mkbound: int,
+    velfile: str,
+    *,
+    smooth: int = 0,
+) -> None:
+    # Check if the xml exist
+    if not os.path.exists(xmlfile):
+        if xmlfile.endswith(".xml"):
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), xmlfile)
+
+        xmlfile = f"{xmlfile}.xml"
+        if not os.path.exists(xmlfile):
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), xmlfile)
+
+    xmldir, _ = os.path.split(xmlfile)
+    fpath_rel = os.path.relpath(velfile, xmldir)
+    tree = ET.parse(xmlfile)
+
+    # Add to `motion` section
+    elem_casedef = xml_get_or_create_subelement(tree, "casedef")
+    elem_motion = xml_get_or_create_subelement(elem_casedef, "motion")
+    elem_objreal = ET.SubElement(
+        elem_motion,
+        "objreal",
+        attrib={"ref": str(mkbound)},
+    )
+    ET.SubElement(
+        elem_objreal,
+        "begin",
+        attrib={"mov": "100", "start": "0"},
+    )
+    ET.SubElement(
+        elem_objreal,
+        "mvnull",
+        attrib={"id": "100"},
+    )
+    print("[xml file] `motion` section updated.")
+
+    # Add to `special` section
+    elem_exec = xml_get_or_create_subelement(tree, "execution")
+    elem_special = xml_get_or_create_subelement(elem_exec, "special")
+
+    mlayer_elem = xml_get_or_create_subelement(elem_special, "mlayerpistons")
+    if mlayer_elem.find("piston1d") is not None:
+        print(
+            "*WARNING* [xml file]`piston1d` already exist in xml. Exitting without modifying the xml."
+        )
+        return
+    piston1d = ET.SubElement(mlayer_elem, "piston1d")
+    ET.SubElement(
+        piston1d,
+        "mkbound",
+        attrib={"value": str(mkbound), "comment": "Mk-Bound of selected particles"},
+    )
+    ET.SubElement(
+        piston1d,
+        "filevelx",
+        attrib={"value": fpath_rel, "comment": "File name with X velocity"},
+    )
+    ET.SubElement(
+        piston1d,
+        "smooth",
+        attrib={"value": str(smooth), "comment": "Smooth motion level (def=0)"},
+    )
+    print("[xml file] `special` section updated. `piston1d` added.")
+
+    ET.indent(tree, " " * 4)
+    tree.write(xmlfile)
