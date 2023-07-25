@@ -17,5 +17,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 @github: https://github.com/konmenel
 @year: 2023
 """
-from . import waves, exceptions, stat, mlpistons, main
-from .main import *
+import os
+import io
+import re
+import sys
+import errno
+import pathlib
+import platform
+import subprocess
+from typing import Callable, TypeVar, Union, Tuple, List, Dict, Iterable, Optional
+
+import numpy as np
+import numpy.typing as npt
+from numpy.typing import ArrayLike
+from scipy import optimize
+import pandas as pd
+import lxml.etree as ET

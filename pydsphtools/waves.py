@@ -1,10 +1,24 @@
-from typing import Union, Tuple, Optional
+"""Copyright (C) 2023 Constantinos Menelaou <https://github.com/konmenel>
 
-import numpy as np
-from numpy.typing import ArrayLike
-from scipy import optimize
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-from pydsphtools.main import RAD2DEG, DEG2RAD
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+@author: Constantinos Menelaou
+@github: https://github.com/konmenel
+@year: 2023
+"""
+from .imports import *
+from .main import *
 
 
 def find_wavenumber(
@@ -34,6 +48,7 @@ def find_wavenumber(
 
     ..math:: \\omega^2 = gk*\\tanh(kh)
     """
+
     def _func(wavenumber, omega, depth):
         return omega * omega - 9.81 * wavenumber * np.tanh(wavenumber * depth)
 
