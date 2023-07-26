@@ -199,16 +199,19 @@ def mlpistons2d_from_dsph(
             outfiles[key].iloc[i, zlayers + 1 :] = df_vel.iloc[0, j::ylayers]
 
     # Save the input files
+    written = True
     for i in range(len(ys)):
         fname = f"{outfiles_dir}/{file_prefix}_y{i:02d}.csv"
         key = _get_key_fmt(xloc, ys[i])
         if os.path.exists(fname):
+            written = False
             break
 
         with open(fname, "a") as f:
             f.write(f"{key}\n")
             outfiles[key].to_csv(f, sep=";", index=False)
-    print(f'Csv input files created in directory "{outfiles_dir}".')
+    if written:
+        print(f'Csv input files created in directory "{outfiles_dir}".')
 
     velfiles = (f"{outfiles_dir}/{file_prefix}_y{i:02d}.csv" for i in range(ylayers))
     write_mlpiston2d_xml(
@@ -312,7 +315,7 @@ def mlpistons1d_from_dsph(
     xmlfile: str,
     dirin: str,
     xloc: float,
-    yrange: Tuple[float, float],
+    yloc: float,
     zrange: Tuple[float, float],
     layers: int,
     mkbound: int,
@@ -321,11 +324,14 @@ def mlpistons1d_from_dsph(
     file_prefix: str = "MLPiston1D_SPH_velx",
     dirout: str = "MLPiston1D",
     binpath: str = None,
+    overwrite: bool = False,
+    cleanup: bool = False,
+    dt: float = 0.01,
 ) -> None:
-    """Create the nessesary csv file to run a DualSPHysics Multi-Layer 2D Piston
+    """Create the nessesary csv file to run a DualSPHysics Multi-Layer 1D Piston
     simulation using data from a previous DualSPHysics simulation. The function
     uses "measuretool" to find the surface elevation at a specific x-location
-    and creates a grid at every timestep with a given number of vertical layers.
+    and creates an 1D grid at every timestep with a given number of vertical layers.
 
     Parameters
     ----------
@@ -337,8 +343,8 @@ def mlpistons1d_from_dsph(
         The output directory of the old simulation.
     xloc : float
         The x-location where the velocities will be interpolated.
-    yrange : Tuple[float, float]
-        The domain limits of the fluid in the y-direction.
+    xloc : float
+        The y-location where the velocities will be interpolated.
     zrange : Tuple[float, float]
         The domain limits of the fluid in the z-direction.
     layers : int
@@ -355,6 +361,15 @@ def mlpistons1d_from_dsph(
     binpath : str, optional
         The path of the binary folder of DualSPHysics. If not defined the an
         environment variable "DUALSPH_HOME" must be defined. By default None.
+    overwrite : bool
+        If `True` the raw velocity data files will be overwritten. By default
+        `False`.
+    cleanup : bool
+        If `True` the raw velocity data files will be removed at the end. Be
+        default `False`.
+    dt : float
+        The dt used for the interpolation of the velocities. The calculated
+        velocities are used in a cubic interpolation to created a smoother signal.
 
     Raises
     ------
@@ -368,12 +383,12 @@ def mlpistons1d_from_dsph(
     config_fpath = f"{dirin}/measuretool/MLPiston1D_config.csv"
     freesurface_fname = "MLPiston1D_freesurf"
     freesurface_fpath = f"{dirin}/measuretool/{freesurface_fname}_Elevation.csv"
-    rawdata_fname = "MLPiston1D_data_raw"
-    rawdata_fpath = f"{dirin}/measuretool/{rawdata_fname}_Vel.csv"
+    rawdata_fname = lambda p: f"MLPiston1D_data_raw_Part{p}"
+    rawdata_fpath = lambda p: f"{dirin}/measuretool/rawveldata/{rawdata_fname(p)}_Vel.csv"
 
     dp = get_dp(dirin)
-    ylen = yrange[1] - yrange[0]
-    yloc = ylen / 2
+    first_dist = 4 * dp  # Distance of first poit from free surface
+    last_dist = 2 * dp  # Distance of last poit from free surface
 
     # Save configuration
     config = pd.DataFrame(
@@ -410,20 +425,20 @@ def mlpistons1d_from_dsph(
 
     # Read elevations and create the point list for with the layers
     df_fs = pd.read_csv(freesurface_fpath, header=3, sep=";")
-    # remove units, eg `Vel [m/s^2]` -> `Vel`
     df_fs.columns = df_fs.columns.map(
-        lambda x: re.sub(r"\ \[[A-Za-z\^0-9/]*\]$", "", x)
+        lambda x: re.sub(
+            r"\ \[[A-Za-z\^0-9/]*\]$", "", x
+        )  # remove units, eg `Vel [m/s^2]` -> `Vel`
     )
     points_per_time = []
     for _, row in df_fs.iterrows():
         row = row.drop(["Time", "Part"])
-        grid_z = np.zeros(layers)
         elevation = row.iloc[0]
-        highest_point = elevation - 3 * dp
-        zs = np.linspace(highest_point, dp, layers)
+        highest_point = elevation - first_dist
+        zs = np.linspace(highest_point, last_dist, layers)
         points_per_time.append(zs)
 
-    # Find velocity data from the points and create the dataframe
+    # Find velocity data from the points
     outfiles_dir = f"{xmldir}/{dirout}"
     if not os.path.exists(outfiles_dir):
         os.mkdir(outfiles_dir)
@@ -438,52 +453,91 @@ def mlpistons1d_from_dsph(
             *(f"vel_{i}" for i in range(layers)),
         ]
     )
-    _get_key_fmt = lambda x, y: f"px:;{x};py:;{y}"
-    df = pd.DataFrame(columns=columns, index=range(len(df_fs.Part)))
-    outfile = {_get_key_fmt(xloc, yloc): df.copy()}
 
+    # Interpolation array format 
+    # [[t0,z0],[t0,z1],...,[t0,zn],[t1,z0],...,[tn, zn]]
+    sz0 = len(points_per_time) * layers
+    interp_pnts = np.zeros((sz0, 2)) 
+    interp_vals = np.zeros(sz0)
     for i, zs in enumerate(points_per_time):
-        if os.path.exists(f"{outfiles_dir}/{file_prefix}_y00.csv"):
-            break
-
-        run_measuretool(
-            dirin,
-            savecsv=rawdata_fname,
-            file_nums=(i,),
-            pt_list=[(xloc, yloc, z) for z in zs],
-            include_types=include_list,
-            exclude_types=exclude_list,
-            enable_vars=enable_vars,
-            disable_vars=disable_vars,
-            binpath=binpath,
-        )
-        df_vel = pd.read_csv(rawdata_fpath, header=1, sep=";")
+        if overwrite or not os.path.exists(rawdata_fpath(i)):
+            run_measuretool(
+                dirin,
+                savecsv=rawdata_fname(i),
+                dirout=f"{dirin}/measuretool/rawveldata",
+                file_nums=(i,),
+                pt_list=[(xloc, yloc, z) for z in zs],
+                include_types=include_list,
+                exclude_types=exclude_list,
+                enable_vars=enable_vars,
+                disable_vars=disable_vars,
+                binpath=binpath,
+            )
+        df_vel = pd.read_csv(rawdata_fpath(i), header=1, sep=";")
         time = df_vel.loc[0, "Time [s]"]
         df_vel = df_vel.loc[:, df_vel.columns.str.contains("x")]
 
+        idx = i * layers
+        interp_pnts[idx : idx + layers, 0] = time
+        interp_pnts[idx : idx + layers, 1] = zs
+        interp_vals[idx : idx + layers] = df_vel.iloc[0, :].to_numpy()
+
+    # Cubic spline interpolation of velocity at 0.025 timesteps
+    fsurf_spline = interpolate.CubicSpline(df_fs["Time"], df_fs["Elevation_0"])
+    t0, tf = df_fs["Time"].iloc[0], df_fs["Time"].iloc[-1]
+    time_series = np.arange(t0, tf + dt, dt)
+    szi = len(time_series) * layers
+    interp_xi = np.zeros((szi, 2))
+
+    _get_key_fmt = lambda x, y: f"px:;{x};py:;{y}"
+    df = pd.DataFrame(columns=columns, index=range(len(time_series)))
+    outfile = {_get_key_fmt(xloc, yloc): df.copy()}
+
+    for i, time in enumerate(time_series):
+        idx = i * layers
+        interp_xi[idx : idx + layers, 0] = time
+        interp_xi[idx : idx + layers, 1] = np.linspace(
+            fsurf_spline(time) - first_dist, last_dist, layers
+        )
+    vels = interpolate.griddata(interp_pnts, interp_vals, interp_xi, method="cubic")
+    # Fill nans using linear interpolation
+    for i in range(layers):
+        subsetx = interp_xi[i::layers, 0]
+        subsety = vels[i::layers]
+        mask = np.isnan(subsety)
+        subsety[mask] = np.interp(subsetx[mask], subsetx[~mask], subsety[~mask])
+        vels[i::layers] = subsety
+
+    # Prepare output dataframe
+    for i, time in enumerate(time_series):
+        idx = i * layers
         key = _get_key_fmt(xloc, yloc)
-        free_surface = zs.max() + 3 * dp
         outfile[key].iloc[i, 0] = time
-        outfile[key].iloc[i, 1 : layers + 1] = zs - free_surface
-        outfile[key].iloc[i, layers + 1 :] = df_vel.iloc[0, :]
+        outfile[key].iloc[i, 1 : layers + 1] = interp_xi[
+            idx : idx + layers, 1
+        ] - fsurf_spline(time)
+        outfile[key].iloc[i, layers + 1 :] = vels[idx : idx + layers]
 
     # Save the input file
     fname = f"{outfiles_dir}/{file_prefix}_y00.csv"
     key = _get_key_fmt(xloc, yloc)
-    if not os.path.exists(fname):
-        with open(fname, "a") as f:
-            f.write(f"{key}\n")
-            outfile[key].to_csv(f, sep=";", index=False)
+    if os.path.exists(fname):
+        os.remove(fname)
+    with open(fname, "a") as f:
+        f.write(f"{key}\n")
+        outfile[key].to_csv(f, sep=";", index=False)
+    np.savetxt(f"{outfiles_dir}/freesurface_spline.csv", fsurf_spline(time_series))
     print(f'Csv input files created in directory "{outfiles_dir}".')
 
     velfile = f"{outfiles_dir}/{file_prefix}_y00.csv"
     write_mlpiston1d_xml(xmlfile, mkbound, velfile, smooth=smooth)
 
     # Clean-up
-    if os.path.exists(rawdata_fpath):
-        os.remove(rawdata_fpath)
-    if os.path.exists(f"{dirin}/measuretool/{rawdata_fname}_PointsDef.vtk"):
-        os.remove(f"{dirin}/measuretool/{rawdata_fname}_PointsDef.vtk")
+    if cleanup:
+        for f in glob.glob(f"{dirin}/measuretool/rawveldata/{rawdata_fname('*')}_PointsDef.vtk"):
+            os.remove(f)
+        for f in glob.glob(rawdata_fpath('*')):
+            os.remove(f)
 
 
 def write_mlpiston1d_xml(

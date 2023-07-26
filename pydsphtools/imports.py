@@ -21,6 +21,7 @@ import os
 import io
 import re
 import sys
+import glob
 import errno
 import pathlib
 import platform
@@ -30,6 +31,6 @@ from typing import Callable, TypeVar, Union, Tuple, List, Dict, Iterable, Option
 import numpy as np
 import numpy.typing as npt
 from numpy.typing import ArrayLike
-from scipy import optimize
+from scipy import optimize, interpolate
 import pandas as pd
 import lxml.etree as ET
