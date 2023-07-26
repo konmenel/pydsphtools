@@ -27,6 +27,7 @@ __all__ = [
     "RE_PATTERNS",
     "read_and_fix_csv",
     "get_dp",
+    "get_var",
     "get_usr_def_var",
     "get_chrono_mass",
     "get_chrono_inertia",
@@ -117,6 +118,46 @@ def get_dp(dirout: Union[str, pathlib.Path]) -> float:
         raise NotFoundInOutput("Variable `Dp`")
 
 
+def get_var(
+    dirout: Union[str, pathlib.Path], var: str, dtype: Callable[[str], _R] = str
+) -> _R:
+    """Gets any variable that is defined in `Run.csv` or `Run.out` files.
+
+    Parameters
+    ----------
+    dirout : str, path object or file-like object
+        The output directory of the simulation.
+    var: str
+        The name of the varible in `Run.csv` or `Run.out`.
+    dtype : Callable[[str], R], optional
+        The return type of the function. The return type will be the same as the
+        return type of the callable passed. The callable should accept a string as
+        the input. E.g. if `int` is used the return type will be in `int`. By default `str`.
+
+    Returns
+    -------
+    dtype
+        The value of the variable, By default `str`.
+
+    Raises
+    ------
+    NotFoundInOutput
+        If `Dp` is not pressent in `Run.out`.
+    """
+    try:
+        stream = read_and_fix_csv(dirout)
+        df = pd.read_csv(stream, sep=";")
+        return dtype(df[var][0])
+
+    except FileNotFoundError:
+        with open(f"{dirout}/Run.out") as file:
+            for line in file:
+                pattern = r"{0}=\[({1})\]".format(var, RE_PATTERNS.NUMBER)
+                number = re.match(pattern, line)
+                if number:
+                    return dtype(number.groups()[0])
+
+
 def get_usr_def_var(
     dirout: Union[str, pathlib.Path], var: str, dtype: Callable[[str], _R] = float
 ) -> _R:
@@ -128,14 +169,14 @@ def get_usr_def_var(
         The output directory of the simulation.
     var : str
         The name of the user defined variable.
-    dtype : Callable[[str], R], optional
+    dtype : Callable[[str], RType], optional
         The return type of the function. The return type will be the same as the
         return type of the callable passed. The callable should accept a string as
         the input. E.g. if `int` is used the return type will be in `int`. By default `float`.
 
     Returns
     -------
-    R
+    RType
         The value of the variable, By default `float`.
 
     Raises
@@ -143,7 +184,6 @@ def get_usr_def_var(
     NotFoundInOutput
         If the user defined variable is not pressent in `Run.out`.
     """
-
     with open(f"{dirout}/Run.out") as file:
         for line in file:
             if not line.startswith("XML-Vars (uservars + ctes)"):

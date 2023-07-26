@@ -20,6 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 from .imports import *
 
 from pydsphtools.main import *
+from .exceptions import InvalidTimeInterval
 
 
 def mlpistons2d_from_dsph(
@@ -327,6 +328,8 @@ def mlpistons1d_from_dsph(
     overwrite: bool = False,
     cleanup: bool = False,
     dt: float = 0.01,
+    tmin: float = 0.0,
+    tmax: float = 0.0,
 ) -> None:
     """Create the nessesary csv file to run a DualSPHysics Multi-Layer 1D Piston
     simulation using data from a previous DualSPHysics simulation. The function
@@ -370,12 +373,19 @@ def mlpistons1d_from_dsph(
     dt : float
         The dt used for the interpolation of the velocities. The calculated
         velocities are used in a cubic interpolation to created a smoother signal.
+    tmin : float
+        Defines the start time of the output file.
+    tmax : float
+        Defines the final time of the output file. If 0 the end time will be
+        the final time of the simulation.
 
     Raises
     ------
     FileNotFoundError
         If the xml file could not be found. The rest of the code will still
         run but modification will not be made no valid xml is provided.
+    InvalidTimeInterval
+        If `tmax` is less than or equal to `tmin`.
     """
     # File and directory names
     xmlfile = os.path.abspath(xmlfile)
@@ -389,6 +399,10 @@ def mlpistons1d_from_dsph(
     dp = get_dp(dirin)
     first_dist = 4 * dp  # Distance of first poit from free surface
     last_dist = 2 * dp  # Distance of last poit from free surface
+
+    tmax = tmax or get_var(dirin, "PhysicalTime", float)
+    if tmax <= tmin:
+        raise InvalidTimeInterval(tmin, tmax)
 
     # Save configuration
     config = pd.DataFrame(
@@ -460,6 +474,9 @@ def mlpistons1d_from_dsph(
     interp_pnts = np.zeros((sz0, 2)) 
     interp_vals = np.zeros(sz0)
     for i, zs in enumerate(points_per_time):
+        if df_fs.Time[i] < tmin or df_fs.Time[i] > tmax:
+            continue
+
         if overwrite or not os.path.exists(rawdata_fpath(i)):
             run_measuretool(
                 dirin,
@@ -484,8 +501,7 @@ def mlpistons1d_from_dsph(
 
     # Cubic spline interpolation of velocity at 0.025 timesteps
     fsurf_spline = interpolate.CubicSpline(df_fs["Time"], df_fs["Elevation_0"])
-    t0, tf = df_fs["Time"].iloc[0], df_fs["Time"].iloc[-1]
-    time_series = np.arange(t0, tf + dt, dt)
+    time_series = np.arange(tmin, tmax + dt, dt)
     szi = len(time_series) * layers
     interp_xi = np.zeros((szi, 2))
 
@@ -512,7 +528,7 @@ def mlpistons1d_from_dsph(
     for i, time in enumerate(time_series):
         idx = i * layers
         key = _get_key_fmt(xloc, yloc)
-        outfile[key].iloc[i, 0] = time
+        outfile[key].iloc[i, 0] = time - tmin
         outfile[key].iloc[i, 1 : layers + 1] = interp_xi[
             idx : idx + layers, 1
         ] - fsurf_spline(time)
