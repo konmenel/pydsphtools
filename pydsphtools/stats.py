@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 @github: https://github.com/konmenel
 @year: 2023
 """
-from .imports import *
+from .__imports__ import *
 
 
 def agreement_idx(obs: npt.ArrayLike, pred: npt.ArrayLike, c: float = 2) -> float:

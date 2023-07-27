@@ -17,5 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 @github: https://github.com/konmenel
 @year: 2023
 """
-from . import waves, exceptions, stat, mlpistons, main
-from .main import *
+from . import waves, exceptions, stats, mlpistons
+from .__main__ import *
+
+__version__ = "1.0"
+__all__ = [*__main__.__all__, "waves", "exceptions", "stats", "mlpistons"]

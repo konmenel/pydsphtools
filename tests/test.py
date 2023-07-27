@@ -19,10 +19,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 @year: 2023
 """
 import os
-
 import numpy as np
+import pandas as pd
 
-from pydsphtools.main import *
+from pydsphtools import *
 
 NUMBER_OF_TESTS = 12
 

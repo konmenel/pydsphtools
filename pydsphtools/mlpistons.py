@@ -17,9 +17,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 @github: https://github.com/konmenel
 @year: 2023
 """
-from .imports import *
+from .__imports__ import *
 
-from pydsphtools.main import *
+from pydsphtools.__main__ import *
 from .exceptions import InvalidTimeInterval
 
 
@@ -394,7 +394,9 @@ def mlpistons1d_from_dsph(
     freesurface_fname = "MLPiston1D_freesurf"
     freesurface_fpath = f"{dirin}/measuretool/{freesurface_fname}_Elevation.csv"
     rawdata_fname = lambda p: f"MLPiston1D_data_raw_Part{p}"
-    rawdata_fpath = lambda p: f"{dirin}/measuretool/rawveldata/{rawdata_fname(p)}_Vel.csv"
+    rawdata_fpath = (
+        lambda p: f"{dirin}/measuretool/rawveldata/{rawdata_fname(p)}_Vel.csv"
+    )
 
     dp = get_dp(dirin)
     first_dist = 4 * dp  # Distance of first poit from free surface
@@ -416,9 +418,11 @@ def mlpistons1d_from_dsph(
     disable_hvars = ["all"]
     enable_hvars = ["eta"]
 
+    # Check if there are old config files
     old_config = None
     if os.path.exists(config_fpath):
         old_config = np.loadtxt(config_fpath, delimiter=";", skiprows=1)
+    # Check if need to update elevation files
     if (
         not os.path.exists(freesurface_fpath)
         or old_config is None
@@ -436,14 +440,21 @@ def mlpistons1d_from_dsph(
             disable_hvars=disable_hvars,
             binpath=binpath,
         )
+        # Cleaning old vel files.
+        for f in glob.glob(
+            f"{dirin}/measuretool/rawveldata/{rawdata_fname('*')}_PointsDef.vtk"
+        ):
+            os.remove(f)
+        for f in glob.glob(rawdata_fpath("*")):
+            os.remove(f)
 
-    # Read elevations and create the point list for with the layers
+    # Read elevations
     df_fs = pd.read_csv(freesurface_fpath, header=3, sep=";")
-    df_fs.columns = df_fs.columns.map(
-        lambda x: re.sub(
-            r"\ \[[A-Za-z\^0-9/]*\]$", "", x
-        )  # remove units, eg `Vel [m/s^2]` -> `Vel`
-    )
+    # remove units, eg `Vel [m/s^2]` -> `Vel`
+    _sub_map = lambda x: re.sub(r"\ \[[A-Za-z\^0-9/]*\]$", "", x)
+    df_fs.columns = df_fs.columns.map(_sub_map)
+    
+    # Create the point where the velocities will be calculated
     points_per_time = []
     for _, row in df_fs.iterrows():
         row = row.drop(["Time", "Part"])
@@ -468,10 +479,10 @@ def mlpistons1d_from_dsph(
         ]
     )
 
-    # Interpolation array format 
+    # Interpolation array format
     # [[t0,z0],[t0,z1],...,[t0,zn],[t1,z0],...,[tn, zn]]
     sz0 = len(points_per_time) * layers
-    interp_pnts = np.zeros((sz0, 2)) 
+    interp_pnts = np.zeros((sz0, 2))
     interp_vals = np.zeros(sz0)
     for i, zs in enumerate(points_per_time):
         if df_fs.Time[i] < tmin or df_fs.Time[i] > tmax:
@@ -550,9 +561,11 @@ def mlpistons1d_from_dsph(
 
     # Clean-up
     if cleanup:
-        for f in glob.glob(f"{dirin}/measuretool/rawveldata/{rawdata_fname('*')}_PointsDef.vtk"):
+        for f in glob.glob(
+            f"{dirin}/measuretool/rawveldata/{rawdata_fname('*')}_PointsDef.vtk"
+        ):
             os.remove(f)
-        for f in glob.glob(rawdata_fpath('*')):
+        for f in glob.glob(rawdata_fpath("*")):
             os.remove(f)
 
 

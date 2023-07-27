@@ -17,8 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 @github: https://github.com/konmenel
 @year: 2023
 """
-from .imports import *
-from .main import *
+from .__imports__ import *
+from .__main__ import *
 
 
 def find_wavenumber(
