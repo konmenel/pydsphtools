@@ -46,7 +46,8 @@ def find_wavenumber(
     -----
     The dispersion equation:
 
-    ..math:: \\omega^2 = gk*\\tanh(kh)
+    .. math:: 
+        \\omega^2 = gk*\\tanh(kh)
     """
 
     def _func(wavenumber, omega, depth):
@@ -112,11 +113,13 @@ def ricker_spectrum(
     -----
     The spectrum is calculated using the equation:
 
-    ..math: A_r \\sqrt{T} (1 - \\alpha(\\omega_m T - 1)) e^{-\\omega^m T}
+    .. math::
+        A_r \\sqrt{T} (1 - \\alpha(\\omega_m T - 1)) e^{-\\omega^m T}
 
     The peak frequency is given by:
 
-    ..math: \\omega_p = \\left( \\frac{1 + 2\\alpha}{\\alpha T} \\right)^\\frac{1}{m}
+    .. math::
+        \\omega_p = \\left( \\frac{1 + 2\\alpha}{\\alpha T} \\right)^\\frac{1}{m} 
     """
     return Ar * np.sqrt(T) * np.exp(-(omega**m) * T) * (1 - a * (omega**m * T - 1))
 
@@ -147,7 +150,8 @@ def ricker_spectrum_simple(
     -----
     The spectrum is calculated using the equation:
 
-    ..math: \\frac{2}{\\sqrt{\\pi}} \\frac{\\omega^2}{\\omega_p^3} e^\\frac{-\\omega^2}{\\omega_p^2}
+    .. math::
+        \\frac{2}{\\sqrt{\\pi}} \\frac{\\omega^2}{\\omega_p^3} e^\\frac{-\\omega^2}{\\omega_p^2}
     """
     SQRT_PI = 1.7724538509055159
     omega2 = omega**2
@@ -217,13 +221,15 @@ def wavemaker_transfer_func(
 
     For piston type wavemaker:
 
-    ..math:: \\left( \\frac{H}{S} \\right)_{piston} = \\frac{2[\\cosh(2kh) - 1]}{2kh + \\sinh(2kh)}
+    .. math::
+        \\left( \\frac{H}{S} \\right)_{piston} = \\frac{2[\\cosh(2kh) - 1]}{2kh + \\sinh(2kh)}
 
     For flap type wavemaker:
 
-    ..math:: \\left( \\frac{H}{S} \\right)_{flap} = 4\\frac{\\sinh(kh)}{kd}\\frac{\\cosh[k(h - d)] + kd\\sinh(kh) - \\cosh(kh)}{2kh + \\sinh(2kh)}
+    .. math::
+        \\left( \\frac{H}{S} \\right)_{flap} = 4\\frac{\\sinh(kh)}{kd}\\frac{\\cosh[k(h - d)] + kd\\sinh(kh) - \\cosh(kh)}{2kh + \\sinh(2kh)}
 
-    where :math: `k` is the wavenumber, :math: `h` is the depth and :math: `d` is the hinge.
+    where \\( k \\) is the wavenumber, \\( h \\) is the depth and \\( d \\) is the hinge.
     """
     kh = depth * wavenumber
     kh2 = kh * 2.0
