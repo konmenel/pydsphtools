@@ -1,0 +1,1631 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>pydsphtools.main API documentation</title>
+<meta name="description" content="Copyright (C) 2023 Constantinos Menelaou &lt;https://github.com/konmenel&gt; …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pydsphtools.main</code></h1>
+</header>
+<section id="section-intro">
+<p>Copyright (C) 2023 Constantinos Menelaou <a href="https://github.com/konmenel">https://github.com/konmenel</a></p>
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License
+along with this program.
+If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.</p>
+<p>@author: Constantinos Menelaou
+@github: <a href="https://github.com/konmenel">https://github.com/konmenel</a>
+@year: 2023</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;Copyright (C) 2023 Constantinos Menelaou &lt;https://github.com/konmenel&gt;
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
+
+@author: Constantinos Menelaou
+@github: https://github.com/konmenel
+@year: 2023
+&#34;&#34;&#34;
+from .imports import *
+
+from .exceptions import NotFoundInOutput
+
+__all__ = [
+    &#34;DEG2RAD&#34;,
+    &#34;RAD2DEG&#34;,
+    &#34;RE_PATTERNS&#34;,
+    &#34;read_and_fix_csv&#34;,
+    &#34;get_dp&#34;,
+    &#34;get_var&#34;,
+    &#34;get_usr_def_var&#34;,
+    &#34;get_chrono_mass&#34;,
+    &#34;get_chrono_inertia&#34;,
+    &#34;get_chrono_property&#34;,
+    &#34;run_measuretool&#34;,
+    &#34;xml_get_or_create_subelement&#34;,
+]
+
+# BUG: There is a bug with the way DualSPHysics creates the `Run.csv`. It replaces all `,` with `;`
+#   which causes the Shifting(_txt_,_num_,_num_,_txt_) in the configure section to become
+#   Shifting(_txt_;_num_;_num_;_txt_). This causes a parsing bug with `pandas.read_csv` (any csv parser really)
+
+DEG2RAD = np.pi / 180.0
+RAD2DEG = 180.0 / np.pi
+
+_R = TypeVar(&#34;_R&#34;)
+
+
+class RE_PATTERNS:
+    &#34;&#34;&#34;Just constant class to store useful regex. Will move into a file if it grows too large.&#34;&#34;&#34;
+
+    # pattern to capture any number (eg 1.23, -1523, -12.3e-45)
+    NUMBER = r&#34;[\-\+]?\d+\.?\d*[Ee]?[\+\-]?\d*&#34;
+    # Pattern to captures the chrono floating section of the output. Returns the
+    # &#34;ID&#34; and &#34;name&#34; of the chorno object floating
+    FLOATING = r&#34;Body_(?P&lt;ID&gt;\d+) \&#34;(?P&lt;name&gt;\w*)\&#34; -  type: Floating&#34;
+
+
+def read_and_fix_csv(dirout: Union[str, pathlib.Path]) -&gt; io.StringIO:
+    &#34;&#34;&#34;Fixed the bug with the csv where if shifting is present in the `Run.csv` it has key that are
+    `;` separated, e.g. Shifting(_txt_;_num_;_num_;_txt_). This causes a parsing bug with `pandas.read_csv`
+    (any csv parser really). This function reads the data in fixes the bug in memory.
+
+    Parameters
+    ----------
+    dirout : str or path object
+        The output directory of the simulation.
+
+    Returns
+    -------
+    io.StringIO
+        The corrected IO object to be used instead of the file.
+
+    Examples
+    --------
+    &gt;&gt;&gt; stream = read_and_fix_csv(dirout=&#34;.&#34;)
+    &gt;&gt;&gt; df = pd.read_csv(stream, sep=&#34;;&#34;)
+    &#34;&#34;&#34;
+    with open(f&#34;{dirout}/Run.csv&#34;) as file:
+        ORIG_RE = r&#34;Shifting\((\w*);({0});({0});(\w*)\)&#34;.format(RE_PATTERNS.NUMBER)
+        REPL_RE = r&#34;Shifting(\1:\2:\3:\4)&#34;
+        txt = file.read()
+        txt = re.sub(ORIG_RE, REPL_RE, txt)
+        return io.StringIO(txt)
+
+
+def get_dp(dirout: Union[str, pathlib.Path]) -&gt; float:
+    &#34;&#34;&#34;Gets the inital particle distance of the simulation, aka `Dp`.
+
+    Parameters
+    ----------
+    dirout : str, path object or file-like object
+        The output directory of the simulation.
+
+    Returns
+    -------
+    float
+        The value of `Dp`.
+
+    Raises
+    ------
+    NotFoundInOutput
+        If `Dp` is not pressent in `Run.out`.
+    &#34;&#34;&#34;
+    try:
+        stream = read_and_fix_csv(dirout)
+        df = pd.read_csv(stream, sep=&#34;;&#34;)
+        return df[&#34;Dp&#34;][0]
+
+    except FileNotFoundError:
+        with open(f&#34;{dirout}/Run.out&#34;) as file:
+            for line in file:
+                pattern = r&#34;Dp=({0})&#34;.format(RE_PATTERNS.NUMBER)
+                number = re.match(pattern, line)
+                if number:
+                    return float(number.groups()[0])
+
+        raise NotFoundInOutput(&#34;Variable `Dp`&#34;)
+
+
+def get_var(
+    dirout: Union[str, pathlib.Path], var: str, dtype: Callable[[str], _R] = str
+) -&gt; _R:
+    &#34;&#34;&#34;Gets any variable that is defined in `Run.csv` or `Run.out` files.
+
+    Parameters
+    ----------
+    dirout : str, path object or file-like object
+        The output directory of the simulation.
+    var: str
+        The name of the varible in `Run.csv` or `Run.out`.
+    dtype : Callable[[str], R], optional
+        The return type of the function. The return type will be the same as the
+        return type of the callable passed. The callable should accept a string as
+        the input. E.g. if `int` is used the return type will be in `int`. By default `str`.
+
+    Returns
+    -------
+    dtype
+        The value of the variable, By default `str`.
+
+    Raises
+    ------
+    NotFoundInOutput
+        If `Dp` is not pressent in `Run.out`.
+    &#34;&#34;&#34;
+    try:
+        stream = read_and_fix_csv(dirout)
+        df = pd.read_csv(stream, sep=&#34;;&#34;)
+        return dtype(df[var][0])
+
+    except FileNotFoundError:
+        with open(f&#34;{dirout}/Run.out&#34;) as file:
+            for line in file:
+                pattern = r&#34;{0}=\[({1})\]&#34;.format(var, RE_PATTERNS.NUMBER)
+                number = re.match(pattern, line)
+                if number:
+                    return dtype(number.groups()[0])
+
+
+def get_usr_def_var(
+    dirout: Union[str, pathlib.Path], var: str, dtype: Callable[[str], _R] = float
+) -&gt; _R:
+    &#34;&#34;&#34;Finds and parses the value of any user defined variable from the simulation output.
+
+    Parameters
+    ----------
+    dirout : str, path object or file-like object
+        The output directory of the simulation.
+    var : str
+        The name of the user defined variable.
+    dtype : Callable[[str], RType], optional
+        The return type of the function. The return type will be the same as the
+        return type of the callable passed. The callable should accept a string as
+        the input. E.g. if `int` is used the return type will be in `int`. By default `float`.
+
+    Returns
+    -------
+    RType
+        The value of the variable, By default `float`.
+
+    Raises
+    ------
+    NotFoundInOutput
+        If the user defined variable is not pressent in `Run.out`.
+    &#34;&#34;&#34;
+    with open(f&#34;{dirout}/Run.out&#34;) as file:
+        for line in file:
+            if not line.startswith(&#34;XML-Vars (uservars + ctes)&#34;):
+                continue
+
+            pattern = r&#34;{0}=\[({1})\]&#34;.format(var, RE_PATTERNS.NUMBER)
+            mass = re.search(pattern, line)
+            if mass:
+                return dtype(mass.groups()[0])
+
+    raise NotFoundInOutput(f&#34;User defined variable `{var}`&#34;)
+
+
+def get_chrono_mass(dirout: Union[str, pathlib.Path], bname: str) -&gt; float:
+    &#34;&#34;&#34;Finds the mass of a floating chrono body.
+
+    Parameters
+    ----------
+    dirout : str or path object
+        The output directory of the simulation.
+    bname : str
+        The name of the body.
+
+    Returns
+    -------
+    float
+        The mass of the object
+
+    Raises
+    ------
+    NotFoundInOutput
+        If the either the chorno section or a chrono body with the
+        specified name doesn&#39;t exist.
+    &#34;&#34;&#34;
+    FLOATING_RE = re.compile(RE_PATTERNS.FLOATING)
+    PATTERN = r&#34;Mass.........: ({0})&#34;.format(RE_PATTERNS.NUMBER)
+
+    with open(f&#34;{dirout}/Run.out&#34;) as file:
+        found_floating = False
+        for line in file:
+            if not found_floating:
+                res = FLOATING_RE.search(line)
+                if res and res.group(&#34;name&#34;) == bname:
+                    found_floating = True
+                continue
+
+            mass = re.search(PATTERN, line)
+            if mass:
+                return float(mass.groups()[0])
+
+    raise NotFoundInOutput(f&#39;Chrono floating mass for &#34;{bname}&#34;&#39;)
+
+
+def get_chrono_inertia(dirout: Union[str, pathlib.Path], bname: str) -&gt; np.ndarray:
+    &#34;&#34;&#34;Finds the inertia tensor of a floating chrono body (only diagonal elements).
+
+    Parameters
+    ----------
+    dirout : str or path object
+        The output directory of the simulation.
+    bname : str
+        The name of the body.
+
+    Returns
+    -------
+    np.ndarray
+        1D array with the digonal elements of inertia tensor of the body.
+
+    Raises
+    ------
+    NotFoundInOutput
+        If the either the chorno section or a chrono body with the
+        specified name doesn&#39;t exist.
+    &#34;&#34;&#34;
+    FLOATING_RE = re.compile(RE_PATTERNS.FLOATING)
+    PATTERN = r&#34;Inertia......: \(({0}),({0}),({0})\)&#34;.format(RE_PATTERNS.NUMBER)
+
+    with open(f&#34;{dirout}/Run.out&#34;) as file:
+        found_floating = False
+        for line in file:
+            if not found_floating:
+                res = FLOATING_RE.search(line)
+                if res and res.group(&#34;name&#34;) == bname:
+                    found_floating = True
+                continue
+
+            inertia = re.search(PATTERN, line)
+            if inertia:
+                return np.array([float(i) for i in inertia.groups()])
+
+    raise NotFoundInOutput(f&#39;Chrono floating mass for &#34;{bname}&#34;&#39;)
+
+
+def get_chrono_property(
+    dirout: Union[str, pathlib.Path], bname: str, pname: str
+) -&gt; Union[float, np.ndarray, str]:
+    &#34;&#34;&#34;Finds and returns any property for a specified chrono floating body.
+
+    Parameters
+    ----------
+    dirout : str or path object
+        The output directory of the simulation.
+    bname : str
+        The name of the body.
+    pname : str
+        The name of the property. Should be a property that can be found at
+        `Body_XXXX &#34;&lt;bname&gt;&#34; -  type: Floating` section of the `Run.out` file.
+
+    Returns
+    -------
+    float | np.ndarray | str
+        If the property can be interpreted as a number it will return a `float`.
+        Else if it can be interpreted as an array it will return an `numpy.array`.
+        In any other case it will return the `str` of the property
+
+    Raises
+    ------
+    NotFoundInOutput
+        If the either the chorno section or a chrono body with the specified name
+        or property with the specified name doesn&#39;t exist.
+    &#34;&#34;&#34;
+    FLOATING_RE = re.compile(RE_PATTERNS.FLOATING)
+    PATTERN = r&#34;{0}\.*: (.+)&#34;.format(pname)
+    ELEM_PAT = r&#34;\(({0}),({0}),({0})\)&#34;.format(RE_PATTERNS.NUMBER)
+
+    with open(f&#34;{dirout}/Run.out&#34;) as file:
+        found_floating = False
+        for line in file:
+            if not found_floating:
+                res = FLOATING_RE.search(line)
+                if res and res.group(&#34;name&#34;) == bname:
+                    found_floating = True
+                continue
+
+            res = re.search(PATTERN, line)
+            if res:
+                value = res.groups()[0]
+                try:
+                    return float(value)
+
+                except ValueError as e:
+                    if value[0] == &#34;(&#34;:
+                        elems = re.search(ELEM_PAT, value)
+                        elems = elems.groups()
+                        return np.array([float(i) for i in elems])
+
+                    return value
+
+    raise NotFoundInOutput(f&#39;Property &#34;{pname}&#34; for chrono body &#34;{bname}&#34;&#39;)
+
+
+def run_measuretool(
+    dirin: str,
+    *,
+    first_file: int = None,
+    last_file: int = None,
+    file_nums: List[int] = None,
+    dirout: str = None,
+    savecsv: str = &#34;Measure&#34;,
+    saveascii: str = None,
+    savevtk: str = None,
+    csvsep: bool = None,
+    onlypos: Dict[str, Tuple[float, float, float]] = None,
+    onlymk: int = None,
+    onlyid: int = None,
+    include_types: List[str] = None,
+    exclude_types: List[str] = None,
+    points_file=None,
+    pt_list: np.ndarray = None,
+    ptls_list: np.ndarray = None,
+    ptels_list: np.ndarray = None,
+    elevations: Union[bool, float] = None,
+    enable_hvars: List[str] = None,
+    disable_hvars: List[str] = None,
+    enable_vars: List[str] = None,
+    disable_vars: List[str] = None,
+    binpath: str = None,
+    options: str = None,
+) -&gt; None:
+    &#34;&#34;&#34;A python wrapper of &#34;measuretool&#34; of DualSPHysics.
+
+    Parameters
+    ----------
+    dirin : str
+        Indicates the directory with particle data.
+    first_file : int, optional
+        Indicates the first file to be computed. By default None
+    last_file : int, optional
+        Indicates the last file to be computed. By default None
+    file_nums : List[int], optional
+        Indicates the number of files to be processed. By default None
+    dirout : str, optional
+        The directory of the output of measuretool. By default None
+    savecsv : str, optional
+        Generates one CSV file with the time history of the obtained values.
+        By default &#34;Measure&#34;
+    saveascii : str, optional
+        Generates one ASCII file without headers with the time history of the
+        obtained values. By default None
+    savevtk : str, optional
+        Generates VTK(polydata) file with the given interpolation points.
+        By default None
+    csvsep : bool, optional
+        Separator character in CSV files (0=semicolon, 1=coma)
+        (value by default is read from DsphConfig.xml or 0). By default None
+    onlypos : Dict[str, Tuple[float, float, float]], optional
+        Indicates limits of particles. By default None
+    onlymk : int, optional
+        Indicates the mk of selected particles. By default None
+    onlyid : int, optional
+        Indicates the id of selected particles. By default None
+    include_types : List[str], optional
+        Indicates the type of selected particles to be included. Accepted values:
+        &#34;all&#34;, &#34;bound&#34;, &#34;fixed&#34;, &#34;moving&#34;, &#34;floating&#34;, &#34;fluid&#34;. By default &#34;all&#34;
+    exclude_types : List[str], optional
+        Indicates the type of selected particles to be excluded. Accepted values:
+        &#34;all&#34;, &#34;bound&#34;, &#34;fixed&#34;, &#34;moving&#34;, &#34;floating&#34;, &#34;fluid&#34;. By default None
+    points_file : _type_, optional
+        Defines the points where interpolated data will be computed (each value
+        separated by space or a new line). By default None
+    pt_list : np.ndarray, optional
+        A list of points to where interpolated data will be computed. The shape
+        of the array should be (n, 3) or should be a valid array for the numpy
+        function `numpy.reshape((-1, 3))` to be used.  By default None
+    ptls_list : np.ndarray, optional
+        A list of &#34;POINTSLIST&#34; in the format:
+        [[&lt;x0&gt;,&lt;dx&gt;:&lt;nx&gt;],
+         [&lt;y0&gt;:&lt;dy&gt;:&lt;ny&gt;],
+         [&lt;z0&gt;:&lt;dz&gt;:&lt;nz&gt;]].
+        The shape of the array should be (n, 3, 3) or should be a valid array for
+        the numpy function `numpy.reshape((-1, 3, 3))` to be used.
+        By default None By default None
+    ptels_list : np.ndarray, optional
+        A list of &#34;POINTSENDLIST&#34; in the format:
+        [[&lt;x0&gt;,&lt;dx&gt;:&lt;nx&gt;],
+         [&lt;y0&gt;:&lt;dy&gt;:&lt;ny&gt;],
+         [&lt;z0&gt;:&lt;dz&gt;:&lt;nz&gt;]].
+        The shape of the array should be (n, 3, 3) or should be a valid array for
+        the numpy function `numpy.reshape((-1, 3, 3))` to be used.
+        By default None By default None
+    elevations : Union[bool, float], optional
+        Fluid elevation is calculated starting from mass values for each point
+        x,y. The reference mass to obtain the elevation is calculated according
+        to the mass values of the selected particles. By default 0.5 in 3D (half
+        the mass) and 0.4 in 2D.
+    enable_hvars : List[str], optional
+        Enable height values to be computed. By default None
+    disable_hvars : List[str], optional
+        Disable height values to be computed. By default &#34;All&#34;
+    enable_vars : List[str], optional
+        Enable the variables or magnitudes that are going to be computed as an
+        interpolation of the selected particles around a given position. By
+        default vel,rhop or empty when elevation/tke calculation is enabled.
+    disable_vars : List[str], optional
+        Enable the variables or magnitudes that are going to be computed as an
+        interpolation of the selected particles around a given position.
+    binpath : str, optional
+        The path of the binary folder of DualSPHysics. If not defined the an
+        environment variable &#34;DUALSPH_HOME&#34; must be defined. By default None.
+    options : str, optional
+        A string of the command line option to be pass. If this argument is pass
+        all other arguments are ignored. By default None.
+
+    Raises
+    ------
+    Exception
+        If a binary path is not passed and an environment variable &#34;DUALSPH_HOME&#34;
+        doesn&#39;t exist.
+    &#34;&#34;&#34;
+    if binpath is None and &#34;DUALSPH_HOME&#34; not in os.environ:
+        err_msg = (
+            &#39;&#34;DUALSPH_HOME&#34; environment variable not specified &#39;
+            + &#34;and `binpath` not specified. Please specify one of them.&#34;
+        )
+        raise Exception(err_msg)
+
+    if binpath is None:
+        binpath = f&#34;{os.environ[&#39;DUALSPH_HOME&#39;]}/bin&#34;
+
+    plat = platform.system()
+    if plat == &#34;Linux&#34;:
+        dirbin = f&#34;{binpath}/linux&#34;
+        binary = f&#34;{dirbin}/MeasureTool_linux64&#34;
+    elif plat == &#34;Windows&#34;:
+        dirbin = f&#34;{binpath}/windows&#34;
+        binary = f&#34;{dirbin}/MeasureTool_win64&#34;
+
+    # If `options are specified run use those.
+    if options is not None:
+        subprocess.run([binary, *options.split(&#34; &#34;)])
+        return
+
+    if dirout is None:
+        dirout = f&#34;{dirin}/measuretool&#34;
+
+    opts = [&#34;-dirin&#34;, f&#34;{dirin}/data&#34;]
+    types = []
+    vars = []
+    hvars = []
+    pointsdef = None
+
+    # Input options
+    if first_file is not None:
+        opts.append(f&#34;-first:{first_file}&#34;)
+
+    if last_file is not None:
+        opts.append(f&#34;-last:{last_file}&#34;)
+
+    if file_nums is not None:
+        files_to_str = &#34;,&#34;.join(map(str, file_nums))
+        opts.append(f&#34;-files:{files_to_str}&#34;)
+
+    # Save options
+    if savecsv is not None:
+        opts.extend((&#34;-savecsv&#34;, f&#34;{dirout}/{savecsv}&#34;))
+
+    if savevtk is not None:
+        opts.extend((&#34;-savevtk&#34;, f&#34;{dirout}/{savevtk}&#34;))
+
+    if saveascii is not None:
+        opts.extend((&#34;-saveascii&#34;, f&#34;{dirout}/{saveascii}&#34;))
+
+    if csvsep is not None:
+        opts.append(f&#34;-csvsep:{int(savecsv)}&#34;)
+
+    # Point definitions options
+    if pt_list is not None:
+        pointsdef = &#34;-pointsdef:&#34;
+        points_array = np.array(pt_list)
+        if points_array.ndim != 2:
+            points_array = points_array.reshape((-1, 3))
+        tmp_iter = (&#34;:&#34;.join(map(str, point)) for point in points_array)
+        pointsdef += &#34;pt=&#34; + &#34;,pt=&#34;.join(tmp_iter)
+
+    if ptls_list is not None:
+        if pointsdef is None:
+            pointsdef = &#34;-pointsdef:&#34;
+        else:
+            pointsdef += &#34;,&#34;
+        grid_array = np.array(ptls_list)
+        if grid_array.ndim != 3:
+            grid_array = grid_array.reshape((-1, 3, 3))
+
+        array_to_str_list = []
+        for grid in grid_array:
+            array_to_str = &#34;ptls[&#34;
+            for a, prefix in zip(grid, (&#34;x=&#34;, &#34;,y=&#34;, &#34;,z=&#34;)):
+                array_to_str += prefix + &#34;:&#34;.join(map(str, a))
+            array_to_str += &#34;]&#34;
+            array_to_str_list.append(array_to_str)
+        pointsdef += &#34;,&#34;.join(array_to_str_list)
+
+    if ptels_list is not None:
+        if pointsdef is None:
+            pointsdef = &#34;-pointsdef:&#34;
+        else:
+            pointsdef += &#34;,&#34;
+        grid_array = np.array(ptels_list)
+        if grid_array.ndim != 3:
+            grid_array = grid_array.reshape((-1, 3, 3))
+
+        array_to_str_list = []
+        for grid in grid_array:
+            array_to_str = &#34;ptels[&#34;
+            for a, prefix in zip(grid, (&#34;x=&#34;, &#34;,y=&#34;, &#34;,z=&#34;)):
+                array_to_str += prefix + &#34;:&#34;.join(map(str, a))
+            array_to_str += &#34;]&#34;
+            array_to_str_list.append(array_to_str)
+        pointsdef += &#34;,&#34;.join(array_to_str_list)
+
+    if pointsdef is not None:
+        opts.append(pointsdef)
+
+    if points_file is not None:
+        opts.extend((&#34;-points&#34;, points_file))
+
+    # Filter options
+    if onlymk is not None:
+        opts.append(f&#34;-onlymk:{onlymk}&#34;)
+
+    if onlyid is not None:
+        opts.append(f&#34;-onlyid:{onlyid}&#34;)
+
+    if onlypos is not None:
+        pts_to_str = (
+            &#34;-onlypos:&#34;
+            + &#34;:&#34;.join(map(str, onlypos[&#34;min&#34;]))
+            + &#34;:&#34;
+            + &#34;:&#34;.join(map(str, onlypos[&#34;max&#34;]))
+        )
+        opts.append(pts_to_str)
+
+    if exclude_types is not None:
+        types.extend((f&#34;-{t}&#34; for t in exclude_types))
+
+    if include_types is not None:
+        types.extend((f&#34;+{t}&#34; for t in include_types))
+
+    if types:
+        types_to_str = &#34;-onlytype:&#34; + &#34;,&#34;.join(types)
+        opts.append(types_to_str)
+
+    # Calculations variables options
+    if elevations:
+        tmp = &#34;-elevation&#34;
+        if isinstance(elevations, (float, int)):
+            tmp += f&#34;:{elevations}&#34;
+        opts.append(tmp)
+        opts.append(&#34;-elevationoutput:all&#34;)
+
+    if disable_vars is not None:
+        vars.extend((f&#34;-{t}&#34; for t in disable_vars))
+
+    if enable_vars is not None:
+        vars.extend((f&#34;+{t}&#34; for t in enable_vars))
+
+    if vars:
+        vars_to_str = &#34;-vars:&#34; + &#34;,&#34;.join(vars)
+        opts.append(vars_to_str)
+
+    if disable_hvars is not None:
+        hvars.extend((f&#34;-{t}&#34; for t in disable_hvars))
+
+    if enable_hvars is not None:
+        hvars.extend((f&#34;+{t}&#34; for t in enable_hvars))
+
+    if hvars:
+        hvars_to_str = &#34;-hvars:&#34; + &#34;,&#34;.join(hvars)
+        opts.append(hvars_to_str)
+
+    subprocess.run([binary, *opts])
+
+
+def xml_get_or_create_subelement(parent_elem, child: str):
+    child_elem = parent_elem.find(child)
+    if child_elem is None:
+        child_elem = ET.SubElement(parent_elem, child)
+
+    return child_elem</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="pydsphtools.main.get_chrono_inertia"><code class="name flex">
+<span>def <span class="ident">get_chrono_inertia</span></span>(<span>dirout: Union[str, pathlib.Path], bname: str) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Finds the inertia tensor of a floating chrono body (only diagonal elements).</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>dirout</code></strong> :&ensp;<code>str</code> or <code>path object</code></dt>
+<dd>The output directory of the simulation.</dd>
+<dt><strong><code>bname</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the body.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>np.ndarray</code></dt>
+<dd>1D array with the digonal elements of inertia tensor of the body.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>NotFoundInOutput</code></dt>
+<dd>If the either the chorno section or a chrono body with the
+specified name doesn't exist.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_chrono_inertia(dirout: Union[str, pathlib.Path], bname: str) -&gt; np.ndarray:
+    &#34;&#34;&#34;Finds the inertia tensor of a floating chrono body (only diagonal elements).
+
+    Parameters
+    ----------
+    dirout : str or path object
+        The output directory of the simulation.
+    bname : str
+        The name of the body.
+
+    Returns
+    -------
+    np.ndarray
+        1D array with the digonal elements of inertia tensor of the body.
+
+    Raises
+    ------
+    NotFoundInOutput
+        If the either the chorno section or a chrono body with the
+        specified name doesn&#39;t exist.
+    &#34;&#34;&#34;
+    FLOATING_RE = re.compile(RE_PATTERNS.FLOATING)
+    PATTERN = r&#34;Inertia......: \(({0}),({0}),({0})\)&#34;.format(RE_PATTERNS.NUMBER)
+
+    with open(f&#34;{dirout}/Run.out&#34;) as file:
+        found_floating = False
+        for line in file:
+            if not found_floating:
+                res = FLOATING_RE.search(line)
+                if res and res.group(&#34;name&#34;) == bname:
+                    found_floating = True
+                continue
+
+            inertia = re.search(PATTERN, line)
+            if inertia:
+                return np.array([float(i) for i in inertia.groups()])
+
+    raise NotFoundInOutput(f&#39;Chrono floating mass for &#34;{bname}&#34;&#39;)</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.main.get_chrono_mass"><code class="name flex">
+<span>def <span class="ident">get_chrono_mass</span></span>(<span>dirout: Union[str, pathlib.Path], bname: str) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Finds the mass of a floating chrono body.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>dirout</code></strong> :&ensp;<code>str</code> or <code>path object</code></dt>
+<dd>The output directory of the simulation.</dd>
+<dt><strong><code>bname</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the body.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>float</code></dt>
+<dd>The mass of the object</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>NotFoundInOutput</code></dt>
+<dd>If the either the chorno section or a chrono body with the
+specified name doesn't exist.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_chrono_mass(dirout: Union[str, pathlib.Path], bname: str) -&gt; float:
+    &#34;&#34;&#34;Finds the mass of a floating chrono body.
+
+    Parameters
+    ----------
+    dirout : str or path object
+        The output directory of the simulation.
+    bname : str
+        The name of the body.
+
+    Returns
+    -------
+    float
+        The mass of the object
+
+    Raises
+    ------
+    NotFoundInOutput
+        If the either the chorno section or a chrono body with the
+        specified name doesn&#39;t exist.
+    &#34;&#34;&#34;
+    FLOATING_RE = re.compile(RE_PATTERNS.FLOATING)
+    PATTERN = r&#34;Mass.........: ({0})&#34;.format(RE_PATTERNS.NUMBER)
+
+    with open(f&#34;{dirout}/Run.out&#34;) as file:
+        found_floating = False
+        for line in file:
+            if not found_floating:
+                res = FLOATING_RE.search(line)
+                if res and res.group(&#34;name&#34;) == bname:
+                    found_floating = True
+                continue
+
+            mass = re.search(PATTERN, line)
+            if mass:
+                return float(mass.groups()[0])
+
+    raise NotFoundInOutput(f&#39;Chrono floating mass for &#34;{bname}&#34;&#39;)</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.main.get_chrono_property"><code class="name flex">
+<span>def <span class="ident">get_chrono_property</span></span>(<span>dirout: Union[str, pathlib.Path], bname: str, pname: str) ‑> Union[float, numpy.ndarray, str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Finds and returns any property for a specified chrono floating body.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>dirout</code></strong> :&ensp;<code>str</code> or <code>path object</code></dt>
+<dd>The output directory of the simulation.</dd>
+<dt><strong><code>bname</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the body.</dd>
+<dt><strong><code>pname</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the property. Should be a property that can be found at
+<code>Body_XXXX "&lt;bname&gt;" -
+type: Floating</code> section of the <code>Run.out</code> file.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>float | np.ndarray | str</code></dt>
+<dd>If the property can be interpreted as a number it will return a <code>float</code>.
+Else if it can be interpreted as an array it will return an <code>numpy.array</code>.
+In any other case it will return the <code>str</code> of the property</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>NotFoundInOutput</code></dt>
+<dd>If the either the chorno section or a chrono body with the specified name
+or property with the specified name doesn't exist.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_chrono_property(
+    dirout: Union[str, pathlib.Path], bname: str, pname: str
+) -&gt; Union[float, np.ndarray, str]:
+    &#34;&#34;&#34;Finds and returns any property for a specified chrono floating body.
+
+    Parameters
+    ----------
+    dirout : str or path object
+        The output directory of the simulation.
+    bname : str
+        The name of the body.
+    pname : str
+        The name of the property. Should be a property that can be found at
+        `Body_XXXX &#34;&lt;bname&gt;&#34; -  type: Floating` section of the `Run.out` file.
+
+    Returns
+    -------
+    float | np.ndarray | str
+        If the property can be interpreted as a number it will return a `float`.
+        Else if it can be interpreted as an array it will return an `numpy.array`.
+        In any other case it will return the `str` of the property
+
+    Raises
+    ------
+    NotFoundInOutput
+        If the either the chorno section or a chrono body with the specified name
+        or property with the specified name doesn&#39;t exist.
+    &#34;&#34;&#34;
+    FLOATING_RE = re.compile(RE_PATTERNS.FLOATING)
+    PATTERN = r&#34;{0}\.*: (.+)&#34;.format(pname)
+    ELEM_PAT = r&#34;\(({0}),({0}),({0})\)&#34;.format(RE_PATTERNS.NUMBER)
+
+    with open(f&#34;{dirout}/Run.out&#34;) as file:
+        found_floating = False
+        for line in file:
+            if not found_floating:
+                res = FLOATING_RE.search(line)
+                if res and res.group(&#34;name&#34;) == bname:
+                    found_floating = True
+                continue
+
+            res = re.search(PATTERN, line)
+            if res:
+                value = res.groups()[0]
+                try:
+                    return float(value)
+
+                except ValueError as e:
+                    if value[0] == &#34;(&#34;:
+                        elems = re.search(ELEM_PAT, value)
+                        elems = elems.groups()
+                        return np.array([float(i) for i in elems])
+
+                    return value
+
+    raise NotFoundInOutput(f&#39;Property &#34;{pname}&#34; for chrono body &#34;{bname}&#34;&#39;)</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.main.get_dp"><code class="name flex">
+<span>def <span class="ident">get_dp</span></span>(<span>dirout: Union[str, pathlib.Path]) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets the inital particle distance of the simulation, aka <code>Dp</code>.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>dirout</code></strong> :&ensp;<code>str, path object</code> or <code>file-like object</code></dt>
+<dd>The output directory of the simulation.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>float</code></dt>
+<dd>The value of <code>Dp</code>.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>NotFoundInOutput</code></dt>
+<dd>If <code>Dp</code> is not pressent in <code>Run.out</code>.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_dp(dirout: Union[str, pathlib.Path]) -&gt; float:
+    &#34;&#34;&#34;Gets the inital particle distance of the simulation, aka `Dp`.
+
+    Parameters
+    ----------
+    dirout : str, path object or file-like object
+        The output directory of the simulation.
+
+    Returns
+    -------
+    float
+        The value of `Dp`.
+
+    Raises
+    ------
+    NotFoundInOutput
+        If `Dp` is not pressent in `Run.out`.
+    &#34;&#34;&#34;
+    try:
+        stream = read_and_fix_csv(dirout)
+        df = pd.read_csv(stream, sep=&#34;;&#34;)
+        return df[&#34;Dp&#34;][0]
+
+    except FileNotFoundError:
+        with open(f&#34;{dirout}/Run.out&#34;) as file:
+            for line in file:
+                pattern = r&#34;Dp=({0})&#34;.format(RE_PATTERNS.NUMBER)
+                number = re.match(pattern, line)
+                if number:
+                    return float(number.groups()[0])
+
+        raise NotFoundInOutput(&#34;Variable `Dp`&#34;)</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.main.get_usr_def_var"><code class="name flex">
+<span>def <span class="ident">get_usr_def_var</span></span>(<span>dirout: Union[str, pathlib.Path], var: str, dtype: Callable[[str], ~_R] = builtins.float) ‑> ~_R</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Finds and parses the value of any user defined variable from the simulation output.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>dirout</code></strong> :&ensp;<code>str, path object</code> or <code>file-like object</code></dt>
+<dd>The output directory of the simulation.</dd>
+<dt><strong><code>var</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the user defined variable.</dd>
+<dt><strong><code>dtype</code></strong> :&ensp;<code>Callable[[str], RType]</code>, optional</dt>
+<dd>The return type of the function. The return type will be the same as the
+return type of the callable passed. The callable should accept a string as
+the input. E.g. if <code>int</code> is used the return type will be in <code>int</code>. By default <code>float</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>RType</code></dt>
+<dd>The value of the variable, By default <code>float</code>.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>NotFoundInOutput</code></dt>
+<dd>If the user defined variable is not pressent in <code>Run.out</code>.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_usr_def_var(
+    dirout: Union[str, pathlib.Path], var: str, dtype: Callable[[str], _R] = float
+) -&gt; _R:
+    &#34;&#34;&#34;Finds and parses the value of any user defined variable from the simulation output.
+
+    Parameters
+    ----------
+    dirout : str, path object or file-like object
+        The output directory of the simulation.
+    var : str
+        The name of the user defined variable.
+    dtype : Callable[[str], RType], optional
+        The return type of the function. The return type will be the same as the
+        return type of the callable passed. The callable should accept a string as
+        the input. E.g. if `int` is used the return type will be in `int`. By default `float`.
+
+    Returns
+    -------
+    RType
+        The value of the variable, By default `float`.
+
+    Raises
+    ------
+    NotFoundInOutput
+        If the user defined variable is not pressent in `Run.out`.
+    &#34;&#34;&#34;
+    with open(f&#34;{dirout}/Run.out&#34;) as file:
+        for line in file:
+            if not line.startswith(&#34;XML-Vars (uservars + ctes)&#34;):
+                continue
+
+            pattern = r&#34;{0}=\[({1})\]&#34;.format(var, RE_PATTERNS.NUMBER)
+            mass = re.search(pattern, line)
+            if mass:
+                return dtype(mass.groups()[0])
+
+    raise NotFoundInOutput(f&#34;User defined variable `{var}`&#34;)</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.main.get_var"><code class="name flex">
+<span>def <span class="ident">get_var</span></span>(<span>dirout: Union[str, pathlib.Path], var: str, dtype: Callable[[str], ~_R] = builtins.str) ‑> ~_R</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets any variable that is defined in <code>Run.csv</code> or <code>Run.out</code> files.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>dirout</code></strong> :&ensp;<code>str, path object</code> or <code>file-like object</code></dt>
+<dd>The output directory of the simulation.</dd>
+<dt><strong><code>var</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the varible in <code>Run.csv</code> or <code>Run.out</code>.</dd>
+<dt><strong><code>dtype</code></strong> :&ensp;<code>Callable[[str], R]</code>, optional</dt>
+<dd>The return type of the function. The return type will be the same as the
+return type of the callable passed. The callable should accept a string as
+the input. E.g. if <code>int</code> is used the return type will be in <code>int</code>. By default <code>str</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dtype</code></dt>
+<dd>The value of the variable, By default <code>str</code>.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>NotFoundInOutput</code></dt>
+<dd>If <code>Dp</code> is not pressent in <code>Run.out</code>.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_var(
+    dirout: Union[str, pathlib.Path], var: str, dtype: Callable[[str], _R] = str
+) -&gt; _R:
+    &#34;&#34;&#34;Gets any variable that is defined in `Run.csv` or `Run.out` files.
+
+    Parameters
+    ----------
+    dirout : str, path object or file-like object
+        The output directory of the simulation.
+    var: str
+        The name of the varible in `Run.csv` or `Run.out`.
+    dtype : Callable[[str], R], optional
+        The return type of the function. The return type will be the same as the
+        return type of the callable passed. The callable should accept a string as
+        the input. E.g. if `int` is used the return type will be in `int`. By default `str`.
+
+    Returns
+    -------
+    dtype
+        The value of the variable, By default `str`.
+
+    Raises
+    ------
+    NotFoundInOutput
+        If `Dp` is not pressent in `Run.out`.
+    &#34;&#34;&#34;
+    try:
+        stream = read_and_fix_csv(dirout)
+        df = pd.read_csv(stream, sep=&#34;;&#34;)
+        return dtype(df[var][0])
+
+    except FileNotFoundError:
+        with open(f&#34;{dirout}/Run.out&#34;) as file:
+            for line in file:
+                pattern = r&#34;{0}=\[({1})\]&#34;.format(var, RE_PATTERNS.NUMBER)
+                number = re.match(pattern, line)
+                if number:
+                    return dtype(number.groups()[0])</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.main.read_and_fix_csv"><code class="name flex">
+<span>def <span class="ident">read_and_fix_csv</span></span>(<span>dirout: Union[str, pathlib.Path]) ‑> _io.StringIO</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fixed the bug with the csv where if shifting is present in the <code>Run.csv</code> it has key that are
+<code>;</code> separated, e.g. Shifting(<em>txt</em>;<em>num</em>;<em>num</em>;<em>txt</em>). This causes a parsing bug with <code>pandas.read_csv</code>
+(any csv parser really). This function reads the data in fixes the bug in memory.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>dirout</code></strong> :&ensp;<code>str</code> or <code>path object</code></dt>
+<dd>The output directory of the simulation.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>io.StringIO</code></dt>
+<dd>The corrected IO object to be used instead of the file.</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; stream = read_and_fix_csv(dirout=&quot;.&quot;)
+&gt;&gt;&gt; df = pd.read_csv(stream, sep=&quot;;&quot;)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_and_fix_csv(dirout: Union[str, pathlib.Path]) -&gt; io.StringIO:
+    &#34;&#34;&#34;Fixed the bug with the csv where if shifting is present in the `Run.csv` it has key that are
+    `;` separated, e.g. Shifting(_txt_;_num_;_num_;_txt_). This causes a parsing bug with `pandas.read_csv`
+    (any csv parser really). This function reads the data in fixes the bug in memory.
+
+    Parameters
+    ----------
+    dirout : str or path object
+        The output directory of the simulation.
+
+    Returns
+    -------
+    io.StringIO
+        The corrected IO object to be used instead of the file.
+
+    Examples
+    --------
+    &gt;&gt;&gt; stream = read_and_fix_csv(dirout=&#34;.&#34;)
+    &gt;&gt;&gt; df = pd.read_csv(stream, sep=&#34;;&#34;)
+    &#34;&#34;&#34;
+    with open(f&#34;{dirout}/Run.csv&#34;) as file:
+        ORIG_RE = r&#34;Shifting\((\w*);({0});({0});(\w*)\)&#34;.format(RE_PATTERNS.NUMBER)
+        REPL_RE = r&#34;Shifting(\1:\2:\3:\4)&#34;
+        txt = file.read()
+        txt = re.sub(ORIG_RE, REPL_RE, txt)
+        return io.StringIO(txt)</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.main.run_measuretool"><code class="name flex">
+<span>def <span class="ident">run_measuretool</span></span>(<span>dirin: str, *, first_file: int = None, last_file: int = None, file_nums: List[int] = None, dirout: str = None, savecsv: str = 'Measure', saveascii: str = None, savevtk: str = None, csvsep: bool = None, onlypos: Dict[str, Tuple[float, float, float]] = None, onlymk: int = None, onlyid: int = None, include_types: List[str] = None, exclude_types: List[str] = None, points_file=None, pt_list: numpy.ndarray = None, ptls_list: numpy.ndarray = None, ptels_list: numpy.ndarray = None, elevations: Union[bool, float] = None, enable_hvars: List[str] = None, disable_hvars: List[str] = None, enable_vars: List[str] = None, disable_vars: List[str] = None, binpath: str = None, options: str = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A python wrapper of "measuretool" of DualSPHysics.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>dirin</code></strong> :&ensp;<code>str</code></dt>
+<dd>Indicates the directory with particle data.</dd>
+<dt><strong><code>first_file</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Indicates the first file to be computed. By default None</dd>
+<dt><strong><code>last_file</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Indicates the last file to be computed. By default None</dd>
+<dt><strong><code>file_nums</code></strong> :&ensp;<code>List[int]</code>, optional</dt>
+<dd>Indicates the number of files to be processed. By default None</dd>
+<dt><strong><code>dirout</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>The directory of the output of measuretool. By default None</dd>
+<dt><strong><code>savecsv</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Generates one CSV file with the time history of the obtained values.
+By default "Measure"</dd>
+<dt><strong><code>saveascii</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Generates one ASCII file without headers with the time history of the
+obtained values. By default None</dd>
+<dt><strong><code>savevtk</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Generates VTK(polydata) file with the given interpolation points.
+By default None</dd>
+<dt><strong><code>csvsep</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Separator character in CSV files (0=semicolon, 1=coma)
+(value by default is read from DsphConfig.xml or 0). By default None</dd>
+<dt><strong><code>onlypos</code></strong> :&ensp;<code>Dict[str, Tuple[float, float, float]]</code>, optional</dt>
+<dd>Indicates limits of particles. By default None</dd>
+<dt><strong><code>onlymk</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Indicates the mk of selected particles. By default None</dd>
+<dt><strong><code>onlyid</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Indicates the id of selected particles. By default None</dd>
+<dt><strong><code>include_types</code></strong> :&ensp;<code>List[str]</code>, optional</dt>
+<dd>Indicates the type of selected particles to be included. Accepted values:
+"all", "bound", "fixed", "moving", "floating", "fluid". By default "all"</dd>
+<dt><strong><code>exclude_types</code></strong> :&ensp;<code>List[str]</code>, optional</dt>
+<dd>Indicates the type of selected particles to be excluded. Accepted values:
+"all", "bound", "fixed", "moving", "floating", "fluid". By default None</dd>
+<dt><strong><code>points_file</code></strong> :&ensp;<code>_type_</code>, optional</dt>
+<dd>Defines the points where interpolated data will be computed (each value
+separated by space or a new line). By default None</dd>
+<dt><strong><code>pt_list</code></strong> :&ensp;<code>np.ndarray</code>, optional</dt>
+<dd>A list of points to where interpolated data will be computed. The shape
+of the array should be (n, 3) or should be a valid array for the numpy
+function <code>numpy.reshape((-1, 3))</code> to be used.
+By default None</dd>
+<dt><strong><code>ptls_list</code></strong> :&ensp;<code>np.ndarray</code>, optional</dt>
+<dd>A list of "POINTSLIST" in the format:
+[[<x0>,<dx>:<nx>],
+[<y0>:<dy>:<ny>],
+[<z0>:<dz>:<nz>]].
+The shape of the array should be (n, 3, 3) or should be a valid array for
+the numpy function <code>numpy.reshape((-1, 3, 3))</code> to be used.
+By default None By default None</dd>
+<dt><strong><code>ptels_list</code></strong> :&ensp;<code>np.ndarray</code>, optional</dt>
+<dd>A list of "POINTSENDLIST" in the format:
+[[<x0>,<dx>:<nx>],
+[<y0>:<dy>:<ny>],
+[<z0>:<dz>:<nz>]].
+The shape of the array should be (n, 3, 3) or should be a valid array for
+the numpy function <code>numpy.reshape((-1, 3, 3))</code> to be used.
+By default None By default None</dd>
+<dt><strong><code>elevations</code></strong> :&ensp;<code>Union[bool, float]</code>, optional</dt>
+<dd>Fluid elevation is calculated starting from mass values for each point
+x,y. The reference mass to obtain the elevation is calculated according
+to the mass values of the selected particles. By default 0.5 in 3D (half
+the mass) and 0.4 in 2D.</dd>
+<dt><strong><code>enable_hvars</code></strong> :&ensp;<code>List[str]</code>, optional</dt>
+<dd>Enable height values to be computed. By default None</dd>
+<dt><strong><code>disable_hvars</code></strong> :&ensp;<code>List[str]</code>, optional</dt>
+<dd>Disable height values to be computed. By default "All"</dd>
+<dt><strong><code>enable_vars</code></strong> :&ensp;<code>List[str]</code>, optional</dt>
+<dd>Enable the variables or magnitudes that are going to be computed as an
+interpolation of the selected particles around a given position. By
+default vel,rhop or empty when elevation/tke calculation is enabled.</dd>
+<dt><strong><code>disable_vars</code></strong> :&ensp;<code>List[str]</code>, optional</dt>
+<dd>Enable the variables or magnitudes that are going to be computed as an
+interpolation of the selected particles around a given position.</dd>
+<dt><strong><code>binpath</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>The path of the binary folder of DualSPHysics. If not defined the an
+environment variable "DUALSPH_HOME" must be defined. By default None.</dd>
+<dt><strong><code>options</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>A string of the command line option to be pass. If this argument is pass
+all other arguments are ignored. By default None.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>Exception</code></dt>
+<dd>If a binary path is not passed and an environment variable "DUALSPH_HOME"
+doesn't exist.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def run_measuretool(
+    dirin: str,
+    *,
+    first_file: int = None,
+    last_file: int = None,
+    file_nums: List[int] = None,
+    dirout: str = None,
+    savecsv: str = &#34;Measure&#34;,
+    saveascii: str = None,
+    savevtk: str = None,
+    csvsep: bool = None,
+    onlypos: Dict[str, Tuple[float, float, float]] = None,
+    onlymk: int = None,
+    onlyid: int = None,
+    include_types: List[str] = None,
+    exclude_types: List[str] = None,
+    points_file=None,
+    pt_list: np.ndarray = None,
+    ptls_list: np.ndarray = None,
+    ptels_list: np.ndarray = None,
+    elevations: Union[bool, float] = None,
+    enable_hvars: List[str] = None,
+    disable_hvars: List[str] = None,
+    enable_vars: List[str] = None,
+    disable_vars: List[str] = None,
+    binpath: str = None,
+    options: str = None,
+) -&gt; None:
+    &#34;&#34;&#34;A python wrapper of &#34;measuretool&#34; of DualSPHysics.
+
+    Parameters
+    ----------
+    dirin : str
+        Indicates the directory with particle data.
+    first_file : int, optional
+        Indicates the first file to be computed. By default None
+    last_file : int, optional
+        Indicates the last file to be computed. By default None
+    file_nums : List[int], optional
+        Indicates the number of files to be processed. By default None
+    dirout : str, optional
+        The directory of the output of measuretool. By default None
+    savecsv : str, optional
+        Generates one CSV file with the time history of the obtained values.
+        By default &#34;Measure&#34;
+    saveascii : str, optional
+        Generates one ASCII file without headers with the time history of the
+        obtained values. By default None
+    savevtk : str, optional
+        Generates VTK(polydata) file with the given interpolation points.
+        By default None
+    csvsep : bool, optional
+        Separator character in CSV files (0=semicolon, 1=coma)
+        (value by default is read from DsphConfig.xml or 0). By default None
+    onlypos : Dict[str, Tuple[float, float, float]], optional
+        Indicates limits of particles. By default None
+    onlymk : int, optional
+        Indicates the mk of selected particles. By default None
+    onlyid : int, optional
+        Indicates the id of selected particles. By default None
+    include_types : List[str], optional
+        Indicates the type of selected particles to be included. Accepted values:
+        &#34;all&#34;, &#34;bound&#34;, &#34;fixed&#34;, &#34;moving&#34;, &#34;floating&#34;, &#34;fluid&#34;. By default &#34;all&#34;
+    exclude_types : List[str], optional
+        Indicates the type of selected particles to be excluded. Accepted values:
+        &#34;all&#34;, &#34;bound&#34;, &#34;fixed&#34;, &#34;moving&#34;, &#34;floating&#34;, &#34;fluid&#34;. By default None
+    points_file : _type_, optional
+        Defines the points where interpolated data will be computed (each value
+        separated by space or a new line). By default None
+    pt_list : np.ndarray, optional
+        A list of points to where interpolated data will be computed. The shape
+        of the array should be (n, 3) or should be a valid array for the numpy
+        function `numpy.reshape((-1, 3))` to be used.  By default None
+    ptls_list : np.ndarray, optional
+        A list of &#34;POINTSLIST&#34; in the format:
+        [[&lt;x0&gt;,&lt;dx&gt;:&lt;nx&gt;],
+         [&lt;y0&gt;:&lt;dy&gt;:&lt;ny&gt;],
+         [&lt;z0&gt;:&lt;dz&gt;:&lt;nz&gt;]].
+        The shape of the array should be (n, 3, 3) or should be a valid array for
+        the numpy function `numpy.reshape((-1, 3, 3))` to be used.
+        By default None By default None
+    ptels_list : np.ndarray, optional
+        A list of &#34;POINTSENDLIST&#34; in the format:
+        [[&lt;x0&gt;,&lt;dx&gt;:&lt;nx&gt;],
+         [&lt;y0&gt;:&lt;dy&gt;:&lt;ny&gt;],
+         [&lt;z0&gt;:&lt;dz&gt;:&lt;nz&gt;]].
+        The shape of the array should be (n, 3, 3) or should be a valid array for
+        the numpy function `numpy.reshape((-1, 3, 3))` to be used.
+        By default None By default None
+    elevations : Union[bool, float], optional
+        Fluid elevation is calculated starting from mass values for each point
+        x,y. The reference mass to obtain the elevation is calculated according
+        to the mass values of the selected particles. By default 0.5 in 3D (half
+        the mass) and 0.4 in 2D.
+    enable_hvars : List[str], optional
+        Enable height values to be computed. By default None
+    disable_hvars : List[str], optional
+        Disable height values to be computed. By default &#34;All&#34;
+    enable_vars : List[str], optional
+        Enable the variables or magnitudes that are going to be computed as an
+        interpolation of the selected particles around a given position. By
+        default vel,rhop or empty when elevation/tke calculation is enabled.
+    disable_vars : List[str], optional
+        Enable the variables or magnitudes that are going to be computed as an
+        interpolation of the selected particles around a given position.
+    binpath : str, optional
+        The path of the binary folder of DualSPHysics. If not defined the an
+        environment variable &#34;DUALSPH_HOME&#34; must be defined. By default None.
+    options : str, optional
+        A string of the command line option to be pass. If this argument is pass
+        all other arguments are ignored. By default None.
+
+    Raises
+    ------
+    Exception
+        If a binary path is not passed and an environment variable &#34;DUALSPH_HOME&#34;
+        doesn&#39;t exist.
+    &#34;&#34;&#34;
+    if binpath is None and &#34;DUALSPH_HOME&#34; not in os.environ:
+        err_msg = (
+            &#39;&#34;DUALSPH_HOME&#34; environment variable not specified &#39;
+            + &#34;and `binpath` not specified. Please specify one of them.&#34;
+        )
+        raise Exception(err_msg)
+
+    if binpath is None:
+        binpath = f&#34;{os.environ[&#39;DUALSPH_HOME&#39;]}/bin&#34;
+
+    plat = platform.system()
+    if plat == &#34;Linux&#34;:
+        dirbin = f&#34;{binpath}/linux&#34;
+        binary = f&#34;{dirbin}/MeasureTool_linux64&#34;
+    elif plat == &#34;Windows&#34;:
+        dirbin = f&#34;{binpath}/windows&#34;
+        binary = f&#34;{dirbin}/MeasureTool_win64&#34;
+
+    # If `options are specified run use those.
+    if options is not None:
+        subprocess.run([binary, *options.split(&#34; &#34;)])
+        return
+
+    if dirout is None:
+        dirout = f&#34;{dirin}/measuretool&#34;
+
+    opts = [&#34;-dirin&#34;, f&#34;{dirin}/data&#34;]
+    types = []
+    vars = []
+    hvars = []
+    pointsdef = None
+
+    # Input options
+    if first_file is not None:
+        opts.append(f&#34;-first:{first_file}&#34;)
+
+    if last_file is not None:
+        opts.append(f&#34;-last:{last_file}&#34;)
+
+    if file_nums is not None:
+        files_to_str = &#34;,&#34;.join(map(str, file_nums))
+        opts.append(f&#34;-files:{files_to_str}&#34;)
+
+    # Save options
+    if savecsv is not None:
+        opts.extend((&#34;-savecsv&#34;, f&#34;{dirout}/{savecsv}&#34;))
+
+    if savevtk is not None:
+        opts.extend((&#34;-savevtk&#34;, f&#34;{dirout}/{savevtk}&#34;))
+
+    if saveascii is not None:
+        opts.extend((&#34;-saveascii&#34;, f&#34;{dirout}/{saveascii}&#34;))
+
+    if csvsep is not None:
+        opts.append(f&#34;-csvsep:{int(savecsv)}&#34;)
+
+    # Point definitions options
+    if pt_list is not None:
+        pointsdef = &#34;-pointsdef:&#34;
+        points_array = np.array(pt_list)
+        if points_array.ndim != 2:
+            points_array = points_array.reshape((-1, 3))
+        tmp_iter = (&#34;:&#34;.join(map(str, point)) for point in points_array)
+        pointsdef += &#34;pt=&#34; + &#34;,pt=&#34;.join(tmp_iter)
+
+    if ptls_list is not None:
+        if pointsdef is None:
+            pointsdef = &#34;-pointsdef:&#34;
+        else:
+            pointsdef += &#34;,&#34;
+        grid_array = np.array(ptls_list)
+        if grid_array.ndim != 3:
+            grid_array = grid_array.reshape((-1, 3, 3))
+
+        array_to_str_list = []
+        for grid in grid_array:
+            array_to_str = &#34;ptls[&#34;
+            for a, prefix in zip(grid, (&#34;x=&#34;, &#34;,y=&#34;, &#34;,z=&#34;)):
+                array_to_str += prefix + &#34;:&#34;.join(map(str, a))
+            array_to_str += &#34;]&#34;
+            array_to_str_list.append(array_to_str)
+        pointsdef += &#34;,&#34;.join(array_to_str_list)
+
+    if ptels_list is not None:
+        if pointsdef is None:
+            pointsdef = &#34;-pointsdef:&#34;
+        else:
+            pointsdef += &#34;,&#34;
+        grid_array = np.array(ptels_list)
+        if grid_array.ndim != 3:
+            grid_array = grid_array.reshape((-1, 3, 3))
+
+        array_to_str_list = []
+        for grid in grid_array:
+            array_to_str = &#34;ptels[&#34;
+            for a, prefix in zip(grid, (&#34;x=&#34;, &#34;,y=&#34;, &#34;,z=&#34;)):
+                array_to_str += prefix + &#34;:&#34;.join(map(str, a))
+            array_to_str += &#34;]&#34;
+            array_to_str_list.append(array_to_str)
+        pointsdef += &#34;,&#34;.join(array_to_str_list)
+
+    if pointsdef is not None:
+        opts.append(pointsdef)
+
+    if points_file is not None:
+        opts.extend((&#34;-points&#34;, points_file))
+
+    # Filter options
+    if onlymk is not None:
+        opts.append(f&#34;-onlymk:{onlymk}&#34;)
+
+    if onlyid is not None:
+        opts.append(f&#34;-onlyid:{onlyid}&#34;)
+
+    if onlypos is not None:
+        pts_to_str = (
+            &#34;-onlypos:&#34;
+            + &#34;:&#34;.join(map(str, onlypos[&#34;min&#34;]))
+            + &#34;:&#34;
+            + &#34;:&#34;.join(map(str, onlypos[&#34;max&#34;]))
+        )
+        opts.append(pts_to_str)
+
+    if exclude_types is not None:
+        types.extend((f&#34;-{t}&#34; for t in exclude_types))
+
+    if include_types is not None:
+        types.extend((f&#34;+{t}&#34; for t in include_types))
+
+    if types:
+        types_to_str = &#34;-onlytype:&#34; + &#34;,&#34;.join(types)
+        opts.append(types_to_str)
+
+    # Calculations variables options
+    if elevations:
+        tmp = &#34;-elevation&#34;
+        if isinstance(elevations, (float, int)):
+            tmp += f&#34;:{elevations}&#34;
+        opts.append(tmp)
+        opts.append(&#34;-elevationoutput:all&#34;)
+
+    if disable_vars is not None:
+        vars.extend((f&#34;-{t}&#34; for t in disable_vars))
+
+    if enable_vars is not None:
+        vars.extend((f&#34;+{t}&#34; for t in enable_vars))
+
+    if vars:
+        vars_to_str = &#34;-vars:&#34; + &#34;,&#34;.join(vars)
+        opts.append(vars_to_str)
+
+    if disable_hvars is not None:
+        hvars.extend((f&#34;-{t}&#34; for t in disable_hvars))
+
+    if enable_hvars is not None:
+        hvars.extend((f&#34;+{t}&#34; for t in enable_hvars))
+
+    if hvars:
+        hvars_to_str = &#34;-hvars:&#34; + &#34;,&#34;.join(hvars)
+        opts.append(hvars_to_str)
+
+    subprocess.run([binary, *opts])</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.main.xml_get_or_create_subelement"><code class="name flex">
+<span>def <span class="ident">xml_get_or_create_subelement</span></span>(<span>parent_elem, child: str)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def xml_get_or_create_subelement(parent_elem, child: str):
+    child_elem = parent_elem.find(child)
+    if child_elem is None:
+        child_elem = ET.SubElement(parent_elem, child)
+
+    return child_elem</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="pydsphtools.main.RE_PATTERNS"><code class="flex name class">
+<span>class <span class="ident">RE_PATTERNS</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Just constant class to store useful regex. Will move into a file if it grows too large.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class RE_PATTERNS:
+    &#34;&#34;&#34;Just constant class to store useful regex. Will move into a file if it grows too large.&#34;&#34;&#34;
+
+    # pattern to capture any number (eg 1.23, -1523, -12.3e-45)
+    NUMBER = r&#34;[\-\+]?\d+\.?\d*[Ee]?[\+\-]?\d*&#34;
+    # Pattern to captures the chrono floating section of the output. Returns the
+    # &#34;ID&#34; and &#34;name&#34; of the chorno object floating
+    FLOATING = r&#34;Body_(?P&lt;ID&gt;\d+) \&#34;(?P&lt;name&gt;\w*)\&#34; -  type: Floating&#34;</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="pydsphtools.main.RE_PATTERNS.FLOATING"><code class="name">var <span class="ident">FLOATING</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pydsphtools.main.RE_PATTERNS.NUMBER"><code class="name">var <span class="ident">NUMBER</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pydsphtools" href="index.html">pydsphtools</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="pydsphtools.main.get_chrono_inertia" href="#pydsphtools.main.get_chrono_inertia">get_chrono_inertia</a></code></li>
+<li><code><a title="pydsphtools.main.get_chrono_mass" href="#pydsphtools.main.get_chrono_mass">get_chrono_mass</a></code></li>
+<li><code><a title="pydsphtools.main.get_chrono_property" href="#pydsphtools.main.get_chrono_property">get_chrono_property</a></code></li>
+<li><code><a title="pydsphtools.main.get_dp" href="#pydsphtools.main.get_dp">get_dp</a></code></li>
+<li><code><a title="pydsphtools.main.get_usr_def_var" href="#pydsphtools.main.get_usr_def_var">get_usr_def_var</a></code></li>
+<li><code><a title="pydsphtools.main.get_var" href="#pydsphtools.main.get_var">get_var</a></code></li>
+<li><code><a title="pydsphtools.main.read_and_fix_csv" href="#pydsphtools.main.read_and_fix_csv">read_and_fix_csv</a></code></li>
+<li><code><a title="pydsphtools.main.run_measuretool" href="#pydsphtools.main.run_measuretool">run_measuretool</a></code></li>
+<li><code><a title="pydsphtools.main.xml_get_or_create_subelement" href="#pydsphtools.main.xml_get_or_create_subelement">xml_get_or_create_subelement</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pydsphtools.main.RE_PATTERNS" href="#pydsphtools.main.RE_PATTERNS">RE_PATTERNS</a></code></h4>
+<ul class="">
+<li><code><a title="pydsphtools.main.RE_PATTERNS.FLOATING" href="#pydsphtools.main.RE_PATTERNS.FLOATING">FLOATING</a></code></li>
+<li><code><a title="pydsphtools.main.RE_PATTERNS.NUMBER" href="#pydsphtools.main.RE_PATTERNS.NUMBER">NUMBER</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

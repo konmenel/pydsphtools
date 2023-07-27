@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="pydsphtools",
-    version="0.1",
+    version="1.0",
     description="Useful functions for post processing DualSPHysics cases",
     author="Constantinos Menelaou",
     license='GNU',
