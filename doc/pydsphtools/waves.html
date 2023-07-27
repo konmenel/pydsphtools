@@ -36,9 +36,9 @@ GNU General Public License for more details.</p>
 <p>You should have received a copy of the GNU General Public License
 along with this program.
 If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.</p>
-<p>@author: Constantinos Menelaou
-@github: <a href="https://github.com/konmenel">https://github.com/konmenel</a>
-@year: 2023</p>
+<p>Author: Constantinos Menelaou<br>
+Github: <a href="https://github.com/konmenel">https://github.com/konmenel</a><br>
+Year: 2023</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -58,9 +58,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
 
-@author: Constantinos Menelaou
-@github: https://github.com/konmenel
-@year: 2023
+Author: Constantinos Menelaou  
+Github: https://github.com/konmenel  
+Year: 2023  
 &#34;&#34;&#34;
 from .__imports__ import *
 from .__main__ import *
@@ -92,7 +92,7 @@ def find_wavenumber(
     The dispersion equation:
 
     .. math:: 
-        \\omega^2 = gk*\\tanh(kh)
+      \\omega^2 = gk*\\tanh(kh)
     &#34;&#34;&#34;
 
     def _func(wavenumber, omega, depth):
@@ -159,12 +159,12 @@ def ricker_spectrum(
     The spectrum is calculated using the equation:
 
     .. math::
-        A_r \\sqrt{T} (1 - \\alpha(\\omega_m T - 1)) e^{-\\omega^m T}
+      A_r \\sqrt{T} (1 - \\alpha(\\omega_m T - 1)) e^{-\\omega^m T}
 
     The peak frequency is given by:
 
     .. math::
-        \\omega_p = \\left( \\frac{1 + 2\\alpha}{\\alpha T} \\right)^\\frac{1}{m} 
+      \\omega_p = \\left( \\frac{1 + 2\\alpha}{\\alpha T} \\right)^\\frac{1}{m} 
     &#34;&#34;&#34;
     return Ar * np.sqrt(T) * np.exp(-(omega**m) * T) * (1 - a * (omega**m * T - 1))
 
@@ -196,7 +196,7 @@ def ricker_spectrum_simple(
     The spectrum is calculated using the equation:
 
     .. math::
-        \\frac{2}{\\sqrt{\\pi}} \\frac{\\omega^2}{\\omega_p^3} e^\\frac{-\\omega^2}{\\omega_p^2}
+      \\frac{2}{\\sqrt{\\pi}} \\frac{\\omega^2}{\\omega_p^3} e^\\frac{-\\omega^2}{\\omega_p^2}
     &#34;&#34;&#34;
     SQRT_PI = 1.7724538509055159
     omega2 = omega**2
@@ -267,12 +267,12 @@ def wavemaker_transfer_func(
     For piston type wavemaker:
 
     .. math::
-        \\left( \\frac{H}{S} \\right)_{piston} = \\frac{2[\\cosh(2kh) - 1]}{2kh + \\sinh(2kh)}
+      \\left( \\frac{H}{S} \\right)_{piston} = \\frac{2[\\cosh(2kh) - 1]}{2kh + \\sinh(2kh)}
 
     For flap type wavemaker:
 
     .. math::
-        \\left( \\frac{H}{S} \\right)_{flap} = 4\\frac{\\sinh(kh)}{kd}\\frac{\\cosh[k(h - d)] + kd\\sinh(kh) - \\cosh(kh)}{2kh + \\sinh(2kh)}
+      \\left( \\frac{H}{S} \\right)_{flap} = 4\\frac{\\sinh(kh)}{kd}\\frac{\\cosh[k(h - d)] + kd\\sinh(kh) - \\cosh(kh)}{2kh + \\sinh(2kh)}
 
     where \\( k \\) is the wavenumber, \\( h \\) is the depth and \\( d \\) is the hinge.
     &#34;&#34;&#34;
@@ -522,7 +522,7 @@ with the solution for each element of the angular frequency array.</dd>
     The dispersion equation:
 
     .. math:: 
-        \\omega^2 = gk*\\tanh(kh)
+      \\omega^2 = gk*\\tanh(kh)
     &#34;&#34;&#34;
 
     def _func(wavenumber, omega, depth):
@@ -769,12 +769,12 @@ The peak frequency is given by:</p>
     The spectrum is calculated using the equation:
 
     .. math::
-        A_r \\sqrt{T} (1 - \\alpha(\\omega_m T - 1)) e^{-\\omega^m T}
+      A_r \\sqrt{T} (1 - \\alpha(\\omega_m T - 1)) e^{-\\omega^m T}
 
     The peak frequency is given by:
 
     .. math::
-        \\omega_p = \\left( \\frac{1 + 2\\alpha}{\\alpha T} \\right)^\\frac{1}{m} 
+      \\omega_p = \\left( \\frac{1 + 2\\alpha}{\\alpha T} \\right)^\\frac{1}{m} 
     &#34;&#34;&#34;
     return Ar * np.sqrt(T) * np.exp(-(omega**m) * T) * (1 - a * (omega**m * T - 1))</code></pre>
 </details>
@@ -835,7 +835,7 @@ the generalized ricker, <code><a title="pydsphtools.waves.ricker_spectrum" href=
     The spectrum is calculated using the equation:
 
     .. math::
-        \\frac{2}{\\sqrt{\\pi}} \\frac{\\omega^2}{\\omega_p^3} e^\\frac{-\\omega^2}{\\omega_p^2}
+      \\frac{2}{\\sqrt{\\pi}} \\frac{\\omega^2}{\\omega_p^3} e^\\frac{-\\omega^2}{\\omega_p^2}
     &#34;&#34;&#34;
     SQRT_PI = 1.7724538509055159
     omega2 = omega**2
@@ -970,12 +970,12 @@ where <span><span class="MathJax_Preview"> k </span><script type="math/tex"> k <
     For piston type wavemaker:
 
     .. math::
-        \\left( \\frac{H}{S} \\right)_{piston} = \\frac{2[\\cosh(2kh) - 1]}{2kh + \\sinh(2kh)}
+      \\left( \\frac{H}{S} \\right)_{piston} = \\frac{2[\\cosh(2kh) - 1]}{2kh + \\sinh(2kh)}
 
     For flap type wavemaker:
 
     .. math::
-        \\left( \\frac{H}{S} \\right)_{flap} = 4\\frac{\\sinh(kh)}{kd}\\frac{\\cosh[k(h - d)] + kd\\sinh(kh) - \\cosh(kh)}{2kh + \\sinh(2kh)}
+      \\left( \\frac{H}{S} \\right)_{flap} = 4\\frac{\\sinh(kh)}{kd}\\frac{\\cosh[k(h - d)] + kd\\sinh(kh) - \\cosh(kh)}{2kh + \\sinh(2kh)}
 
     where \\( k \\) is the wavenumber, \\( h \\) is the depth and \\( d \\) is the hinge.
     &#34;&#34;&#34;

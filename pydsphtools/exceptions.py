@@ -13,9 +13,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-@author: Constantinos Menelaou
-@github: https://github.com/konmenel
-@year: 2023
+Author: Constantinos Menelaou  
+Github: https://github.com/konmenel  
+Year: 2023  
 """
 class NotFoundInOutput(Exception):
     """Raised when a variable is not found in the output file.
