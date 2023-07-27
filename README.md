@@ -6,6 +6,7 @@ Some functions I often re-use for DualSPHysics cases. I am slowly adding functio
 - Numpy
 - Pandas
 - Scipy
+- lxml
 
 # Installation
 ## Download the package

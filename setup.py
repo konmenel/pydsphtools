@@ -6,7 +6,7 @@ setuptools.setup(
     description="Useful functions for post processing DualSPHysics cases",
     author="Constantinos Menelaou",
     license='GNU',
-    install_requires=["pandas", "numpy"],
+    install_requires=["pandas", "numpy", "scipy", "lxml"],
     packages=setuptools.find_packages(),
     zip_safe=False,
 )
