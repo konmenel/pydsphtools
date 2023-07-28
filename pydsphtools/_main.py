@@ -17,7 +17,7 @@ Author: Constantinos Menelaou
 Github: https://github.com/konmenel  
 Year: 2023  
 """
-from .__imports__ import *
+from ._imports import *
 
 from .exceptions import NotFoundInOutput
 

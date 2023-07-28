@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>pydsphtools.stats API documentation</title>
-<meta name="description" content="Copyright (C) 2023 Constantinos Menelaou &lt;https://github.com/konmenel&gt; …" />
+<meta name="description" content="Some module with basic statistics functions …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -23,19 +23,12 @@
 <h1 class="title">Module <code>pydsphtools.stats</code></h1>
 </header>
 <section id="section-intro">
-<p>Copyright (C) 2023 Constantinos Menelaou <a href="https://github.com/konmenel">https://github.com/konmenel</a></p>
-<p>This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with this program.
-If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.</p>
+<p>Some module with basic statistics functions.</p>
+<p>This file is part of Foo Project. It is subject to the license terms in the
+LICENSE file found in the top-level directory of this distribution and at
+<a href="https://github.com/konmenel/pydsphtools/blob/main/LICENSE.">https://github.com/konmenel/pydsphtools/blob/main/LICENSE.</a> No part of Foo Project,
+including this file, may be copied, modified, propagated, or distributed except
+according to the terms contained in the LICENSE file.</p>
 <p>Author: Constantinos Menelaou<br>
 Github: <a href="https://github.com/konmenel">https://github.com/konmenel</a><br>
 Year: 2023</p>
@@ -43,26 +36,19 @@ Year: 2023</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;Copyright (C) 2023 Constantinos Menelaou &lt;https://github.com/konmenel&gt;
+<pre><code class="python">&#34;&#34;&#34;Some module with basic statistics functions.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
+This file is part of Foo Project. It is subject to the license terms in the
+LICENSE file found in the top-level directory of this distribution and at
+https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of Foo Project,
+including this file, may be copied, modified, propagated, or distributed except
+according to the terms contained in the LICENSE file.
 
 Author: Constantinos Menelaou  
 Github: https://github.com/konmenel  
 Year: 2023  
 &#34;&#34;&#34;
-from .__imports__ import *
+from ._imports import *
 
 
 def agreement_idx(obs: npt.ArrayLike, pred: npt.ArrayLike, c: float = 2) -&gt; float:

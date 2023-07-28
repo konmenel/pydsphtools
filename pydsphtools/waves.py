@@ -1,24 +1,17 @@
-"""Copyright (C) 2023 Constantinos Menelaou <https://github.com/konmenel>
+"""Module containing functions useful when working with oceaning waves.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
+This file is part of Foo Project. It is subject to the license terms in the
+LICENSE file found in the top-level directory of this distribution and at
+https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of Foo Project,
+including this file, may be copied, modified, propagated, or distributed except
+according to the terms contained in the LICENSE file.
 
 Author: Constantinos Menelaou  
 Github: https://github.com/konmenel  
 Year: 2023  
 """
-from .__imports__ import *
-from .__main__ import *
+from ._imports import *
+from ._main import *
 
 
 def find_wavenumber(
