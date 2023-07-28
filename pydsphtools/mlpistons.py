@@ -63,8 +63,8 @@ def mlpistons2d_from_dsph(
     smoothy : int, optional
         Smooth motion level in Y (xml attribute), by default 0.
     dirout : str
-    The name of the folder where the csv files will be placed.
-    By default "MLPiston2D".
+        The name of the folder where the csv files will be placed. By default
+        "MLPiston2D".
     file_prefix : str, optional
         The prefix of the csv files, by default "MLPiston2D_SPH_velx".
     binpath : str, optional
@@ -229,6 +229,29 @@ def write_mlpiston2d_xml(
     smoothz: int = 0,
     smoothy: int = 0,
 ) -> None:
+    """Modifies the xml file to add the nessesary fields (in "motion" and "special") for
+    a 2D multilayer piston simulation.
+
+    Parameters
+    ----------
+    xmlfile : str
+        The path to the xml file.
+    mkbound : int
+        The mkbound of the piston boundary.
+    velfiles : Iterable[str]
+        The list of files with the velocity data for the layers.
+    yvals : Iterable[float]
+        The list of y values of each file in the same order as `velfiles`.
+    smoothz : int, optional
+        Smooth motion level in Z (xml attribute), by default 0.
+    smoothy : int, optional
+        Smooth motion level in Y (xml attribute), by default 0.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the xml file is not found
+    """
     # Check if the xml exist
     if not os.path.exists(xmlfile):
         if xmlfile.endswith(".xml"):
@@ -351,8 +374,8 @@ def mlpistons1d_from_dsph(
     smooth : int, optional
         Smooth motion level between layers (xml attribute), by default 0.
     dirout : str
-    The name of the folder where the csv files will be placed.
-    By default "MLPiston2D".
+        The name of the folder where the csv files will be placed. By default
+        "MLPiston2D".
     file_prefix : str, optional
         The prefix of the csv files, by default "MLPiston2D_SPH_velx".
     binpath : str, optional
@@ -570,6 +593,25 @@ def write_mlpiston1d_xml(
     *,
     smooth: int = 0,
 ) -> None:
+    """Modifies the xml file to add the nessesary fields (in "motion" and "special") for
+    a 1D multilayer piston simulation.
+
+    Parameters
+    ----------
+    xmlfile : str
+        The path to the xml file.
+    mkbound : int
+        The mkbound of the piston boundary.
+    velfile : str
+        The file with the velocity data for the layers.
+    smooth : int, optional
+        Smooth motion level between layers (xml attribute), by default 0.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the xml file is not found
+    """
     # Check if the xml exist
     if not os.path.exists(xmlfile):
         if xmlfile.endswith(".xml"):
