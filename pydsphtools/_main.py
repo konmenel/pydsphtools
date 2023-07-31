@@ -1,4 +1,7 @@
-"""Copyright (C) 2023 Constantinos Menelaou <https://github.com/konmenel>
+"""The main file where all the global scope variables, functions and classes
+are defined.
+
+Copyright (C) 2023 Constantinos Menelaou <https://github.com/konmenel>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

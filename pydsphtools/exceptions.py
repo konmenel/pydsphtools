@@ -1,11 +1,10 @@
-"""The module with the definition of the exceptions used in the packages.
+"""The module with the definition of the exceptions used in the packages."""
 
-This file is part of PyDSPHtools. It is subject to the license terms in the
-LICENSE file found in the top-level directory of this distribution and at
-https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
-including this file, may be copied, modified, propagated, or distributed except
-according to the terms contained in the LICENSE file.
-"""
+# This file is part of PyDSPHtools. It is subject to the license terms in the
+# LICENSE file found in the top-level directory of this distribution and at
+# https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
+# including this file, may be copied, modified, propagated, or distributed except
+# according to the terms contained in the LICENSE file.
 class NotFoundInOutput(Exception):
     """Raised when a variable is not found in the output file.
 
