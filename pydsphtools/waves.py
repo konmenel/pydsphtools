@@ -5,10 +5,6 @@ LICENSE file found in the top-level directory of this distribution and at
 https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
 including this file, may be copied, modified, propagated, or distributed except
 according to the terms contained in the LICENSE file.
-
-Author: Constantinos Menelaou  
-Github: https://github.com/konmenel  
-Year: 2023  
 """
 from ._imports import *
 from ._main import *

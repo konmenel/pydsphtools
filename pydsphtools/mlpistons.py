@@ -6,10 +6,6 @@ LICENSE file found in the top-level directory of this distribution and at
 https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
 including this file, may be copied, modified, propagated, or distributed except
 according to the terms contained in the LICENSE file.
-
-Author: Constantinos Menelaou  
-Github: https://github.com/konmenel  
-Year: 2023  
 """
 from ._imports import *
 
@@ -87,9 +83,6 @@ def mlpistons2d_from_dsph(
     freesurface_fpath = f"{dirin}/measuretool/{freesurface_fname}_Elevation.csv"
 
     dp = get_dp(dirin)
-    ylen = yrange[1] - yrange[0]
-    dy = ylen / ylayers
-    y0 = yrange[0] + 0.5 * dy
 
     # Save configuration
     config = pd.DataFrame(
@@ -97,7 +90,14 @@ def mlpistons2d_from_dsph(
     )
 
     # Find the free surface for each column (y-direction)
-    ptels_list = [[xloc, 0, xloc], [y0, dy, yrange[1]], [0, 0.0001, zrange[1]]]
+    y0 = yrange[0] + 3 * dp
+    yf = yrange[1] - 3 * dp
+    ylen = yf - y0
+    dy = ylen / ylayers
+    z0 = zrange[0]
+    zf = zrange[1]
+    dz = (zf - z0) / 1000
+    ptels_list = [[xloc, 0, xloc], [y0, dy, yf], [z0, dz, zf]]
     exclude_list = ["all"]
     include_list = ["fluid"]
     disable_hvars = ["all"]
@@ -206,7 +206,7 @@ def mlpistons2d_from_dsph(
             f.write(f"{key}\n")
             outfiles[key].to_csv(f, sep=";", index=False)
     if written:
-        print(f'Csv input files created in directory "{outfiles_dir}".')
+        print(f'Input csv files created in directory "{outfiles_dir}".')
 
     velfiles = (f"{outfiles_dir}/{file_prefix}_y{i:02d}.csv" for i in range(ylayers))
     write_mlpiston2d_xml(
@@ -363,7 +363,7 @@ def mlpistons1d_from_dsph(
         The output directory of the old simulation.
     xloc : float
         The x-location where the velocities will be interpolated.
-    xloc : float
+    yloc : float
         The y-location where the velocities will be interpolated.
     zrange : Tuple[float, float]
         The domain limits of the fluid in the z-direction.
@@ -429,7 +429,7 @@ def mlpistons1d_from_dsph(
     )
 
     # Find the free surface for each column (y-direction)
-    ptels_list = [[xloc, 0, xloc], [yloc, 0, yloc], [0, 0.0001, zrange[1]]]
+    ptels_list = [[xloc, 0, xloc], [yloc, 0, yloc], [zrange[0], 0.0001, zrange[1]]]
     exclude_list = ["all"]
     include_list = ["fluid"]
     disable_hvars = ["all"]
@@ -470,7 +470,7 @@ def mlpistons1d_from_dsph(
     # remove units, eg `Vel [m/s^2]` -> `Vel`
     _sub_map = lambda x: re.sub(r"\ \[[A-Za-z\^0-9/]*\]$", "", x)
     df_fs.columns = df_fs.columns.map(_sub_map)
-    
+
     # Create the point where the velocities will be calculated
     points_per_time = []
     for _, row in df_fs.iterrows():

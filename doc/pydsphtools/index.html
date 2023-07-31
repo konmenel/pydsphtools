@@ -81,6 +81,11 @@ __all__ = [*_main.__all__, &#34;waves&#34;, &#34;exceptions&#34;, &#34;stats&#34
 <div class="desc"><p>The contains functions that allows for couple between two DualSPHysics
 simulations using the Multi-Layer Pistons approach of DualSPHysics …</p></div>
 </dd>
+<dt><code class="name"><a title="pydsphtools.relaxzones" href="relaxzones.html">pydsphtools.relaxzones</a></code></dt>
+<dd>
+<div class="desc"><p>Module that enables coupling of different DualSPHysics simulations using
+the Relaxation Zone technic of DualSPHysics …</p></div>
+</dd>
 <dt><code class="name"><a title="pydsphtools.stats" href="stats.html">pydsphtools.stats</a></code></dt>
 <dd>
 <div class="desc"><p>Some module with basic statistics functions …</p></div>
@@ -621,18 +626,19 @@ of the array should be (n, 3) or should be a valid array for the numpy
 function <code>numpy.reshape((-1, 3))</code> to be used.
 By default None</dd>
 <dt><strong><code>ptls_list</code></strong> :&ensp;<code>np.ndarray</code>, optional</dt>
-<dd>A list of "POINTSLIST" in the format:
-[[<x0>,<dx>:<nx>],
-[<y0>:<dy>:<ny>],
-[<z0>:<dz>:<nz>]].
+<dd>A list of "POINTSLIST" in the format:<br>
+[[<x0>,<dx>:<nx>],<br>
+[<y0>:<dy>:<ny>],<br>
+[<z0>:<dz>:<nz>]].<br>
 The shape of the array should be (n, 3, 3) or should be a valid array for
 the numpy function <code>numpy.reshape((-1, 3, 3))</code> to be used.
 By default None By default None</dd>
 <dt><strong><code>ptels_list</code></strong> :&ensp;<code>np.ndarray</code>, optional</dt>
-<dd>A list of "POINTSENDLIST" in the format:
-[[<x0>,<dx>:<nx>],
-[<y0>:<dy>:<ny>],
-[<z0>:<dz>:<nz>]].
+<dd>A list of "POINTSENDLIST" in the format:<br>
+[[<x0>,<dx>:<xf>],<br>
+[<y0>:<dy>:<yf>]
+,
+[<z0>:<dz>:<zf>]].<br>
 The shape of the array should be (n, 3, 3) or should be a valid array for
 the numpy function <code>numpy.reshape((-1, 3, 3))</code> to be used.
 By default None By default None</dd>
@@ -743,18 +749,18 @@ doesn't exist.</dd>
         of the array should be (n, 3) or should be a valid array for the numpy
         function `numpy.reshape((-1, 3))` to be used.  By default None
     ptls_list : np.ndarray, optional
-        A list of &#34;POINTSLIST&#34; in the format:
-        [[&lt;x0&gt;,&lt;dx&gt;:&lt;nx&gt;],
-         [&lt;y0&gt;:&lt;dy&gt;:&lt;ny&gt;],
-         [&lt;z0&gt;:&lt;dz&gt;:&lt;nz&gt;]].
+        A list of &#34;POINTSLIST&#34; in the format:  
+        [[&lt;x0&gt;,&lt;dx&gt;:&lt;nx&gt;],  
+         [&lt;y0&gt;:&lt;dy&gt;:&lt;ny&gt;],  
+         [&lt;z0&gt;:&lt;dz&gt;:&lt;nz&gt;]].  
         The shape of the array should be (n, 3, 3) or should be a valid array for
         the numpy function `numpy.reshape((-1, 3, 3))` to be used.
         By default None By default None
     ptels_list : np.ndarray, optional
-        A list of &#34;POINTSENDLIST&#34; in the format:
-        [[&lt;x0&gt;,&lt;dx&gt;:&lt;nx&gt;],
-         [&lt;y0&gt;:&lt;dy&gt;:&lt;ny&gt;],
-         [&lt;z0&gt;:&lt;dz&gt;:&lt;nz&gt;]].
+        A list of &#34;POINTSENDLIST&#34; in the format:  
+        [[&lt;x0&gt;,&lt;dx&gt;:&lt;xf&gt;],  
+         [&lt;y0&gt;:&lt;dy&gt;:&lt;yf&gt;]  ,
+         [&lt;z0&gt;:&lt;dz&gt;:&lt;zf&gt;]].  
         The shape of the array should be (n, 3, 3) or should be a valid array for
         the numpy function `numpy.reshape((-1, 3, 3))` to be used.
         By default None By default None
@@ -1016,6 +1022,7 @@ doesn't exist.</dd>
 <ul>
 <li><code><a title="pydsphtools.exceptions" href="exceptions.html">pydsphtools.exceptions</a></code></li>
 <li><code><a title="pydsphtools.mlpistons" href="mlpistons.html">pydsphtools.mlpistons</a></code></li>
+<li><code><a title="pydsphtools.relaxzones" href="relaxzones.html">pydsphtools.relaxzones</a></code></li>
 <li><code><a title="pydsphtools.stats" href="stats.html">pydsphtools.stats</a></code></li>
 <li><code><a title="pydsphtools.waves" href="waves.html">pydsphtools.waves</a></code></li>
 </ul>
