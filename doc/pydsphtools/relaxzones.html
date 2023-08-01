@@ -38,538 +38,8 @@ the Relaxation Zone technic of DualSPHysics.
 # https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
 # including this file, may be copied, modified, propagated, or distributed except
 # according to the terms contained in the LICENSE file.
-from ._imports import *
-
-from pydsphtools._main import *
-from .exceptions import InvalidTimeInterval
-
-
-def relaxzone_from_dsph(
-    xmlfile: str,
-    dirin: str,
-    xloc: float,
-    yloc: float,
-    width: float,
-    zrange: Tuple[float, float],
-    xlayers: int,
-    zlayers: int,
-    *,
-    depth: float = 0,
-    swl: float = 0,
-    usevelz: bool = False,
-    smooth: int = 0,
-    psi: float = 0.9,
-    beta: float = 1,
-    drift_corr: float = 0,
-    file_prefix: str = &#34;RZ_SPH&#34;,
-    dirout: str = &#34;RelaxationZones&#34;,
-    binpath: str = None,
-    overwrite: bool = False,
-    cleanup: bool = False,
-    dt: float = 0.01,
-    tmin: float = 0.0,
-    tmax: float = 0.0,
-) -&gt; None:
-    &#34;&#34;&#34;Create the nessesary csv file to run a DualSPHysics Multi-Layer 1D Piston
-    simulation using data from a previous DualSPHysics simulation. The function
-    uses &#34;measuretool&#34; to find the surface elevation at a specific x-location
-    and creates an 1D grid at every timestep with a given number of vertical layers.
-
-    Parameters
-    ----------
-    xmlfile : str
-        The xml file that defines the simulation. The file will be modified to
-        create the &#34;mlayerpistons&#34; element. If no extention is provided the
-        code assumes a &#34;.xml&#34; at the end.
-    dirin : str
-        The output directory of the old simulation.
-    xloc : float
-        The x-location the center of the relaxation zone will be.
-    yloc : float
-        The y-location where the velocities will be interpolated.
-    width : float
-        The width of the relaxation zone.
-    zrange : Tuple[float, float]
-        The domain limits of the fluid in the z-direction.
-    xlayers : int
-        The number of layers within the relaxation zone.
-    ylayers : int
-        The number of layers in the vertical direction.
-    mkbound : int
-        The mk value of the piston particles.
-    smooth : int, optional
-        Smooth motion level between layers (xml attribute), by default 0.
-    dirout : str
-        The name of the folder where the csv files will be placed. By default
-        &#34;MLPiston2D&#34;.
-    file_prefix : str, optional
-        The prefix of the csv files, by default &#34;MLPiston2D_SPH_velx&#34;.
-    binpath : str, optional
-        The path of the binary folder of DualSPHysics. If not defined the an
-        environment variable &#34;DUALSPH_HOME&#34; must be defined. By default None.
-    overwrite : bool
-        If `True` the raw velocity data files will be overwritten. By default
-        `False`.
-    cleanup : bool
-        If `True` the raw velocity data files will be removed at the end. Be
-        default `False`.
-    dt : float
-        The dt used for the interpolation of the velocities. The calculated
-        velocities are used in a cubic interpolation to created a smoother signal.
-    tmin : float
-        Defines the start time of the output file.
-    tmax : float
-        Defines the final time of the output file. If 0 the end time will be
-        the final time of the simulation.
-
-    Raises
-    ------
-    FileNotFoundError
-        If the xml file could not be found. The rest of the code will still
-        run but modification will not be made no valid xml is provided.
-    InvalidTimeInterval
-        If `tmax` is less than or equal to `tmin`.
-    &#34;&#34;&#34;
-    # File and directory names
-    xmlfile = os.path.abspath(xmlfile)
-    xmldir, _ = os.path.split(xmlfile)
-    config_fpath = f&#34;{dirin}/measuretool/RZ_config.csv&#34;
-    freesurface_fname = &#34;RZ_freesurf&#34;
-    freesurface_fpath = f&#34;{dirin}/measuretool/{freesurface_fname}_Elevation.csv&#34;
-    rawdata_fname = lambda p: f&#34;RZ_data_raw_Part{p}&#34;
-    rawdata_fpath = (
-        lambda p: f&#34;{dirin}/measuretool/rawveldata/{rawdata_fname(p)}_Vel.csv&#34;
-    )
-
-    dp = get_dp(dirin)
-    first_dist = 4 * dp  # Distance of first point from free surface
-    last_dist = 2 * dp  # Distance of last point from free surface
-
-    tmax = tmax or get_var(dirin, &#34;PhysicalTime&#34;, float)
-    if tmax &lt;= tmin:
-        raise InvalidTimeInterval(tmin, tmax)
-
-    # Save configuration
-    config = pd.DataFrame(
-        {
-            &#34;xLayers&#34;: [xlayers],
-            &#34;zLayers&#34;: [yloc],
-            &#34;xLocation&#34;: [xloc],
-            &#34;Width&#34;: [width],
-            &#34;yLocation&#34;: [yloc],
-        }
-    )
-
-    # Find the free surface for each column (y-direction)
-    x0 = xloc - width / 2
-    xf = xloc + width / 2
-    dx = (xf - x0) / xlayers
-    z0 = zrange[0]
-    zf = zrange[1]
-    dz = (zf - z0) / 1000
-    ptels_list = [[x0, dx, xf], [yloc, 0, yloc], [z0, dz, zf]]
-    exclude_list = [&#34;all&#34;]
-    include_list = [&#34;fluid&#34;]
-    disable_hvars = [&#34;all&#34;]
-    enable_hvars = [&#34;eta&#34;]
-
-    # Check if there are old config files
-    old_config = None
-    if os.path.exists(config_fpath):
-        old_config = np.loadtxt(config_fpath, delimiter=&#34;;&#34;, skiprows=1)
-    # Check if need to update elevation files
-    if (
-        not os.path.exists(freesurface_fpath)
-        or old_config is None
-        or (old_config != config.iloc[0].values).any()
-    ):
-        config.to_csv(config_fpath, index=False, sep=&#34;;&#34;)
-        run_measuretool(
-            dirin,
-            savecsv=freesurface_fname,
-            ptels_list=ptels_list,
-            include_types=include_list,
-            exclude_types=exclude_list,
-            elevations=True,
-            enable_hvars=enable_hvars,
-            disable_hvars=disable_hvars,
-            binpath=binpath,
-        )
-        # Cleaning old vel files.
-        for f in glob.glob(
-            f&#34;{dirin}/measuretool/rawveldata/{rawdata_fname(&#39;*&#39;)}_PointsDef.vtk&#34;
-        ):
-            os.remove(f)
-        for f in glob.glob(rawdata_fpath(&#34;*&#34;)):
-            os.remove(f)
-
-    # Read elevations
-    df_fs = pd.read_csv(freesurface_fpath, header=3, sep=&#34;;&#34;)
-    # remove units, eg `Vel [m/s^2]` -&gt; `Vel`
-    _sub_map = lambda x: re.sub(r&#34;\ \[[A-Za-z\^0-9/]*\]$&#34;, &#34;&#34;, x)
-    df_fs.columns = df_fs.columns.map(_sub_map)
-
-    # Create the points list where the velocities will be calculated
-    xs = np.linspace(x0, xf, xlayers)
-    zs_per_time: List[np.ndarray] = []
-    for _, row in df_fs.iterrows():
-        zs = np.zeros((xlayers, zlayers))
-        row = row.drop([&#34;Time&#34;, &#34;Part&#34;])
-        for i in range(xlayers):
-            elevation = row.iloc[i]
-            highest_point = elevation - first_dist
-            zs[i, :] = np.linspace(highest_point, last_dist, zlayers)
-        zs_per_time.append((zs))
-
-    # Find velocity data from the points
-    outfiles_dir = f&#34;{xmldir}/{dirout}&#34;
-    if not os.path.exists(outfiles_dir):
-        os.mkdir(outfiles_dir)
-
-    disable_vars = [&#34;all&#34;]
-    enable_vars = [&#34;vel&#34;]
-
-    # Interpolation array format:
-    # [np.array([t0,z0],[t0,z1],...,[t0,zn],[t1,z0],...,[tn,zn]), &lt;- x0
-    #  np.array([t0,z0],[t0,z1],...,[t0,zn],[t1,z0],...,[tn,zn]), &lt;- x1
-    #  ...,
-    #  np.array([t0,z0],[t0,z1],...,[t0,zn],[t1,z0],...,[tn,zn])] &lt;- xn
-    nlayers = xlayers * zlayers
-    sz0 = len(zs_per_time) * zlayers
-    interp_pnts = [np.zeros((sz0, 2)) for _ in range(xlayers)]
-    interp_velx = [np.zeros(sz0) for _ in range(xlayers)]
-    interp_velz = [np.zeros(sz0) for _ in range(xlayers)]
-    for i, zs in enumerate(zs_per_time):
-        if df_fs.Time[i] &lt; tmin or df_fs.Time[i] &gt; tmax:
-            continue
-
-        if overwrite or not os.path.exists(rawdata_fpath(i)):
-            run_measuretool(
-                dirin,
-                savecsv=rawdata_fname(i),
-                dirout=f&#34;{dirin}/measuretool/rawveldata&#34;,
-                file_nums=(i,),
-                pt_list=[
-                    (xs[r], yloc, z) for r in range(zs.shape[0]) for z in zs[r, :]
-                ],
-                include_types=include_list,
-                exclude_types=exclude_list,
-                enable_vars=enable_vars,
-                disable_vars=disable_vars,
-                binpath=binpath,
-            )
-        df_vel = pd.read_csv(rawdata_fpath(i), header=1, sep=&#34;;&#34;)
-        time = df_vel.loc[0, &#34;Time [s]&#34;]
-        df_velx = df_vel.loc[:, df_vel.columns.str.contains(&#34;x&#34;)]
-        df_velz = df_vel.loc[:, df_vel.columns.str.contains(&#34;z&#34;)]
-
-        for j in range(xlayers):
-            tidx0 = i * zlayers
-            tidxf = tidx0 + zlayers
-            vidx0 = j * zlayers
-            vidxf = vidx0 + zlayers
-            interp_pnts[j][tidx0:tidxf, 0] = time
-            interp_pnts[j][tidx0:tidxf, 1] = zs[j, :]
-            interp_velx[j][tidx0:tidxf] = df_velx.iloc[0, vidx0:vidxf].to_numpy()
-            interp_velz[j][tidx0:tidxf] = df_velz.iloc[0, vidx0:vidxf].to_numpy()
-
-    # Remove unnessesary rows
-    tidx0 = np.argmax(tmin &lt;= df_fs.Time) * zlayers
-    tidxf = (np.argmax(df_fs.Time &gt;= tmax) or len(df_fs.Time)) * zlayers
-    for j in range(xlayers):
-        interp_pnts[j] = interp_pnts[j][tidx0:tidxf, :]
-        interp_velx[j] = interp_velx[j][tidx0:tidxf]
-        interp_velz[j] = interp_velz[j][tidx0:tidxf]
-
-        # np.savetxt(f&#34;interp_pnts_{j}.csv&#34;, interp_pnts[j])
-        # np.savetxt(f&#34;interp_velx_{j}.csv&#34;, interp_velx[j])
-        # np.savetxt(f&#34;interp_velz_{j}.csv&#34;, interp_velz[j])
-
-    # Cubic spline interpolation of velocity at dt
-    time_series = np.arange(tmin, tmax + dt, dt)
-    szi = len(time_series) * nlayers
-    interp_xi = [np.zeros((szi, 2)) for _ in range(xlayers)]
-    velx = [None] * xlayers
-    velz = [None] * xlayers
-    fsurf_splines = [None] * xlayers
-    for i in range(xlayers):
-        fsurf_splines[i] = interpolate.CubicSpline(
-            df_fs[&#34;Time&#34;], df_fs[f&#34;Elevation_{i}&#34;]
-        )
-
-        for j, time in enumerate(time_series):
-            idx0 = j * zlayers
-            idxf = idx0 + zlayers
-            interp_xi[i][idx0:idxf, 0] = time
-            interp_xi[i][idx0:idxf, 1] = np.linspace(
-                fsurf_splines[i](time) - first_dist, last_dist, zlayers
-            )
-
-        velx[i] = interpolate.griddata(
-            interp_pnts[i], interp_velx[i], interp_xi[i], method=&#34;cubic&#34;
-        )
-        velz[i] = interpolate.griddata(
-            interp_pnts[i], interp_velz[i], interp_xi[i], method=&#34;cubic&#34;
-        )
-        # Fill nans using linear interpolation
-        for j in range(zlayers):
-            subsetx = interp_xi[i][j::zlayers, 0]
-            subsetvelx = velx[i][j::zlayers]
-            subsetvelz = velz[i][j::zlayers]
-            maskx = np.isnan(subsetvelx)
-            maskz = np.isnan(subsetvelz)
-            subsetvelx[maskx] = np.interp(
-                subsetx[maskx], subsetx[~maskx], subsetvelx[~maskx]
-            )
-            subsetvelz[maskz] = np.interp(
-                subsetx[maskz], subsetx[~maskz], subsetvelz[~maskz]
-            )
-            velx[i][j::zlayers] = subsetvelx
-            velz[i][j::zlayers] = subsetvelz
-
-    # Prepare output dataframe
-    _get_key_fmt = lambda x, y: f&#34;px:;{x};py:;{y}&#34;
-    columns = pd.Series(
-        [
-            &#34;time&#34;,
-            *(f&#34;pz_{i}&#34; for i in range(zlayers)),
-            *(f&#34;vel_{i}&#34; for i in range(zlayers)),
-        ]
-    )
-    df = pd.DataFrame(columns=columns, index=range(len(time_series)))
-    outfiles_x = {_get_key_fmt(xs[i], yloc): df.copy() for i in range(xlayers)}
-    outfiles_z = {_get_key_fmt(xs[i], yloc): df.copy() for i in range(xlayers)}
-    for j in range(xlayers):
-        for i, time in enumerate(time_series):
-            idx0 = i * zlayers
-            idxf = idx0 + zlayers
-            key = _get_key_fmt(xs[j], yloc)
-            pzs = interp_xi[j][idx0:idxf, 1] - fsurf_splines[j](time)
-            outfiles_x[key].iloc[i, 0] = time - tmin
-            outfiles_x[key].iloc[i, 1 : zlayers + 1] = pzs
-            outfiles_x[key].iloc[i, zlayers + 1 :] = velx[j][idx0:idxf]
-
-            outfiles_z[key].iloc[i, 0] = time - tmin
-            outfiles_z[key].iloc[i, 1 : zlayers + 1] = pzs
-            outfiles_z[key].iloc[i, zlayers + 1 :] = velz[j][idx0:idxf]
-
-    # Save the input files
-    for i in range(xlayers):
-        for vel, outfiles in zip((&#34;velx&#34;, &#34;velz&#34;), (outfiles_x, outfiles_z)):
-            fname = f&#34;{outfiles_dir}/{file_prefix}_{vel}_x{i:02d}_y00.csv&#34;
-            key = _get_key_fmt(xs[i], yloc)
-            if os.path.exists(fname):
-                os.remove(fname)
-            with open(fname, &#34;a&#34;) as f:
-                f.write(f&#34;{key}\n&#34;)
-                outfiles[key].to_csv(f, sep=&#34;;&#34;, index=False)
-        np.savetxt(
-            f&#34;{outfiles_dir}/freesurface_spline_x{i:02d}.csv&#34;,
-            fsurf_splines[j](time_series),
-        )
-    print(f&#39;Csv input files created in directory &#34;{outfiles_dir}&#34;.&#39;)
-
-    write_rzexternal_xml(
-        xmlfile,
-        file_prefix,
-        0,
-        xlayers,
-        depth,
-        swl,
-        (xloc, yloc, z0),
-        width,
-        smooth=smooth,
-        usevelz=usevelz,
-        psi=psi,
-        beta=beta,
-        drift_corr=drift_corr,
-    )
-
-    # Clean-up
-    if cleanup:
-        for f in glob.glob(
-            f&#34;{dirin}/measuretool/rawveldata/{rawdata_fname(&#39;*&#39;)}_PointsDef.vtk&#34;
-        ):
-            os.remove(f)
-        for f in glob.glob(rawdata_fpath(&#34;*&#34;)):
-            os.remove(f)
-
-
-def write_rzexternal_xml(
-    xmlfile: str,
-    velfile_prefix: str,
-    files_init: int,
-    files_count: int,
-    center: Tuple[float, float, float],
-    width: float,
-    *,
-    depth: float = 0,
-    swl: float = 0,
-    smooth: int = 0,
-    movedata: Tuple[float, float, float] = (0, 0, 0),
-    usevelz: bool = False,
-    psi: float = 0.9,
-    beta: float = 1,
-    drift_corr: float = 0,
-) -&gt; None:
-    &#34;&#34;&#34;Modifies the xml file to add the nessesary fields (in &#34;special&#34;) for
-    a relaxation zone simulation.
-
-    Parameters
-    ----------
-    xmlfile : str
-        The path to the xml file.
-    velfile_prefix : str
-        The prefix of the velocity files. To be used for the value in `filesvel` element.
-    files_init : int
-        The number of the first velocity files.
-    files_count : int
-        The total number of the velocity files to be used.
-    width : float
-        The width of the zone.
-    center : Tuple[float, float, float]
-        The center of the zone
-    depth : float, optional
-        Water depth. It is necessary for drift correction, by default 0
-    swl : float, optional
-        Still water level (free-surface). It is necessary for drift correction, by default 0
-    smooth : int, optional
-        Smooth motion level, by default 0
-    movedata : Tuple[float, float, float], optional
-        Movement of data in CSV files, by default (0, 0, 0)
-    usevelz : bool, optional
-        Use velocity in Z or not, by default False
-    psi : float, optional
-        Coefficient \\( \\psi \\) of Relaxation Zone weight function, by default 0.9
-    beta : float, optional
-        Coefficient \\( \\beta \\) of Relaxation Zone weight function, by default 1
-    drift_corr : float, optional
-        Coefficient of drift correction applied in velocity X. 0:Disabled, 1:Full correction. By default 0
-
-    Raises
-    ------
-    FileNotFoundError
-        If the xml file is not found
-    &#34;&#34;&#34;
-    # Check if the xml exist
-    if not os.path.exists(xmlfile):
-        if xmlfile.endswith(&#34;.xml&#34;):
-            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), xmlfile)
-
-        xmlfile = f&#34;{xmlfile}.xml&#34;
-        if not os.path.exists(xmlfile):
-            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), xmlfile)
-
-    tree = ET.parse(xmlfile)
-    # Add to `special` section
-    elem_exec = xml_get_or_create_subelement(tree, &#34;execution&#34;)
-    elem_special = xml_get_or_create_subelement(elem_exec, &#34;special&#34;)
-
-    rz_elem = xml_get_or_create_subelement(elem_special, &#34;relaxationzones&#34;)
-    if rz_elem.find(&#34;rzwaves_external_1d&#34;) is not None:
-        print(
-            &#34;*WARNING* [xml file] `rzwaves_external_1d` already exist in xml. Exitting without modifying the xml.&#34;
-        )
-        return
-    rz1d = ET.SubElement(rz_elem, &#34;rzwaves_external_1d&#34;)
-    ET.SubElement(
-        rz1d,
-        &#34;depth&#34;,
-        attrib={
-            &#34;value&#34;: str(depth),
-            &#34;comment&#34;: &#34;Water depth. It is necessary for drift correction (def=0)&#34;,
-        },
-    )
-    ET.SubElement(
-        rz1d,
-        &#34;swl&#34;,
-        attrib={
-            &#34;value&#34;: str(swl),
-            &#34;comment&#34;: &#34;Still water level (free-surface). It is necessary for drift correction (def=0)&#34;,
-        },
-    )
-    ET.SubElement(
-        rz1d,
-        &#34;filesvel&#34;,
-        attrib={
-            &#34;value&#34;: velfile_prefix,
-            &#34;comment&#34;: &#34;Main name of files with velocity to use&#34;,
-        },
-    )
-    ET.SubElement(
-        rz1d,
-        &#34;filesvelx&#34;,
-        attrib={
-            &#34;initial&#34;: str(files_init),
-            &#34;count&#34;: str(files_count),
-            &#34;comment&#34;: &#34;First file and count to use&#34;,
-        },
-    )
-    ET.SubElement(
-        rz1d,
-        &#34;usevelz&#34;,
-        attrib={
-            &#34;value&#34;: str(usevelz).lower(),
-            &#34;comment&#34;: &#34;Use velocity in Z or not (def=false)&#34;,
-        },
-    )
-    ET.SubElement(
-        rz1d,
-        &#34;movedata&#34;,
-        attrib={
-            &#34;x&#34;: str(movedata[0]),
-            &#34;y&#34;: str(movedata[1]),
-            &#34;z&#34;: str(movedata[2]),
-            &#34;comment&#34;: &#34;Movement of data in CSV files&#34;,
-        },
-    )
-    ET.SubElement(
-        rz1d,
-        &#34;smooth&#34;,
-        attrib={
-            &#34;value&#34;: str(smooth),
-            &#34;comment&#34;: &#34;Smooth motion level (def=0)&#34;,
-        },
-    )
-    ET.SubElement(
-        rz1d,
-        &#34;center&#34;,
-        attrib={
-            &#34;x&#34;: str(center[0]),
-            &#34;y&#34;: str(center[1]),
-            &#34;z&#34;: str(center[2]),
-            &#34;comment&#34;: &#34;Central point of application&#34;,
-        },
-    )
-    ET.SubElement(
-        rz1d,
-        &#34;width&#34;,
-        attrib={
-            &#34;value&#34;: str(width),
-            &#34;comment&#34;: &#34;Width for generation&#34;,
-        },
-    )
-    ET.SubElement(
-        rz1d,
-        &#34;function&#34;,
-        attrib={
-            &#34;psi&#34;: str(psi),
-            &#34;beta&#34;: str(beta),
-            &#34;comment&#34;: &#34;Coefficients in function for velocity (def. psi=0.9, beta=1)&#34;,
-        },
-    )
-    ET.SubElement(
-        rz1d,
-        &#34;driftcorrection&#34;,
-        attrib={
-            &#34;value&#34;: str(drift_corr),
-            &#34;comment&#34;: &#34;Coefficient of drift correction applied in velocity X. 0:Disabled, 1:Full correction (def=0)&#34;,
-        },
-    )
-    print(&#34;[xml file] `special` section updated. `rzwaves_external_1d` added.&#34;)
-
-    ET.indent(tree, &#34; &#34; * 4)
-    tree.write(xmlfile)</code></pre>
+from ._relaxzones import *
+from ._relaxzones import __all__</code></pre>
 </details>
 </section>
 <section>
@@ -580,7 +50,7 @@ def write_rzexternal_xml(
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pydsphtools.relaxzones.relaxzone_from_dsph"><code class="name flex">
-<span>def <span class="ident">relaxzone_from_dsph</span></span>(<span>xmlfile: str, dirin: str, xloc: float, yloc: float, width: float, zrange: Tuple[float, float], xlayers: int, zlayers: int, *, depth: float = 0, swl: float = 0, usevelz: bool = False, smooth: int = 0, psi: float = 0.9, beta: float = 1, drift_corr: float = 0, file_prefix: str = 'RZ_SPH', dirout: str = 'RelaxationZones', binpath: str = None, overwrite: bool = False, cleanup: bool = False, dt: float = 0.01, tmin: float = 0.0, tmax: float = 0.0) ‑> None</span>
+<span>def <span class="ident">relaxzone_from_dsph</span></span>(<span>xmlfile: str, dirin: str, xloc: float, yloc: float, width: float, zrange: Tuple[float, float], xlayers: int, zlayers: int, *, depth: float = 0, swl: float = 0, usevelz: bool = False, smooth: int = 0, psi: float = 0.9, beta: float = 1, drift_corr: float = 0, file_prefix: str = 'RZ_SPH', dirout: str = 'RelaxationZones', binpath: str = None, overwrite_vel: bool = False, overwrite_xml: bool = False, cleanup: bool = False, dt: float = 0.01, tmin: float = 0.0, tmax: float = 0.0) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Create the nessesary csv file to run a DualSPHysics Multi-Layer 1D Piston
@@ -607,10 +77,22 @@ code assumes a ".xml" at the end.</dd>
 <dd>The number of layers within the relaxation zone.</dd>
 <dt><strong><code>ylayers</code></strong> :&ensp;<code>int</code></dt>
 <dd>The number of layers in the vertical direction.</dd>
-<dt><strong><code>mkbound</code></strong> :&ensp;<code>int</code></dt>
-<dd>The mk value of the piston particles.</dd>
+<dt><strong><code>depth</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>Water depth. It is necessary for drift correction, by default 0</dd>
+<dt><strong><code>swl</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>Still water level (free-surface). It is necessary for drift correction,
+by default 0</dd>
 <dt><strong><code>smooth</code></strong> :&ensp;<code>int</code>, optional</dt>
 <dd>Smooth motion level between layers (xml attribute), by default 0.</dd>
+<dt><strong><code>usevelz</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Use velocity in Z or not, by default False</dd>
+<dt><strong><code>psi</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>Coefficient <span><span class="MathJax_Preview"> \psi </span><script type="math/tex"> \psi </script></span> of Relaxation Zone weight function, by default 0.9</dd>
+<dt><strong><code>beta</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>Coefficient <span><span class="MathJax_Preview"> \beta </span><script type="math/tex"> \beta </script></span> of Relaxation Zone weight function, by default 1</dd>
+<dt><strong><code>drift_corr</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>Coefficient of drift correction applied in velocity X. 0:Disabled, 1:Full
+correction. By default 0</dd>
 <dt><strong><code>dirout</code></strong> :&ensp;<code>str</code></dt>
 <dd>The name of the folder where the csv files will be placed. By default
 "MLPiston2D".</dd>
@@ -619,9 +101,12 @@ code assumes a ".xml" at the end.</dd>
 <dt><strong><code>binpath</code></strong> :&ensp;<code>str</code>, optional</dt>
 <dd>The path of the binary folder of DualSPHysics. If not defined the an
 environment variable "DUALSPH_HOME" must be defined. By default None.</dd>
-<dt><strong><code>overwrite</code></strong> :&ensp;<code>bool</code></dt>
+<dt><strong><code>overwrite_vel</code></strong> :&ensp;<code>bool</code></dt>
 <dd>If <code>True</code> the raw velocity data files will be overwritten. By default
 <code>False</code>.</dd>
+<dt><strong><code>overwrite_xml</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If <code>True</code> the "rzwaves_external_1d" element in the xml will be overwitten.
+By default <code>False</code>.</dd>
 <dt><strong><code>cleanup</code></strong> :&ensp;<code>bool</code></dt>
 <dd>If <code>True</code> the raw velocity data files will be removed at the end. Be
 default <code>False</code>.</dd>
@@ -666,7 +151,8 @@ run but modification will not be made no valid xml is provided.</dd>
     file_prefix: str = &#34;RZ_SPH&#34;,
     dirout: str = &#34;RelaxationZones&#34;,
     binpath: str = None,
-    overwrite: bool = False,
+    overwrite_vel: bool = False,
+    overwrite_xml: bool = False,
     cleanup: bool = False,
     dt: float = 0.01,
     tmin: float = 0.0,
@@ -697,10 +183,22 @@ run but modification will not be made no valid xml is provided.</dd>
         The number of layers within the relaxation zone.
     ylayers : int
         The number of layers in the vertical direction.
-    mkbound : int
-        The mk value of the piston particles.
+    depth : float, optional
+        Water depth. It is necessary for drift correction, by default 0
+    swl : float, optional
+        Still water level (free-surface). It is necessary for drift correction,
+        by default 0
     smooth : int, optional
         Smooth motion level between layers (xml attribute), by default 0.
+    usevelz : bool, optional
+        Use velocity in Z or not, by default False
+    psi : float, optional
+        Coefficient \\( \\psi \\) of Relaxation Zone weight function, by default 0.9
+    beta : float, optional
+        Coefficient \\( \\beta \\) of Relaxation Zone weight function, by default 1
+    drift_corr : float, optional
+        Coefficient of drift correction applied in velocity X. 0:Disabled, 1:Full
+        correction. By default 0
     dirout : str
         The name of the folder where the csv files will be placed. By default
         &#34;MLPiston2D&#34;.
@@ -709,9 +207,12 @@ run but modification will not be made no valid xml is provided.</dd>
     binpath : str, optional
         The path of the binary folder of DualSPHysics. If not defined the an
         environment variable &#34;DUALSPH_HOME&#34; must be defined. By default None.
-    overwrite : bool
+    overwrite_vel : bool
         If `True` the raw velocity data files will be overwritten. By default
         `False`.
+    overwrite_xml : bool
+        If `True` the &#34;rzwaves_external_1d&#34; element in the xml will be overwitten.
+        By default `False`.
     cleanup : bool
         If `True` the raw velocity data files will be removed at the end. Be
         default `False`.
@@ -744,7 +245,7 @@ run but modification will not be made no valid xml is provided.</dd>
     )
 
     dp = get_dp(dirin)
-    first_dist = 4 * dp  # Distance of first point from free surface
+    first_dist = 0  # 4 * dp  # Distance of first point from free surface
     last_dist = 2 * dp  # Distance of last point from free surface
 
     tmax = tmax or get_var(dirin, &#34;PhysicalTime&#34;, float)
@@ -755,10 +256,10 @@ run but modification will not be made no valid xml is provided.</dd>
     config = pd.DataFrame(
         {
             &#34;xLayers&#34;: [xlayers],
-            &#34;zLayers&#34;: [yloc],
+            &#34;zLayers&#34;: [zlayers],
             &#34;xLocation&#34;: [xloc],
-            &#34;Width&#34;: [width],
             &#34;yLocation&#34;: [yloc],
+            &#34;Width&#34;: [width],
         }
     )
 
@@ -793,6 +294,7 @@ run but modification will not be made no valid xml is provided.</dd>
             include_types=include_list,
             exclude_types=exclude_list,
             elevations=True,
+            kclimit=0.2,
             enable_hvars=enable_hvars,
             disable_hvars=disable_hvars,
             binpath=binpath,
@@ -845,7 +347,7 @@ run but modification will not be made no valid xml is provided.</dd>
         if df_fs.Time[i] &lt; tmin or df_fs.Time[i] &gt; tmax:
             continue
 
-        if overwrite or not os.path.exists(rawdata_fpath(i)):
+        if overwrite_vel or not os.path.exists(rawdata_fpath(i)):
             run_measuretool(
                 dirin,
                 savecsv=rawdata_fname(i),
@@ -904,7 +406,7 @@ run but modification will not be made no valid xml is provided.</dd>
             idxf = idx0 + zlayers
             interp_xi[i][idx0:idxf, 0] = time
             interp_xi[i][idx0:idxf, 1] = np.linspace(
-                fsurf_splines[i](time) - first_dist, last_dist, zlayers
+                last_dist, fsurf_splines[i](time) - first_dist, zlayers
             )
 
         velx[i] = interpolate.griddata(
@@ -946,7 +448,7 @@ run but modification will not be made no valid xml is provided.</dd>
             idx0 = i * zlayers
             idxf = idx0 + zlayers
             key = _get_key_fmt(xs[j], yloc)
-            pzs = interp_xi[j][idx0:idxf, 1] - fsurf_splines[j](time)
+            pzs = interp_xi[j][idx0:idxf, 1] - (swl - first_dist)
             outfiles_x[key].iloc[i, 0] = time - tmin
             outfiles_x[key].iloc[i, 1 : zlayers + 1] = pzs
             outfiles_x[key].iloc[i, zlayers + 1 :] = velx[j][idx0:idxf]
@@ -976,15 +478,16 @@ run but modification will not be made no valid xml is provided.</dd>
         file_prefix,
         0,
         xlayers,
-        depth,
-        swl,
         (xloc, yloc, z0),
         width,
+        depth=depth,
+        swl=swl,
         smooth=smooth,
         usevelz=usevelz,
         psi=psi,
         beta=beta,
         drift_corr=drift_corr,
+        overwrite=overwrite_xml,
     )
 
     # Clean-up
@@ -998,7 +501,7 @@ run but modification will not be made no valid xml is provided.</dd>
 </details>
 </dd>
 <dt id="pydsphtools.relaxzones.write_rzexternal_xml"><code class="name flex">
-<span>def <span class="ident">write_rzexternal_xml</span></span>(<span>xmlfile: str, velfile_prefix: str, files_init: int, files_count: int, center: Tuple[float, float, float], width: float, *, depth: float = 0, swl: float = 0, smooth: int = 0, movedata: Tuple[float, float, float] = (0, 0, 0), usevelz: bool = False, psi: float = 0.9, beta: float = 1, drift_corr: float = 0) ‑> None</span>
+<span>def <span class="ident">write_rzexternal_xml</span></span>(<span>xmlfile: str, velfile_prefix: str, files_init: int, files_count: int, center: Tuple[float, float, float], width: float, *, depth: float = 0, swl: float = 0, smooth: int = 0, movedata: Tuple[float, float, float] = (0, 0, 0), usevelz: bool = False, psi: float = 0.9, beta: float = 1, drift_corr: float = 0, overwrite: bool = False) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Modifies the xml file to add the nessesary fields (in "special") for
@@ -1033,6 +536,9 @@ a relaxation zone simulation.</p>
 <dd>Coefficient <span><span class="MathJax_Preview"> \beta </span><script type="math/tex"> \beta </script></span> of Relaxation Zone weight function, by default 1</dd>
 <dt><strong><code>drift_corr</code></strong> :&ensp;<code>float</code>, optional</dt>
 <dd>Coefficient of drift correction applied in velocity X. 0:Disabled, 1:Full correction. By default 0</dd>
+<dt><strong><code>overwrite</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If <code>True</code> the "rzwaves_external_1d" element in the xml will be overwitten.
+By default <code>False</code>.</dd>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
@@ -1059,6 +565,7 @@ a relaxation zone simulation.</p>
     psi: float = 0.9,
     beta: float = 1,
     drift_corr: float = 0,
+    overwrite: bool = False,
 ) -&gt; None:
     &#34;&#34;&#34;Modifies the xml file to add the nessesary fields (in &#34;special&#34;) for
     a relaxation zone simulation.
@@ -1093,6 +600,9 @@ a relaxation zone simulation.</p>
         Coefficient \\( \\beta \\) of Relaxation Zone weight function, by default 1
     drift_corr : float, optional
         Coefficient of drift correction applied in velocity X. 0:Disabled, 1:Full correction. By default 0
+    overwrite : bool
+        If `True` the &#34;rzwaves_external_1d&#34; element in the xml will be overwitten.
+        By default `False`.
 
     Raises
     ------
@@ -1114,11 +624,17 @@ a relaxation zone simulation.</p>
     elem_special = xml_get_or_create_subelement(elem_exec, &#34;special&#34;)
 
     rz_elem = xml_get_or_create_subelement(elem_special, &#34;relaxationzones&#34;)
-    if rz_elem.find(&#34;rzwaves_external_1d&#34;) is not None:
+    rz1d = rz_elem.find(&#34;rzwaves_external_1d&#34;)
+
+    if not overwrite and rz1d is not None:
         print(
             &#34;*WARNING* [xml file] `rzwaves_external_1d` already exist in xml. Exitting without modifying the xml.&#34;
         )
         return
+
+    if overwrite and rz1d is not None:
+        rz_elem.remove(rz1d)
+
     rz1d = ET.SubElement(rz_elem, &#34;rzwaves_external_1d&#34;)
     ET.SubElement(
         rz1d,

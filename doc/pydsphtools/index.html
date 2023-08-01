@@ -62,11 +62,11 @@ Author: Constantinos Menelaou
 Github: https://github.com/konmenel  
 Year: 2023  
 &#34;&#34;&#34;
-from . import waves, exceptions, stats, mlpistons
+from . import waves, exceptions, stats, mlpistons, relaxzones
 from ._main import *
 
 __version__ = &#34;1.0&#34;
-__all__ = [*_main.__all__, &#34;waves&#34;, &#34;exceptions&#34;, &#34;stats&#34;, &#34;mlpistons&#34;]</code></pre>
+__all__ = [*_main.__all__, &#34;waves&#34;, &#34;exceptions&#34;, &#34;stats&#34;, &#34;mlpistons&#34;, &#34;relaxzones&#34;]</code></pre>
 </details>
 </section>
 <section>
@@ -88,7 +88,7 @@ the Relaxation Zone technic of DualSPHysics.</p></div>
 </dd>
 <dt><code class="name"><a title="pydsphtools.stats" href="stats.html">pydsphtools.stats</a></code></dt>
 <dd>
-<div class="desc"><p>Some module with basic statistics functions.</p></div>
+<div class="desc"><p>A module with basic statistics functions.</p></div>
 </dd>
 <dt><code class="name"><a title="pydsphtools.waves" href="waves.html">pydsphtools.waves</a></code></dt>
 <dd>
@@ -577,10 +577,11 @@ the input. E.g. if <code>int</code> is used the return type will be in <code>int
 </details>
 </dd>
 <dt id="pydsphtools.run_measuretool"><code class="name flex">
-<span>def <span class="ident">run_measuretool</span></span>(<span>dirin: str, *, first_file: int = None, last_file: int = None, file_nums: List[int] = None, dirout: str = None, savecsv: str = 'Measure', saveascii: str = None, savevtk: str = None, csvsep: bool = None, onlypos: Dict[str, Tuple[float, float, float]] = None, onlymk: int = None, onlyid: int = None, include_types: List[str] = None, exclude_types: List[str] = None, points_file=None, pt_list: numpy.ndarray = None, ptls_list: numpy.ndarray = None, ptels_list: numpy.ndarray = None, elevations: Union[bool, float] = None, enable_hvars: List[str] = None, disable_hvars: List[str] = None, enable_vars: List[str] = None, disable_vars: List[str] = None, binpath: str = None, options: str = None) ‑> None</span>
+<span>def <span class="ident">run_measuretool</span></span>(<span>dirin: str, *, first_file: int = None, last_file: int = None, file_nums: List[int] = None, dirout: str = None, savecsv: str = 'Measure', saveascii: str = None, savevtk: str = None, csvsep: bool = None, onlypos: Dict[str, Tuple[float, float, float]] = None, onlymk: int = None, onlyid: int = None, include_types: List[str] = None, exclude_types: List[str] = None, points_file=None, pt_list: numpy.ndarray = None, ptls_list: numpy.ndarray = None, ptels_list: numpy.ndarray = None, kclimit: float = None, kcdummy: float = None, kcusedummy: bool = None, kcmass: bool = None, distinter_2h: float = None, distinter: float = None, elevations: Union[bool, float] = None, enable_hvars: List[str] = None, disable_hvars: List[str] = None, enable_vars: List[str] = None, disable_vars: List[str] = None, binpath: str = None, options: str = None) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>A python wrapper of "measuretool" of DualSPHysics.</p>
+<div class="desc"><p>A python wrapper of "measuretool" of DualSPHysics. If <code>None</code> is used in any
+of the option the default option of the tool will be used (check <code>-h</code> option).</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>dirin</code></strong> :&ensp;<code>str</code></dt>
@@ -632,7 +633,7 @@ By default None</dd>
 [<z0>:<dz>:<nz>]].<br>
 The shape of the array should be (n, 3, 3) or should be a valid array for
 the numpy function <code>numpy.reshape((-1, 3, 3))</code> to be used.
-By default None By default None</dd>
+By default None</dd>
 <dt><strong><code>ptels_list</code></strong> :&ensp;<code>np.ndarray</code>, optional</dt>
 <dd>A list of "POINTSENDLIST" in the format:<br>
 [[<x0>,<dx>:<xf>],<br>
@@ -641,7 +642,23 @@ By default None By default None</dd>
 [<z0>:<dz>:<zf>]].<br>
 The shape of the array should be (n, 3, 3) or should be a valid array for
 the numpy function <code>numpy.reshape((-1, 3, 3))</code> to be used.
-By default None By default None</dd>
+By default None</dd>
+<dt><strong><code>kclimit</code></strong> :&ensp;<code>float</code></dt>
+<dd>Defines the minimum value of sum_wab_vol to apply the Kernel Correction.
+Use value &gt;= 2 to disable this correction. By default None</dd>
+<dt><strong><code>kcdummy</code></strong> :&ensp;<code>float</code></dt>
+<dd>Defines the dummy value for the interpolated quantity if Kernel Correction
+is not applied. By default None</dd>
+<dt><strong><code>kcusedummy</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Defines whether or not to use the dummy value. By default None.</dd>
+<dt><strong><code>kcmass</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Enables/disables Kernel Correction for Mass variable. By default None.</dd>
+<dt><strong><code>distinter_2h</code></strong> :&ensp;<code>float</code></dt>
+<dd>Coefficient of 2h that defines the maximum distance for the interaction
+among particles depending on 2h. By default None.</dd>
+<dt><strong><code>distinter</code></strong> :&ensp;<code>float</code></dt>
+<dd>Defines the maximum distance for the interaction among particles in an
+absolute way. By default None.</dd>
 <dt><strong><code>elevations</code></strong> :&ensp;<code>Union[bool, float]</code>, optional</dt>
 <dd>Fluid elevation is calculated starting from mass values for each point
 x,y. The reference mass to obtain the elevation is calculated according
@@ -695,6 +712,12 @@ doesn't exist.</dd>
     pt_list: np.ndarray = None,
     ptls_list: np.ndarray = None,
     ptels_list: np.ndarray = None,
+    kclimit: float = None,
+    kcdummy: float = None,
+    kcusedummy: bool = None,
+    kcmass: bool = None,
+    distinter_2h: float = None,
+    distinter: float = None,
     elevations: Union[bool, float] = None,
     enable_hvars: List[str] = None,
     disable_hvars: List[str] = None,
@@ -703,7 +726,8 @@ doesn't exist.</dd>
     binpath: str = None,
     options: str = None,
 ) -&gt; None:
-    &#34;&#34;&#34;A python wrapper of &#34;measuretool&#34; of DualSPHysics.
+    &#34;&#34;&#34;A python wrapper of &#34;measuretool&#34; of DualSPHysics. If `None` is used in any
+    of the option the default option of the tool will be used (check `-h` option).
 
     Parameters
     ----------
@@ -755,7 +779,7 @@ doesn't exist.</dd>
          [&lt;z0&gt;:&lt;dz&gt;:&lt;nz&gt;]].  
         The shape of the array should be (n, 3, 3) or should be a valid array for
         the numpy function `numpy.reshape((-1, 3, 3))` to be used.
-        By default None By default None
+        By default None
     ptels_list : np.ndarray, optional
         A list of &#34;POINTSENDLIST&#34; in the format:  
         [[&lt;x0&gt;,&lt;dx&gt;:&lt;xf&gt;],  
@@ -763,7 +787,23 @@ doesn't exist.</dd>
          [&lt;z0&gt;:&lt;dz&gt;:&lt;zf&gt;]].  
         The shape of the array should be (n, 3, 3) or should be a valid array for
         the numpy function `numpy.reshape((-1, 3, 3))` to be used.
-        By default None By default None
+        By default None
+    kclimit : float
+        Defines the minimum value of sum_wab_vol to apply the Kernel Correction.
+        Use value &gt;= 2 to disable this correction. By default None
+    kcdummy : float
+        Defines the dummy value for the interpolated quantity if Kernel Correction
+        is not applied. By default None
+    kcusedummy : bool
+        Defines whether or not to use the dummy value. By default None.
+    kcmass: bool
+        Enables/disables Kernel Correction for Mass variable. By default None.
+    distinter_2h : float
+        Coefficient of 2h that defines the maximum distance for the interaction
+        among particles depending on 2h. By default None.
+    distinter : float
+        Defines the maximum distance for the interaction among particles in an
+        absolute way. By default None.
     elevations : Union[bool, float], optional
         Fluid elevation is calculated starting from mass values for each point
         x,y. The reference mass to obtain the elevation is calculated according
@@ -899,6 +939,25 @@ doesn't exist.</dd>
 
     if points_file is not None:
         opts.extend((&#34;-points&#34;, points_file))
+
+    # Interpolation options
+    if kclimit is not None:
+        opts.append(f&#34;-kclimit:{kclimit}&#34;)
+
+    if kcdummy is not None:
+        opts.append(f&#34;-kcdummy:{kcdummy}&#34;)
+
+    if kcusedummy is not None:
+        opts.append(f&#34;-kcusedummy:{int(kcusedummy)}&#34;)
+
+    if kcmass is not None:
+        opts.append(f&#34;-kcmass:{int(kcmass)}&#34;)
+
+    if distinter_2h is not None:
+        opts.append(f&#34;-distinter_2h:{distinter_2h}&#34;)
+
+    if distinter is not None:
+        opts.append(f&#34;-distinter:{distinter}&#34;)
 
     # Filter options
     if onlymk is not None:
