@@ -358,6 +358,12 @@ def run_measuretool(
     pt_list: np.ndarray = None,
     ptls_list: np.ndarray = None,
     ptels_list: np.ndarray = None,
+    kclimit: float = None,
+    kcdummy: float = None,
+    kcusedummy: bool = None,
+    kcmass: bool = None,
+    distinter_2h: float = None,
+    distinter: float = None,
     elevations: Union[bool, float] = None,
     enable_hvars: List[str] = None,
     disable_hvars: List[str] = None,
@@ -366,7 +372,8 @@ def run_measuretool(
     binpath: str = None,
     options: str = None,
 ) -> None:
-    """A python wrapper of "measuretool" of DualSPHysics.
+    """A python wrapper of "measuretool" of DualSPHysics. If `None` is used in any
+    of the option the default option of the tool will be used (check `-h` option).
 
     Parameters
     ----------
@@ -418,7 +425,7 @@ def run_measuretool(
          [<z0>:<dz>:<nz>]].  
         The shape of the array should be (n, 3, 3) or should be a valid array for
         the numpy function `numpy.reshape((-1, 3, 3))` to be used.
-        By default None By default None
+        By default None
     ptels_list : np.ndarray, optional
         A list of "POINTSENDLIST" in the format:  
         [[<x0>,<dx>:<xf>],  
@@ -426,7 +433,23 @@ def run_measuretool(
          [<z0>:<dz>:<zf>]].  
         The shape of the array should be (n, 3, 3) or should be a valid array for
         the numpy function `numpy.reshape((-1, 3, 3))` to be used.
-        By default None By default None
+        By default None
+    kclimit : float
+        Defines the minimum value of sum_wab_vol to apply the Kernel Correction.
+        Use value >= 2 to disable this correction. By default None
+    kcdummy : float
+        Defines the dummy value for the interpolated quantity if Kernel Correction
+        is not applied. By default None
+    kcusedummy : bool
+        Defines whether or not to use the dummy value. By default None.
+    kcmass: bool
+        Enables/disables Kernel Correction for Mass variable. By default None.
+    distinter_2h : float
+        Coefficient of 2h that defines the maximum distance for the interaction
+        among particles depending on 2h. By default None.
+    distinter : float
+        Defines the maximum distance for the interaction among particles in an
+        absolute way. By default None.
     elevations : Union[bool, float], optional
         Fluid elevation is calculated starting from mass values for each point
         x,y. The reference mass to obtain the elevation is calculated according
@@ -562,6 +585,25 @@ def run_measuretool(
 
     if points_file is not None:
         opts.extend(("-points", points_file))
+
+    # Interpolation options
+    if kclimit is not None:
+        opts.append(f"-kclimit:{kclimit}")
+
+    if kcdummy is not None:
+        opts.append(f"-kcdummy:{kcdummy}")
+
+    if kcusedummy is not None:
+        opts.append(f"-kcusedummy:{int(kcusedummy)}")
+
+    if kcmass is not None:
+        opts.append(f"-kcmass:{int(kcmass)}")
+
+    if distinter_2h is not None:
+        opts.append(f"-distinter_2h:{distinter_2h}")
+
+    if distinter is not None:
+        opts.append(f"-distinter:{distinter}")
 
     # Filter options
     if onlymk is not None:

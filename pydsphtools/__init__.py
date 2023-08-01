@@ -17,8 +17,8 @@ Author: Constantinos Menelaou
 Github: https://github.com/konmenel  
 Year: 2023  
 """
-from . import waves, exceptions, stats, mlpistons
+from . import waves, exceptions, stats, mlpistons, relaxzones
 from ._main import *
 
 __version__ = "1.0"
-__all__ = [*_main.__all__, "waves", "exceptions", "stats", "mlpistons"]
+__all__ = [*_main.__all__, "waves", "exceptions", "stats", "mlpistons", "relaxzones"]
