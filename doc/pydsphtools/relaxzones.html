@@ -50,7 +50,7 @@ from ._relaxzones import __all__</code></pre>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pydsphtools.relaxzones.relaxzone_from_dsph"><code class="name flex">
-<span>def <span class="ident">relaxzone_from_dsph</span></span>(<span>xmlfile: str, dirin: str, xloc: float, yloc: float, width: float, zrange: Tuple[float, float], xlayers: int, zlayers: int, *, depth: float = 0, swl: float = 0, usevelz: bool = False, smooth: int = 0, psi: float = 0.9, beta: float = 1, drift_corr: float = 0, file_prefix: str = 'RZ_SPH', dirout: str = 'RelaxationZones', binpath: str = None, overwrite_vel: bool = False, overwrite_xml: bool = False, cleanup: bool = False, dt: float = 0.01, tmin: float = 0.0, tmax: float = 0.0) ‑> None</span>
+<span>def <span class="ident">relaxzone_from_dsph</span></span>(<span>xmlfile: str, dirin: str, xloc: float, yloc: float, width: float, zrange: Tuple[float, float], xlayers: int, zlayers: int, *, first_layer: float = 4, last_layer: float = 2, depth: float = 0, swl: float = 0, usevelz: bool = False, smooth: int = 0, psi: float = 0.9, beta: float = 1, drift_corr: float = 0, file_prefix: str = 'RZ_SPH', dirout: str = 'RelaxationZones', binpath: str = None, overwrite_vel: bool = False, overwrite_xml: bool = False, cleanup: bool = False, dt: float = 0.01, tmin: float = 0.0, tmax: float = 0.0) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Create the nessesary csv file to run a DualSPHysics Multi-Layer 1D Piston
@@ -77,6 +77,14 @@ code assumes a ".xml" at the end.</dd>
 <dd>The number of layers within the relaxation zone.</dd>
 <dt><strong><code>ylayers</code></strong> :&ensp;<code>int</code></dt>
 <dd>The number of layers in the vertical direction.</dd>
+<dt><strong><code>first_layer</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>The distance from the free surface where the first layer in the
+vertical direction where the velocities will be calculated expressed
+in "dp". E.g. <code>first_layer = 4</code> =&gt; z0 = 4*dp. By default, 4.</dd>
+<dt><strong><code>last_layer</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>The distance from the free surface where the first layer in the
+vertical direction where the velocities will be calculated expressed
+in "dp". E.g. <code>last_layer = 4</code> =&gt; z0 = 4*dp. By default, 2.</dd>
 <dt><strong><code>depth</code></strong> :&ensp;<code>float</code>, optional</dt>
 <dd>Water depth. It is necessary for drift correction, by default 0</dd>
 <dt><strong><code>swl</code></strong> :&ensp;<code>float</code>, optional</dt>
@@ -141,6 +149,8 @@ run but modification will not be made no valid xml is provided.</dd>
     xlayers: int,
     zlayers: int,
     *,
+    first_layer: float = 4,
+    last_layer: float = 2,
     depth: float = 0,
     swl: float = 0,
     usevelz: bool = False,
@@ -183,6 +193,14 @@ run but modification will not be made no valid xml is provided.</dd>
         The number of layers within the relaxation zone.
     ylayers : int
         The number of layers in the vertical direction.
+    first_layer : float, optional
+        The distance from the free surface where the first layer in the
+        vertical direction where the velocities will be calculated expressed
+        in &#34;dp&#34;. E.g. `first_layer = 4` =&gt; z0 = 4*dp. By default, 4.
+    last_layer : float, optional
+        The distance from the free surface where the first layer in the
+        vertical direction where the velocities will be calculated expressed
+        in &#34;dp&#34;. E.g. `last_layer = 4` =&gt; z0 = 4*dp. By default, 2.
     depth : float, optional
         Water depth. It is necessary for drift correction, by default 0
     swl : float, optional
@@ -245,8 +263,8 @@ run but modification will not be made no valid xml is provided.</dd>
     )
 
     dp = get_dp(dirin)
-    first_dist = 0  # 4 * dp  # Distance of first point from free surface
-    last_dist = 2 * dp  # Distance of last point from free surface
+    first_dist = first_layer * dp  # Distance of first point from free surface
+    last_dist = last_layer * dp  # Distance of last point from free surface
 
     tmax = tmax or get_var(dirin, &#34;PhysicalTime&#34;, float)
     if tmax &lt;= tmin:
@@ -326,10 +344,6 @@ run but modification will not be made no valid xml is provided.</dd>
         zs_per_time.append((zs))
 
     # Find velocity data from the points
-    outfiles_dir = f&#34;{xmldir}/{dirout}&#34;
-    if not os.path.exists(outfiles_dir):
-        os.mkdir(outfiles_dir)
-
     disable_vars = [&#34;all&#34;]
     enable_vars = [&#34;vel&#34;]
 
@@ -384,10 +398,6 @@ run but modification will not be made no valid xml is provided.</dd>
         interp_pnts[j] = interp_pnts[j][tidx0:tidxf, :]
         interp_velx[j] = interp_velx[j][tidx0:tidxf]
         interp_velz[j] = interp_velz[j][tidx0:tidxf]
-
-        # np.savetxt(f&#34;interp_pnts_{j}.csv&#34;, interp_pnts[j])
-        # np.savetxt(f&#34;interp_velx_{j}.csv&#34;, interp_velx[j])
-        # np.savetxt(f&#34;interp_velz_{j}.csv&#34;, interp_velz[j])
 
     # Cubic spline interpolation of velocity at dt
     time_series = np.arange(tmin, tmax + dt, dt)
@@ -458,6 +468,10 @@ run but modification will not be made no valid xml is provided.</dd>
             outfiles_z[key].iloc[i, zlayers + 1 :] = velz[j][idx0:idxf]
 
     # Save the input files
+    outfiles_dir = f&#34;{xmldir}/{dirout}&#34;
+    if not os.path.exists(outfiles_dir):
+        os.mkdir(outfiles_dir)
+    
     for i in range(xlayers):
         for vel, outfiles in zip((&#34;velx&#34;, &#34;velz&#34;), (outfiles_x, outfiles_z)):
             fname = f&#34;{outfiles_dir}/{file_prefix}_{vel}_x{i:02d}_y00.csv&#34;
@@ -511,7 +525,8 @@ a relaxation zone simulation.</p>
 <dt><strong><code>xmlfile</code></strong> :&ensp;<code>str</code></dt>
 <dd>The path to the xml file.</dd>
 <dt><strong><code>velfile_prefix</code></strong> :&ensp;<code>str</code></dt>
-<dd>The prefix of the velocity files. To be used for the value in <code>filesvel</code> element.</dd>
+<dd>The prefix of the velocity files. To be used for the value in <code>filesvel</code>
+element.</dd>
 <dt><strong><code>files_init</code></strong> :&ensp;<code>int</code></dt>
 <dd>The number of the first velocity files.</dd>
 <dt><strong><code>files_count</code></strong> :&ensp;<code>int</code></dt>
@@ -523,7 +538,8 @@ a relaxation zone simulation.</p>
 <dt><strong><code>depth</code></strong> :&ensp;<code>float</code>, optional</dt>
 <dd>Water depth. It is necessary for drift correction, by default 0</dd>
 <dt><strong><code>swl</code></strong> :&ensp;<code>float</code>, optional</dt>
-<dd>Still water level (free-surface). It is necessary for drift correction, by default 0</dd>
+<dd>Still water level (free-surface). It is necessary for drift correction, by
+default 0</dd>
 <dt><strong><code>smooth</code></strong> :&ensp;<code>int</code>, optional</dt>
 <dd>Smooth motion level, by default 0</dd>
 <dt><strong><code>movedata</code></strong> :&ensp;<code>Tuple[float, float, float]</code>, optional</dt>
@@ -535,10 +551,11 @@ a relaxation zone simulation.</p>
 <dt><strong><code>beta</code></strong> :&ensp;<code>float</code>, optional</dt>
 <dd>Coefficient <span><span class="MathJax_Preview"> \beta </span><script type="math/tex"> \beta </script></span> of Relaxation Zone weight function, by default 1</dd>
 <dt><strong><code>drift_corr</code></strong> :&ensp;<code>float</code>, optional</dt>
-<dd>Coefficient of drift correction applied in velocity X. 0:Disabled, 1:Full correction. By default 0</dd>
+<dd>Coefficient of drift correction applied in velocity X. 0:Disabled, 1:Full
+correction. By default 0</dd>
 <dt><strong><code>overwrite</code></strong> :&ensp;<code>bool</code></dt>
-<dd>If <code>True</code> the "rzwaves_external_1d" element in the xml will be overwitten.
-By default <code>False</code>.</dd>
+<dd>If <code>True</code> the "rzwaves_external_1d" element in the xml will be overwitten
+if already exists. By default <code>False</code>.</dd>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
@@ -575,7 +592,8 @@ By default <code>False</code>.</dd>
     xmlfile : str
         The path to the xml file.
     velfile_prefix : str
-        The prefix of the velocity files. To be used for the value in `filesvel` element.
+        The prefix of the velocity files. To be used for the value in `filesvel`
+        element.
     files_init : int
         The number of the first velocity files.
     files_count : int
@@ -587,7 +605,8 @@ By default <code>False</code>.</dd>
     depth : float, optional
         Water depth. It is necessary for drift correction, by default 0
     swl : float, optional
-        Still water level (free-surface). It is necessary for drift correction, by default 0
+        Still water level (free-surface). It is necessary for drift correction, by
+        default 0
     smooth : int, optional
         Smooth motion level, by default 0
     movedata : Tuple[float, float, float], optional
@@ -599,10 +618,11 @@ By default <code>False</code>.</dd>
     beta : float, optional
         Coefficient \\( \\beta \\) of Relaxation Zone weight function, by default 1
     drift_corr : float, optional
-        Coefficient of drift correction applied in velocity X. 0:Disabled, 1:Full correction. By default 0
+        Coefficient of drift correction applied in velocity X. 0:Disabled, 1:Full
+        correction. By default 0
     overwrite : bool
-        If `True` the &#34;rzwaves_external_1d&#34; element in the xml will be overwitten.
-        By default `False`.
+        If `True` the &#34;rzwaves_external_1d&#34; element in the xml will be overwitten
+        if already exists. By default `False`.
 
     Raises
     ------
