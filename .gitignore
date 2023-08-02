@@ -1,6 +1,9 @@
 # DualSPHysics doc file symlink
 DSPH_docs
 
+# Ignore testing notebook
+test.ipynb
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

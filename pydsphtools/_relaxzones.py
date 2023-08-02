@@ -27,6 +27,8 @@ def relaxzone_from_dsph(
     xlayers: int,
     zlayers: int,
     *,
+    first_layer: float = 4,
+    last_layer: float = 2,
     depth: float = 0,
     swl: float = 0,
     usevelz: bool = False,
@@ -69,6 +71,14 @@ def relaxzone_from_dsph(
         The number of layers within the relaxation zone.
     ylayers : int
         The number of layers in the vertical direction.
+    first_layer : float, optional
+        The distance from the free surface where the first layer in the
+        vertical direction where the velocities will be calculated expressed
+        in "dp". E.g. `first_layer = 4` => z0 = 4*dp. By default, 4.
+    last_layer : float, optional
+        The distance from the free surface where the first layer in the
+        vertical direction where the velocities will be calculated expressed
+        in "dp". E.g. `last_layer = 4` => z0 = 4*dp. By default, 2.
     depth : float, optional
         Water depth. It is necessary for drift correction, by default 0
     swl : float, optional
@@ -131,8 +141,8 @@ def relaxzone_from_dsph(
     )
 
     dp = get_dp(dirin)
-    first_dist = 0  # 4 * dp  # Distance of first point from free surface
-    last_dist = 2 * dp  # Distance of last point from free surface
+    first_dist = first_layer * dp  # Distance of first point from free surface
+    last_dist = last_layer * dp  # Distance of last point from free surface
 
     tmax = tmax or get_var(dirin, "PhysicalTime", float)
     if tmax <= tmin:
@@ -212,10 +222,6 @@ def relaxzone_from_dsph(
         zs_per_time.append((zs))
 
     # Find velocity data from the points
-    outfiles_dir = f"{xmldir}/{dirout}"
-    if not os.path.exists(outfiles_dir):
-        os.mkdir(outfiles_dir)
-
     disable_vars = ["all"]
     enable_vars = ["vel"]
 
@@ -270,10 +276,6 @@ def relaxzone_from_dsph(
         interp_pnts[j] = interp_pnts[j][tidx0:tidxf, :]
         interp_velx[j] = interp_velx[j][tidx0:tidxf]
         interp_velz[j] = interp_velz[j][tidx0:tidxf]
-
-        # np.savetxt(f"interp_pnts_{j}.csv", interp_pnts[j])
-        # np.savetxt(f"interp_velx_{j}.csv", interp_velx[j])
-        # np.savetxt(f"interp_velz_{j}.csv", interp_velz[j])
 
     # Cubic spline interpolation of velocity at dt
     time_series = np.arange(tmin, tmax + dt, dt)
@@ -344,6 +346,10 @@ def relaxzone_from_dsph(
             outfiles_z[key].iloc[i, zlayers + 1 :] = velz[j][idx0:idxf]
 
     # Save the input files
+    outfiles_dir = f"{xmldir}/{dirout}"
+    if not os.path.exists(outfiles_dir):
+        os.mkdir(outfiles_dir)
+    
     for i in range(xlayers):
         for vel, outfiles in zip(("velx", "velz"), (outfiles_x, outfiles_z)):
             fname = f"{outfiles_dir}/{file_prefix}_{vel}_x{i:02d}_y00.csv"
@@ -412,7 +418,8 @@ def write_rzexternal_xml(
     xmlfile : str
         The path to the xml file.
     velfile_prefix : str
-        The prefix of the velocity files. To be used for the value in `filesvel` element.
+        The prefix of the velocity files. To be used for the value in `filesvel`
+        element.
     files_init : int
         The number of the first velocity files.
     files_count : int
@@ -424,7 +431,8 @@ def write_rzexternal_xml(
     depth : float, optional
         Water depth. It is necessary for drift correction, by default 0
     swl : float, optional
-        Still water level (free-surface). It is necessary for drift correction, by default 0
+        Still water level (free-surface). It is necessary for drift correction, by
+        default 0
     smooth : int, optional
         Smooth motion level, by default 0
     movedata : Tuple[float, float, float], optional
@@ -436,10 +444,11 @@ def write_rzexternal_xml(
     beta : float, optional
         Coefficient \\( \\beta \\) of Relaxation Zone weight function, by default 1
     drift_corr : float, optional
-        Coefficient of drift correction applied in velocity X. 0:Disabled, 1:Full correction. By default 0
+        Coefficient of drift correction applied in velocity X. 0:Disabled, 1:Full
+        correction. By default 0
     overwrite : bool
-        If `True` the "rzwaves_external_1d" element in the xml will be overwitten.
-        By default `False`.
+        If `True` the "rzwaves_external_1d" element in the xml will be overwitten
+        if already exists. By default `False`.
 
     Raises
     ------
