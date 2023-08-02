@@ -49,3 +49,6 @@ To install the package locally simply run:
 ```console
 $ pip install -e .
 ```
+
+# Documentation
+The documentation generated with [pdoc](https://pdoc3.github.io/pdoc/) of the package can be found in the `doc/` directory. Open the file `doc/pydsphtools/index.html` in the browser to read it.
