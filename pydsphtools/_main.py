@@ -371,13 +371,14 @@ def run_measuretool(
     disable_vars: List[str] = None,
     binpath: str = None,
     options: str = None,
+    print_options: bool = False,
 ) -> None:
     """A python wrapper of "measuretool" of DualSPHysics. If `None` is used in any
     of the option the default option of the tool will be used (check `-h` option).
 
     Parameters
     ----------
-    dirin : str
+    dirin : path-like or str
         Indicates the directory with particle data.
     first_file : int, optional
         Indicates the first file to be computed. By default None
@@ -385,7 +386,7 @@ def run_measuretool(
         Indicates the last file to be computed. By default None
     file_nums : List[int], optional
         Indicates the number of files to be processed. By default None
-    dirout : str, optional
+    dirout : path-like or str, optional
         The directory of the output of measuretool. By default None
     savecsv : str, optional
         Generates one CSV file with the time history of the obtained values.
@@ -419,18 +420,18 @@ def run_measuretool(
         of the array should be (n, 3) or should be a valid array for the numpy
         function `numpy.reshape((-1, 3))` to be used.  By default None
     ptls_list : np.ndarray, optional
-        A list of "POINTSLIST" in the format:  
-        [[<x0>,<dx>:<nx>],  
-         [<y0>:<dy>:<ny>],  
-         [<z0>:<dz>:<nz>]].  
+        A list of "POINTSLIST" in the format:
+        [[<x0>,<dx>:<nx>],
+         [<y0>:<dy>:<ny>],
+         [<z0>:<dz>:<nz>]].
         The shape of the array should be (n, 3, 3) or should be a valid array for
         the numpy function `numpy.reshape((-1, 3, 3))` to be used.
         By default None
     ptels_list : np.ndarray, optional
-        A list of "POINTSENDLIST" in the format:  
-        [[<x0>,<dx>:<xf>],  
+        A list of "POINTSENDLIST" in the format:
+        [[<x0>,<dx>:<xf>],
          [<y0>:<dy>:<yf>]  ,
-         [<z0>:<dz>:<zf>]].  
+         [<z0>:<dz>:<zf>]].
         The shape of the array should be (n, 3, 3) or should be a valid array for
         the numpy function `numpy.reshape((-1, 3, 3))` to be used.
         By default None
@@ -472,9 +473,13 @@ def run_measuretool(
     options : str, optional
         A string of the command line option to be pass. If this argument is pass
         all other arguments are ignored. By default None.
+    print_options : bool, optional
+        if `True` prints the options pass before the execution. By default, `False`.
 
     Raises
     ------
+    subprocess.CalledProcessError
+        If the exitcode is not 0
     Exception
         If a binary path is not passed and an environment variable "DUALSPH_HOME"
         doesn't exist.
@@ -490,22 +495,29 @@ def run_measuretool(
         binpath = f"{os.environ['DUALSPH_HOME']}/bin"
 
     plat = platform.system()
+    binpath = Path(binpath)
+    dirin = Path(dirin)
     if plat == "Linux":
-        dirbin = f"{binpath}/linux"
-        binary = f"{dirbin}/MeasureTool_linux64"
+        dirbin = binpath / "linux"
+        binary = dirbin / "MeasureTool_linux64"
     elif plat == "Windows":
-        dirbin = f"{binpath}/windows"
-        binary = f"{dirbin}/MeasureTool_win64"
+        dirbin = binpath / "windows"
+        binary = dirbin / "MeasureTool_win64"
 
     # If `options are specified run use those.
     if options is not None:
+        if print_options:
+            print(f'Running MeasureTool with options: "{options}"')
         subprocess.run([binary, *options.split(" ")])
+        _run_and_capture_measuretool([binary, *options.split(" ")])
         return
 
     if dirout is None:
-        dirout = f"{dirin}/measuretool"
+        dirout = dirin / "measuretool"
+    else:
+        dirout = Path(dirout)
 
-    opts = ["-dirin", f"{dirin}/data"]
+    opts = ["-dirin", str(dirin / "data")]
     types = []
     vars = []
     hvars = []
@@ -524,13 +536,13 @@ def run_measuretool(
 
     # Save options
     if savecsv is not None:
-        opts.extend(("-savecsv", f"{dirout}/{savecsv}"))
+        opts.extend(("-savecsv", str(dirout / savecsv)))
 
     if savevtk is not None:
-        opts.extend(("-savevtk", f"{dirout}/{savevtk}"))
+        opts.extend(("-savevtk", str(dirout / savevtk)))
 
     if saveascii is not None:
-        opts.extend(("-saveascii", f"{dirout}/{saveascii}"))
+        opts.extend(("-saveascii", str(dirout / saveascii)))
 
     if csvsep is not None:
         opts.append(f"-csvsep:{int(savecsv)}")
@@ -659,10 +671,58 @@ def run_measuretool(
         hvars_to_str = "-hvars:" + ",".join(hvars)
         opts.append(hvars_to_str)
 
-    subprocess.run([binary, *opts])
+    if print_options:
+        print(f"Running MeasureTool with options: \"{' '.join(opts)}\"")
+    _run_and_capture_measuretool([binary, *opts])
 
 
-def xml_get_or_create_subelement(parent_elem, child: str):
+def _run_and_capture_measuretool(cmd) -> None:
+    """Runs MeasureTool and captures stdout.
+
+    Parameters
+    ----------
+    cmd : List[str]
+        The command list to be passed to `subprocess.Popen`
+
+    Raises
+    ------
+    subprocess.CalledProcessError
+        If the exitcode is not 0
+    """
+    line_re = re.compile("LoadData>|Save.*>")
+    with subprocess.Popen(
+        cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True, universal_newlines=True, bufsize=1
+    ) as process:
+        while process.poll() is None:
+            line = process.stdout.readline()
+
+            # print(line)
+            if line_re.match(line):
+                print(line, end="", flush=True)
+
+        for _ in process.stdout.readlines():
+            if line_re.match(line):
+                print(line, end="", flush=True)
+
+        if process.returncode != 0:
+            raise subprocess.CalledProcessError(process.returncode, process.args)
+
+
+def xml_get_or_create_subelement(parent_elem: ET.Element, child: str):
+    """Get or created a subelement of an "lxml" element.
+
+    Parameters
+    ----------
+    parent_elem : lxml.ET.Element
+        The parent element
+    child : str
+        The name of the child element
+
+    Returns
+    -------
+    lxml.ET.SubElement
+        The child element if it exist or a new child element.
+    """
     child_elem = parent_elem.find(child)
     if child_elem is None:
         child_elem = ET.SubElement(parent_elem, child)
