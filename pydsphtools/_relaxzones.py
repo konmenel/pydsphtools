@@ -104,7 +104,7 @@ def relaxzone_from_dsph(
     binpath : str, optional
         The path of the binary folder of DualSPHysics. If not defined the an
         environment variable "DUALSPH_HOME" must be defined. By default None.
-    overwrite_vel : bool
+    overwrite_fs : bool
         If `True` free surface data will be overwritten. By default `False`.
     overwrite_vel : bool
         If `True` the raw velocity data files will be overwritten. By default
