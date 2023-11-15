@@ -6,5 +6,17 @@ simulations using the Multi-Layer Pistons approach of DualSPHysics.
 # https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
 # including this file, may be copied, modified, propagated, or distributed except
 # according to the terms contained in the LICENSE file.
-from ._mlpistons import *
-from ._mlpistons import __all__
+from ._mlpistons import (
+    mlpistons2d_from_dsph,
+    mlpistons1d_from_dsph,
+    write_mlpiston2d_xml,
+    write_mlpiston1d_xml,
+)
+
+
+__all__ = [
+    "mlpistons2d_from_dsph",
+    "mlpistons1d_from_dsph",
+    "write_mlpiston2d_xml",
+    "write_mlpiston1d_xml",
+]

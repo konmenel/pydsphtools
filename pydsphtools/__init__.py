@@ -18,7 +18,38 @@ Github: https://github.com/konmenel
 Year: 2023  
 """
 from . import waves, exceptions, stats, mlpistons, relaxzones
-from ._main import *
+from ._main import (
+    DEG2RAD,
+    RAD2DEG,
+    RE_PATTERNS,
+    read_and_fix_csv,
+    get_dp,
+    get_var,
+    get_usr_def_var,
+    get_chrono_mass,
+    get_chrono_inertia,
+    get_chrono_property,
+    run_measuretool,
+    xml_get_or_create_subelement,
+)
 
 __version__ = "1.0"
-__all__ = [*_main.__all__, "waves", "exceptions", "stats", "mlpistons", "relaxzones"]
+__all__ = [
+    "DEG2RAD",
+    "RAD2DEG",
+    "RE_PATTERNS",
+    "read_and_fix_csv",
+    "get_dp",
+    "get_var",
+    "get_usr_def_var",
+    "get_chrono_mass",
+    "get_chrono_inertia",
+    "get_chrono_property",
+    "run_measuretool",
+    "xml_get_or_create_subelement",
+    "waves",
+    "exceptions",
+    "stats",
+    "mlpistons",
+    "relaxzones",
+]

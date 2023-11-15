@@ -5,18 +5,12 @@
 # https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
 # including this file, may be copied, modified, propagated, or distributed except
 # according to the terms contained in the LICENSE file.
-from ._imports import *
-from ._main import *
+from typing import Union, Tuple, Optional
 
-__all__ = [
-    "find_celerity",
-    "find_wavenumber",
-    "ricker_spectrum",
-    "ricker_spectrum_simple",
-    "ricker_wavelet_simple",
-    "wavemaker_transfer_func",
-    "generate_ricker_signal",
-]
+import numpy as np
+from numpy.typing import ArrayLike
+from scipy import optimize
+from ._main import RAD2DEG
 
 
 def find_wavenumber(
@@ -46,6 +40,9 @@ def find_wavenumber(
 
     .. math::
       \\omega^2 = gk*\\tanh(kh)
+
+    where \\( k \\) is the wavenumber, \\( h \\) is the depth and \\( \\omega \\)
+    is the angular frequency.
     """
 
     def _func(wavenumber, omega, depth):
@@ -80,6 +77,15 @@ def find_celerity(
     float or numpy array
         The culculated celerity. If an array-like is passed in `wavenumber`
         a numppy array is returned.
+
+    Notes
+    -----
+    The celerity \\( c \\) is calulated from:
+
+    .. math::
+      c = \\sqrt{\\frac{g*\\tanh(kh)}{k}}
+
+    where \\( k \\) is the wavenumber and \\( h \\) is the depth.
     """
     return np.sqrt(9.81 * np.tanh(wavenumber * depth) / wavenumber)
 
@@ -87,7 +93,8 @@ def find_celerity(
 def ricker_spectrum(
     omega: Union[float, np.ndarray], Ar: float, T: float, a: float, m: float
 ) -> Union[float, np.ndarray]:
-    """A more general ricker spectrum implementation based on O.Kimmoun and L.Brosset (2010).
+    """A more general ricker spectrum implementation based on O.Kimmoun and L.Brosset
+    (2010).
 
     Parameters
     ----------
@@ -149,7 +156,8 @@ def ricker_spectrum_simple(
     The spectrum is calculated using the equation:
 
     .. math::
-      \\frac{2}{\\sqrt{\\pi}} \\frac{\\omega^2}{\\omega_p^3} e^\\frac{-\\omega^2}{\\omega_p^2}
+      \\frac{2}{\\sqrt{\\pi}} \\frac{\\omega^2}{\\omega_p^3}
+      e^\\frac{-\\omega^2}{\\omega_p^2}
     """
     SQRT_PI = 1.7724538509055159
     omega2 = omega**2
@@ -196,8 +204,9 @@ def wavemaker_transfer_func(
     wv_type : str, optional
         The type of the wavemaker, either "piston" or "flap". By default "flap"
     hinge : float, optional
-        The distance to the bottom of the wavemaker from the still water free surface. If
-        `None` is passed, `hinge` is assumed to be equal to `depth`. By default `None`.
+        The distance to the bottom of the wavemaker from the still water free surface.
+        If `None` is passed, `hinge` is assumed to be equal to `depth`. By default,
+        `None`.
 
     Returns
     -------
@@ -220,14 +229,17 @@ def wavemaker_transfer_func(
     For piston type wavemaker:
 
     .. math::
-      \\left( \\frac{H}{S} \\right)_{piston} = \\frac{2[\\cosh(2kh) - 1]}{2kh + \\sinh(2kh)}
+      \\left( \\frac{H}{S} \\right)_{piston} = \\frac{2[\\cosh(2kh) - 1]}{2kh +
+      \\sinh(2kh)}
 
     For flap type wavemaker:
 
     .. math::
-      \\left( \\frac{H}{S} \\right)_{flap} = 4\\frac{\\sinh(kh)}{kd}\\frac{\\cosh[k(h - d)] + kd\\sinh(kh) - \\cosh(kh)}{2kh + \\sinh(2kh)}
+      \\left( \\frac{H}{S} \\right)_{flap} = 4\\frac{\\sinh(kh)}{kd}
+      \\frac{\\cosh[k(h - d)] + kd\\sinh(kh) - \\cosh(kh)}{2kh + \\sinh(2kh)}
 
-    where \\( k \\) is the wavenumber, \\( h \\) is the depth and \\( d \\) is the hinge.
+    where \\( k \\) is the wavenumber, \\( h \\) is the depth and \\( d \\)
+    is the hinge.
     """
     kh = depth * wavenumber
     kh2 = kh * 2.0
@@ -283,8 +295,9 @@ def generate_ricker_signal(
     filepath : str, optional
         The name of the output file. The path may also be passed. By default "output"
     hinge: float, optional
-        The distance to the bottom of the wavemaker from the still water free surface. If
-        `None` is passed, `hinge` is assumed to be equal to `depth`. By default `None`.
+        The distance to the bottom of the wavemaker from the still water free surface.
+        If `None` is passed, `hinge` is assumed to be equal to `depth`. By default
+        `None`.
     angle_units : str, optional
         The angle units that will be used, either "rad" or "deg" for the output of a
         flap waverider is used. By default "rad"
@@ -311,7 +324,10 @@ def generate_ricker_signal(
     angle_units = angle_units.lower()
     if angle_units not in ("rad", "deg"):
         raise Exception(
-            f"The `angle_units` can either be 'rad' or 'deg'. '{angle_units}' was found."
+            (
+                "The `angle_units` can either be 'rad' or 'deg'"
+                f" but '{angle_units}' was found."
+            )
         )
 
     wp = 2.0 * np.pi * peak_frequency

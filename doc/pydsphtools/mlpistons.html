@@ -3,17 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.8.1" />
+<meta name="generator" content="pdoc 0.10.0" />
 <title>pydsphtools.mlpistons API documentation</title>
 <meta name="description" content="The contains functions that allows for couple between two DualSPHysics
 simulations using the Multi-Layer Pistons approach of DualSPHysics." />
-<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
-<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
-<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
 <style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script async src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS_CHTML'></script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
 </head>
 <body>
 <main>
@@ -36,8 +38,20 @@ simulations using the Multi-Layer Pistons approach of DualSPHysics.
 # https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
 # including this file, may be copied, modified, propagated, or distributed except
 # according to the terms contained in the LICENSE file.
-from ._mlpistons import *
-from ._mlpistons import __all__</code></pre>
+from ._mlpistons import (
+    mlpistons2d_from_dsph,
+    mlpistons1d_from_dsph,
+    write_mlpiston2d_xml,
+    write_mlpiston1d_xml,
+)
+
+
+__all__ = [
+    &#34;mlpistons2d_from_dsph&#34;,
+    &#34;mlpistons1d_from_dsph&#34;,
+    &#34;write_mlpiston2d_xml&#34;,
+    &#34;write_mlpiston1d_xml&#34;,
+]</code></pre>
 </details>
 </section>
 <section>
@@ -48,7 +62,7 @@ from ._mlpistons import __all__</code></pre>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pydsphtools.mlpistons.mlpistons1d_from_dsph"><code class="name flex">
-<span>def <span class="ident">mlpistons1d_from_dsph</span></span>(<span>xmlfile: str, dirin: str, xloc: float, yloc: float, zrange: Tuple[float, float], layers: int, mkbound: int, *, smooth: int = 0, file_prefix: str = 'MLPiston1D_SPH_velx', dirout: str = 'MLPiston1D', binpath: str = None, overwrite: bool = False, cleanup: bool = False, dt: float = 0.01, tmin: float = 0.0, tmax: float = 0.0) -> NoneType</span>
+<span>def <span class="ident">mlpistons1d_from_dsph</span></span>(<span>xmlfile: str, dirin: str, xloc: float, yloc: float, zrange: Tuple[float, float], layers: int, mkbound: int, *, smooth: int = 0, file_prefix: str = 'MLPiston1D_SPH_velx', dirout: str = 'MLPiston1D', binpath: str = None, overwrite: bool = False, cleanup: bool = False, dt: float = 0.01, tmin: float = 0.0, tmax: float = 0.0) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Create the nessesary csv file to run a DualSPHysics Multi-Layer 1D Piston
@@ -191,7 +205,10 @@ run but modification will not be made no valid xml is provided.</dd>
     config_fpath = f&#34;{dirin}/measuretool/MLPiston1D_config.csv&#34;
     freesurface_fname = &#34;MLPiston1D_freesurf&#34;
     freesurface_fpath = f&#34;{dirin}/measuretool/{freesurface_fname}_Elevation.csv&#34;
-    rawdata_fname = lambda p: f&#34;MLPiston1D_data_raw_Part{p}&#34;
+
+    def rawdata_fname(p):
+        return f&#34;MLPiston1D_data_raw_Part{p}&#34;
+
     rawdata_fpath = (
         lambda p: f&#34;{dirin}/measuretool/rawveldata/{rawdata_fname(p)}_Vel.csv&#34;
     )
@@ -248,8 +265,11 @@ run but modification will not be made no valid xml is provided.</dd>
 
     # Read elevations
     df_fs = pd.read_csv(freesurface_fpath, header=3, sep=&#34;;&#34;)
+
     # remove units, eg `Vel [m/s^2]` -&gt; `Vel`
-    _sub_map = lambda x: re.sub(r&#34;\ \[[A-Za-z\^0-9/]*\]$&#34;, &#34;&#34;, x)
+    def _sub_map(x):
+        return re.sub(r&#34;\ \[[A-Za-z\^0-9/]*\]$&#34;, &#34;&#34;, x)
+
     df_fs.columns = df_fs.columns.map(_sub_map)
 
     # Create the point where the velocities will be calculated
@@ -314,7 +334,9 @@ run but modification will not be made no valid xml is provided.</dd>
     szi = len(time_series) * layers
     interp_xi = np.zeros((szi, 2))
 
-    _get_key_fmt = lambda x, y: f&#34;px:;{x};py:;{y}&#34;
+    def _get_key_fmt(x, y):
+        return f&#34;px:;{x};py:;{y}&#34;
+
     df = pd.DataFrame(columns=columns, index=range(len(time_series)))
     outfile = {_get_key_fmt(xloc, yloc): df.copy()}
 
@@ -368,7 +390,7 @@ run but modification will not be made no valid xml is provided.</dd>
 </details>
 </dd>
 <dt id="pydsphtools.mlpistons.mlpistons2d_from_dsph"><code class="name flex">
-<span>def <span class="ident">mlpistons2d_from_dsph</span></span>(<span>xmlfile: str, dirin: str, xloc: float, yrange: Tuple[float, float], zrange: Tuple[float, float], ylayers: int, zlayers: int, mkbound: int, *, smoothz: int = 0, smoothy: int = 0, file_prefix: str = 'MLPiston2D_SPH_velx', dirout: str = 'MLPiston2D', binpath: str = None) -> NoneType</span>
+<span>def <span class="ident">mlpistons2d_from_dsph</span></span>(<span>xmlfile: str, dirin: str, xloc: float, yrange: Tuple[float, float], zrange: Tuple[float, float], ylayers: int, zlayers: int, mkbound: int, *, smoothz: int = 0, smoothy: int = 0, file_prefix: str = 'MLPiston2D_SPH_velx', dirout: str = 'MLPiston2D', binpath: str = None) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Create the nessesary csv file to run a DualSPHysics Multi-Layer 2D Piston
@@ -563,7 +585,10 @@ run but modification will not be made no valid xml is provided.</dd>
             *(f&#34;vel_{i}&#34; for i in range(zlayers)),
         ]
     )
-    _get_key_fmt = lambda x, y: f&#34;px:;{x};py:;{y}&#34;
+
+    def _get_key_fmt(x, y):
+        return f&#34;px:;{x};py:;{y}&#34;
+
     dfs = pd.DataFrame(columns=columns, index=range(len(df_fs.Part)))
     outfiles = {_get_key_fmt(xloc, y): dfs.copy() for y in ys}
 
@@ -626,7 +651,7 @@ run but modification will not be made no valid xml is provided.</dd>
 </details>
 </dd>
 <dt id="pydsphtools.mlpistons.write_mlpiston1d_xml"><code class="name flex">
-<span>def <span class="ident">write_mlpiston1d_xml</span></span>(<span>xmlfile: str, mkbound: int, velfile: str, *, smooth: int = 0) -> NoneType</span>
+<span>def <span class="ident">write_mlpiston1d_xml</span></span>(<span>xmlfile: str, mkbound: int, velfile: str, *, smooth: int = 0) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Modifies the xml file to add the nessesary fields (in "motion" and "special") for
@@ -717,7 +742,10 @@ a 1D multilayer piston simulation.</p>
     mlayer_elem = xml_get_or_create_subelement(elem_special, &#34;mlayerpistons&#34;)
     if mlayer_elem.find(&#34;piston1d&#34;) is not None:
         print(
-            &#34;*WARNING* [xml file]`piston1d` already exist in xml. Exitting without modifying the xml.&#34;
+            (
+                &#34;*WARNING* [xml file]`piston1d` already exist in xml. Exitting without &#34;
+                &#34;modifying the xml.&#34;
+            )
         )
         return
     piston1d = ET.SubElement(mlayer_elem, &#34;piston1d&#34;)
@@ -743,7 +771,7 @@ a 1D multilayer piston simulation.</p>
 </details>
 </dd>
 <dt id="pydsphtools.mlpistons.write_mlpiston2d_xml"><code class="name flex">
-<span>def <span class="ident">write_mlpiston2d_xml</span></span>(<span>xmlfile: str, mkbound: int, velfiles: Iterable[str], yvals: Iterable[float], *, smoothz: int = 0, smoothy: int = 0) -> NoneType</span>
+<span>def <span class="ident">write_mlpiston2d_xml</span></span>(<span>xmlfile: str, mkbound: int, velfiles: Iterable[str], yvals: Iterable[float], *, smoothz: int = 0, smoothy: int = 0) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Modifies the xml file to add the nessesary fields (in "motion" and "special") for
@@ -843,7 +871,10 @@ a 2D multilayer piston simulation.</p>
     mlayer_elem = xml_get_or_create_subelement(elem_special, &#34;mlayerpistons&#34;)
     if mlayer_elem.find(&#34;piston2d&#34;) is not None:
         print(
-            &#34;*WARNING* [xml file]`piston2d` already exist in xml. Exitting without modifying the xml.&#34;
+            (
+                &#34;*WARNING* [xml file]`piston2d` already exist in xml. Exitting without &#34;
+                &#34;modifying the xml.&#34;
+            )
         )
         return
     piston2d = ET.SubElement(mlayer_elem, &#34;piston2d&#34;)
@@ -909,9 +940,7 @@ a 2D multilayer piston simulation.</p>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-<script>hljs.initHighlightingOnLoad()</script>
 </body>
 </html>

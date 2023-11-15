@@ -1,20 +1,25 @@
 """The implementation of functions that enable coupling of different DualSPHysics
-simulations using the Relaxation Zone technic of DualSPHysics. 
+simulations using the Relaxation Zone technic of DualSPHysics.
 """
 # This file is part of PyDSPHtools. It is subject to the license terms in the
 # LICENSE file found in the top-level directory of this distribution and at
 # https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
 # including this file, may be copied, modified, propagated, or distributed except
 # according to the terms contained in the LICENSE file.
-from ._imports import *
+import os
+import re
+import glob
+import errno
+from pathlib import Path
+from typing import Union, Tuple, List
 
-from pydsphtools._main import *
+import numpy as np
+from scipy import interpolate
+import pandas as pd
+import lxml.etree as ET
+
+from ._main import get_dp, get_var, xml_get_or_create_subelement, run_measuretool
 from .exceptions import InvalidTimeInterval
-
-__all__ = [
-    "relaxzone_from_dsph",
-    "write_rzexternal_xml",
-]
 
 
 def relaxzone_from_dsph(
@@ -169,8 +174,9 @@ def relaxzone_from_dsph(
     _run_elevation(dirin, config, ptels_list, overwrite_fs, binpath)
     df_fs = pd.read_csv(freesurface_fpath, header=3, sep=";")
     # remove units, eg `Vel [m/s^2]` -> `Vel`
-    _sub_map = lambda x: re.sub(r"\ \[[A-Za-z\^0-9/]*\]$", "", x)
-    df_fs.columns = df_fs.columns.map(_sub_map)
+    df_fs.columns = df_fs.columns.map(
+        lambda x: re.sub(r"\ \[[A-Za-z\^0-9/]*\]$", "", x)
+    )
 
     # Create the points list where the velocities will be calculated
     xs = np.linspace(x0, xf, xlayers)
@@ -214,7 +220,9 @@ def relaxzone_from_dsph(
     )
 
     # Prepare output dataframe
-    _get_key_fmt = lambda x, y: f"px:;{x};py:;{y}"
+    def _get_key_fmt(x, y):
+        return f"px:;{x};py:;{y}"
+
     columns = pd.Series(
         [
             "time",
@@ -365,7 +373,10 @@ def write_rzexternal_xml(
 
     if not overwrite and rz1d is not None:
         print(
-            "*WARNING* [xml file] `rzwaves_external_1d` already exist in xml. Exitting without modifying the xml."
+            (
+                "*WARNING* [xml file] `rzwaves_external_1d` already exist in xml. "
+                "Exitting without modifying the xml."
+            )
         )
         return
 
@@ -386,7 +397,10 @@ def write_rzexternal_xml(
         "swl",
         attrib={
             "value": str(swl),
-            "comment": "Still water level (free-surface). It is necessary for drift correction (def=0)",
+            "comment": (
+                "Still water level (free-surface). It is necessary for drift "
+                "correction (def=0)"
+            ),
         },
     )
     ET.SubElement(
@@ -464,7 +478,10 @@ def write_rzexternal_xml(
         "driftcorrection",
         attrib={
             "value": str(drift_corr),
-            "comment": "Coefficient of drift correction applied in velocity X. 0:Disabled, 1:Full correction (def=0)",
+            "comment": (
+                "Coefficient of drift correction applied in velocity X. "
+                "0:Disabled, 1:Full correction (def=0)"
+            ),
         },
     )
     print("[xml file] `special` section updated. `rzwaves_external_1d` added.")
@@ -561,7 +578,10 @@ def _run_vel_raw(
 
     Similarly for the velocity arrays
     """
-    rawdata_fname = lambda p: f"RZ_data_raw_Part{p}"
+
+    def rawdata_fname(p):
+        return f"RZ_data_raw_Part{p}"
+
     rawdata_fpath = (
         lambda p: dirin / f"measuretool/rawveldata/{rawdata_fname(p)}_Vel.csv"
     )
@@ -635,7 +655,8 @@ def _run_interpolation(
     dists: Tuple[float, float],
 ) -> Tuple[List[interpolate.CubicSpline], List[np.ndarray], List[np.ndarray]]:
     """Interpolates and returns the raw velocity data at specified dt. The array
-    format is the same with more dense time data. Also, returns the free surface cubic spline for each layer in the x direction.
+    format is the same with more dense time data. Also, returns the free surface cubic
+    spline for each layer in the x direction.
 
     Returns
     -------
@@ -699,14 +720,16 @@ def _run_interpolation(
 
 def _clean_raw_vel_data(dirin: Union[str, Path]) -> None:
     """Cleans old vel files."""
-    dirin
-    rawdata_fname = lambda p: f"RZ_data_raw_Part{p}"
+
+    def rawdata_fname(p):
+        return f"RZ_data_raw_Part{p}"
+
     rawdata_fpath = (
         lambda p: dirin / f"measuretool/rawveldata/{rawdata_fname(p)}_Vel.csv"
     )
 
     for f in glob.glob(
-       str(dirin / f"measuretool/rawveldata/{rawdata_fname('*')}_PointsDef.vtk")
+        str(dirin / f"measuretool/rawveldata/{rawdata_fname('*')}_PointsDef.vtk")
     ):
         os.remove(f)
     for f in glob.glob(str(rawdata_fpath("*"))):

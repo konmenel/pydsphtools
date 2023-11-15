@@ -6,17 +6,24 @@ simulations using the Multi-Layer Pistons approach of DualSPHysics.
 # https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
 # including this file, may be copied, modified, propagated, or distributed except
 # according to the terms contained in the LICENSE file.
-from ._imports import *
+import os
+import re
+import glob
+import errno
+from typing import Tuple, Iterable
 
-from pydsphtools._main import *
+import numpy as np
+from scipy import interpolate
+import pandas as pd
+import lxml.etree as ET
+
+from pydsphtools._main import (
+    get_dp,
+    get_var,
+    run_measuretool,
+    xml_get_or_create_subelement,
+)
 from .exceptions import InvalidTimeInterval
-
-__all__ = [
-    "mlpistons2d_from_dsph",
-    "mlpistons1d_from_dsph",
-    "write_mlpiston2d_xml",
-    "write_mlpiston1d_xml",
-]
 
 
 def mlpistons2d_from_dsph(
@@ -164,7 +171,10 @@ def mlpistons2d_from_dsph(
             *(f"vel_{i}" for i in range(zlayers)),
         ]
     )
-    _get_key_fmt = lambda x, y: f"px:;{x};py:;{y}"
+
+    def _get_key_fmt(x, y):
+        return f"px:;{x};py:;{y}"
+
     dfs = pd.DataFrame(columns=columns, index=range(len(df_fs.Part)))
     outfiles = {_get_key_fmt(xloc, y): dfs.copy() for y in ys}
 
@@ -297,7 +307,10 @@ def write_mlpiston2d_xml(
     mlayer_elem = xml_get_or_create_subelement(elem_special, "mlayerpistons")
     if mlayer_elem.find("piston2d") is not None:
         print(
-            "*WARNING* [xml file]`piston2d` already exist in xml. Exitting without modifying the xml."
+            (
+                "*WARNING* [xml file]`piston2d` already exist in xml. Exitting without "
+                "modifying the xml."
+            )
         )
         return
     piston2d = ET.SubElement(mlayer_elem, "piston2d")
@@ -416,7 +429,10 @@ def mlpistons1d_from_dsph(
     config_fpath = f"{dirin}/measuretool/MLPiston1D_config.csv"
     freesurface_fname = "MLPiston1D_freesurf"
     freesurface_fpath = f"{dirin}/measuretool/{freesurface_fname}_Elevation.csv"
-    rawdata_fname = lambda p: f"MLPiston1D_data_raw_Part{p}"
+
+    def rawdata_fname(p):
+        return f"MLPiston1D_data_raw_Part{p}"
+
     rawdata_fpath = (
         lambda p: f"{dirin}/measuretool/rawveldata/{rawdata_fname(p)}_Vel.csv"
     )
@@ -473,8 +489,11 @@ def mlpistons1d_from_dsph(
 
     # Read elevations
     df_fs = pd.read_csv(freesurface_fpath, header=3, sep=";")
+
     # remove units, eg `Vel [m/s^2]` -> `Vel`
-    _sub_map = lambda x: re.sub(r"\ \[[A-Za-z\^0-9/]*\]$", "", x)
+    def _sub_map(x):
+        return re.sub(r"\ \[[A-Za-z\^0-9/]*\]$", "", x)
+
     df_fs.columns = df_fs.columns.map(_sub_map)
 
     # Create the point where the velocities will be calculated
@@ -539,7 +558,9 @@ def mlpistons1d_from_dsph(
     szi = len(time_series) * layers
     interp_xi = np.zeros((szi, 2))
 
-    _get_key_fmt = lambda x, y: f"px:;{x};py:;{y}"
+    def _get_key_fmt(x, y):
+        return f"px:;{x};py:;{y}"
+
     df = pd.DataFrame(columns=columns, index=range(len(time_series)))
     outfile = {_get_key_fmt(xloc, yloc): df.copy()}
 
@@ -658,7 +679,10 @@ def write_mlpiston1d_xml(
     mlayer_elem = xml_get_or_create_subelement(elem_special, "mlayerpistons")
     if mlayer_elem.find("piston1d") is not None:
         print(
-            "*WARNING* [xml file]`piston1d` already exist in xml. Exitting without modifying the xml."
+            (
+                "*WARNING* [xml file]`piston1d` already exist in xml. Exitting without "
+                "modifying the xml."
+            )
         )
         return
     piston1d = ET.SubElement(mlayer_elem, "piston1d")

@@ -5,5 +5,6 @@
 # https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
 # including this file, may be copied, modified, propagated, or distributed except
 # according to the terms contained in the LICENSE file.
-from ._stats import *
-from ._stats import __all__
+from ._stats import agreement_idx
+
+__all__ = ["agreement_idx"]

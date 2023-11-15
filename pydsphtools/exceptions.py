@@ -5,6 +5,8 @@
 # https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
 # including this file, may be copied, modified, propagated, or distributed except
 # according to the terms contained in the LICENSE file.
+
+
 class NotFoundInOutput(Exception):
     """Raised when a variable is not found in the output file.
 
@@ -13,7 +15,8 @@ class NotFoundInOutput(Exception):
     missing : str
         What was not found.
     filename : str, optional
-        The name of the output file (either `Run.out` or `Run.csv`). By default, `Run.out`.
+        The name of the output file (either `Run.out` or `Run.csv`). By default,
+         `Run.out`.
     """
 
     missing: str
@@ -45,3 +48,11 @@ class InvalidTimeInterval(Exception):
         self.tmax = tmax
         self.message = f"Invalid time interval: ({tmin}-{tmax})."
         super().__init__(self.message)
+
+
+class MissingEnvironmentVariable(Exception):
+    var_name: str
+
+    def __init__(self, var_name: str, *args) -> None:
+        self.var_name = var_name
+        super().__init__(*args)

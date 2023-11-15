@@ -5,17 +5,17 @@
 # https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
 # including this file, may be copied, modified, propagated, or distributed except
 # according to the terms contained in the LICENSE file.
-from ._imports import *
-
-__all__ = ["agreement_idx"]
+import numpy as np
+import numpy.typing as npt
 
 
 def agreement_idx(obs: npt.ArrayLike, pred: npt.ArrayLike, c: float = 2) -> float:
-    """Calulcates the index of agreement (dr) following the paper by Willmott et al. [1].
+    """Calulcates the index of agreement (dr) following the paper by Willmott et al.[1].
 
     References:
-    [1] Cort J. Willmott, Scott M. Robeson, and Kenji Matsuura, "A refined index of model performance",
-    International Journal of Climatology, Volume 32, Issue 13, pages 2088-2094, 15 November 2012,
+    [1] Cort J. Willmott, Scott M. Robeson, and Kenji Matsuura, "A refined index of
+    model performance", International Journal of Climatology, Volume 32, Issue 13,
+    pages 2088-2094, 15 November 2012,
     https://rmets.onlinelibrary.wiley.com/doi/10.1002/joc.2419.
 
     Parameters

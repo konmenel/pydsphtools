@@ -20,7 +20,18 @@ Author: Constantinos Menelaou
 Github: https://github.com/konmenel  
 Year: 2023  
 """
-from ._imports import *
+import os
+import io
+import re
+import pathlib
+from pathlib import Path
+import platform
+import subprocess
+from typing import Callable, TypeVar, Union, Tuple, List, Dict
+
+import numpy as np
+import pandas as pd
+import lxml.etree as ET
 
 from .exceptions import NotFoundInOutput
 
@@ -39,9 +50,10 @@ __all__ = [
     "xml_get_or_create_subelement",
 ]
 
-# BUG: There is a bug with the way DualSPHysics creates the `Run.csv`. It replaces all `,` with `;`
-#   which causes the Shifting(_txt_,_num_,_num_,_txt_) in the configure section to become
-#   Shifting(_txt_;_num_;_num_;_txt_). This causes a parsing bug with `pandas.read_csv` (any csv parser really)
+# BUG: There is a bug with the way DualSPHysics creates the `Run.csv`. It replaces all
+#      `,` with `;` which causes the Shifting(_txt_,_num_,_num_,_txt_) in the configure
+#      section to become Shifting(_txt_;_num_;_num_;_txt_). This causes a parsing bug
+#      with `pandas.read_csv` (any csv parser really)
 
 DEG2RAD = np.pi / 180.0
 RAD2DEG = 180.0 / np.pi
@@ -50,7 +62,9 @@ _R = TypeVar("_R")
 
 
 class RE_PATTERNS:
-    """Just constant class to store useful regex. Will move into a file if it grows too large."""
+    """Just constant class to store useful regex. Will move into a file if it grows too
+    large.
+    """
 
     # pattern to capture any number (eg 1.23, -1523, -12.3e-45)
     NUMBER = r"[\-\+]?\d+\.?\d*[Ee]?[\+\-]?\d*"
@@ -60,9 +74,10 @@ class RE_PATTERNS:
 
 
 def read_and_fix_csv(dirout: Union[str, pathlib.Path]) -> io.StringIO:
-    """Fixed the bug with the csv where if shifting is present in the `Run.csv` it has key that are
-    `;` separated, e.g. Shifting(_txt_;_num_;_num_;_txt_). This causes a parsing bug with `pandas.read_csv`
-    (any csv parser really). This function reads the data in fixes the bug in memory.
+    """Fixed the bug with the csv where if shifting is present in the `Run.csv` it has
+    key that are `;` separated, e.g. Shifting(_txt_;_num_;_num_;_txt_). This causes a
+    parsing bug with `pandas.read_csv` (any csv parser really). This function reads the
+    data in fixes the bug in memory.
 
     Parameters
     ----------
@@ -135,7 +150,8 @@ def get_var(
     dtype : Callable[[str], R], optional
         The return type of the function. The return type will be the same as the
         return type of the callable passed. The callable should accept a string as
-        the input. E.g. if `int` is used the return type will be in `int`. By default `str`.
+        the input. E.g. if `int` is used the return type will be in `int`. By default
+        `str`.
 
     Returns
     -------
@@ -164,7 +180,8 @@ def get_var(
 def get_usr_def_var(
     dirout: Union[str, pathlib.Path], var: str, dtype: Callable[[str], _R] = float
 ) -> _R:
-    """Finds and parses the value of any user defined variable from the simulation output.
+    """Finds and parses the value of any user defined variable from the simulation
+    output.
 
     Parameters
     ----------
@@ -175,7 +192,8 @@ def get_usr_def_var(
     dtype : Callable[[str], RType], optional
         The return type of the function. The return type will be the same as the
         return type of the callable passed. The callable should accept a string as
-        the input. E.g. if `int` is used the return type will be in `int`. By default `float`.
+        the input. E.g. if `int` is used the return type will be in `int`. By default
+        `float`.
 
     Returns
     -------
@@ -327,7 +345,7 @@ def get_chrono_property(
                 try:
                     return float(value)
 
-                except ValueError as e:
+                except ValueError:
                     if value[0] == "(":
                         elems = re.search(ELEM_PAT, value)
                         elems = elems.groups()
@@ -691,7 +709,12 @@ def _run_and_capture_measuretool(cmd) -> None:
     """
     line_re = re.compile("LoadData>|Save.*>")
     with subprocess.Popen(
-        cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True, universal_newlines=True, bufsize=1
+        cmd,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        text=True,
+        universal_newlines=True,
+        bufsize=1,
     ) as process:
         while process.poll() is None:
             line = process.stdout.readline()
