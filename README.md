@@ -60,5 +60,5 @@ pip install pdoc3
 
 and then run from the root directory of package
 ```bash
-pdoc --html -c latex_math=True -o doc -f pydsphtool
+pdoc --html -c latex_math=True -o doc pydsphtool
 ```
