@@ -53,7 +53,7 @@ def find_wavenumber(
         return -9.81 * tanh - 9.81 * wavenumber * depth * (1.0 - tanh * tanh)
 
     omega = np.asarray(omega, dtype=np.float64)
-    x0 = np.ones(omega.size)
+    x0 = np.ones(omega.shape)
     ret = optimize.newton(_func, x0, fprime=_fprime, args=(omega, depth))
     if ret.size == 1:
         return ret[0]
