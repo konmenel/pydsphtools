@@ -5,7 +5,7 @@
 # https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
 # including this file, may be copied, modified, propagated, or distributed except
 # according to the terms contained in the LICENSE file.
-from typing import Union, Tuple, Optional
+from typing import Union, Tuple, Optional, Sequence
 
 import numpy as np
 from numpy.typing import ArrayLike
@@ -14,7 +14,7 @@ from ._main import RAD2DEG
 
 
 def find_wavenumber(
-    omega: Union[float, ArrayLike], depth: float
+    omega: Union[float, Sequence[float]], depth: float
 ) -> Union[float, np.ndarray]:
     """Solves the dispersion relation for a given angular frequency and depth
     and finds the wavenumber.
@@ -61,7 +61,7 @@ def find_wavenumber(
 
 
 def find_celerity(
-    wavenumber: Union[float, ArrayLike], depth: float
+    wavenumber: Union[float, Sequence[float]], depth: float
 ) -> Union[float, np.ndarray]:
     """Calculates the celerity for a given wavenumber.
 
