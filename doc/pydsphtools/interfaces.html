@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>pydsphtools.interfaces API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script async src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS_CHTML'></script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pydsphtools.interfaces</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from ._interfaces import Runner, get_dsph_binpath, get_tool_binpath
+
+__all__ = [&#34;Runner&#34;, &#34;get_dsph_binpath&#34;, &#34;get_tool_binpath&#34;]</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="pydsphtools.interfaces.get_dsph_binpath"><code class="name flex">
+<span>def <span class="ident">get_dsph_binpath</span></span>(<span>cpu: bool, rootdir: str) -> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_dsph_binpath(cpu: bool, rootdir: str) -&gt; str:
+    if not os.path.exists(rootdir):
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), rootdir)
+
+    plat = platform.system()
+    dirbin = Path(rootdir) / &#34;bin&#34;
+    if plat == &#34;Linux&#34;:
+        dirbin /= &#34;linux&#34;
+        file_prefix = &#34;_linux64&#34;
+    elif plat == &#34;Windows&#34;:
+        dirbin /= &#34;windows&#34;
+        file_prefix = &#34;_win64.exe&#34;
+
+    files = (f for f in os.listdir(dirbin) if os.path.isfile(os.path.join(dirbin, f)))
+
+    regex = r&#34;DualSPHysics\d+\.\d+&#34;
+    if cpu:
+        regex += &#34;CPU&#34;
+    regex += file_prefix
+    regex = re.compile(regex)
+
+    for file in files:
+        if regex.match(file):
+            return os.path.join(dirbin, file)</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.interfaces.get_tool_binpath"><code class="name flex">
+<span>def <span class="ident">get_tool_binpath</span></span>(<span>toolname: str, rootdir: str) -> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_tool_binpath(toolname: str, rootdir: str) -&gt; str:
+    if not os.path.exists(rootdir):
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), rootdir)
+
+    plat = platform.system()
+    dirbin = Path(rootdir) / &#34;bin&#34;
+    if plat == &#34;Linux&#34;:
+        dirbin /= &#34;linux&#34;
+        file_prefix = &#34;_linux64&#34;
+    elif plat == &#34;Windows&#34;:
+        dirbin /= &#34;windows&#34;
+        file_prefix = &#34;_win64.exe&#34;
+
+    files = (f for f in os.listdir(dirbin) if os.path.isfile(os.path.join(dirbin, f)))
+
+    regex = toolname
+    regex += file_prefix
+    regex = re.compile(regex, re.IGNORECASE)
+
+    for file in files:
+        if regex.match(file):
+            return os.path.join(dirbin, file)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="pydsphtools.interfaces.Runner"><code class="flex name class">
+<span>class <span class="ident">Runner</span></span>
+<span>(</span><span>cpu: bool = True, run_gencase: bool = True, run_dsph: bool = True, rootdir: str = None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Runner:
+    parser: argparse.ArgumentParser
+    _args: argparse.Namespace
+
+    _cpu: bool
+    _dsph_root: str
+    _run_gencase: bool
+    _run_dsph: bool
+
+    _gencase_options = List[str]
+    _dsph_options = List[str]
+    _gencase_binpath: str
+    _dsph_binpath: str
+
+    _exitcode: int
+
+    def __init__(
+        self,
+        cpu: bool = True,
+        run_gencase: bool = True,
+        run_dsph: bool = True,
+        rootdir: str = None,
+    ) -&gt; None:
+        if rootdir is None and &#34;DUALSPH_HOME&#34; not in os.environ:
+            message = (
+                &#34;Environment variable &#39;DUALSPH_HOME&#39; is missing and no path &#34;
+                &#34;for the parent directory of SPH was provided. Please either &#34;
+                &#34;define the environment variable &#39;DUALSPH_HOME&#39; or pass the &#34;
+                &#34;root directory of DualSPHysics through the variable `binpath`.&#34;
+            )
+            raise MissingEnvironmentVariable(&#34;DUALSPH_HOME&#34;, message)
+
+        if rootdir is None:
+            rootdir = os.environ[&#34;DUALSPH_HOME&#34;]
+
+        self._cpu = cpu
+        self.parser = argparse.ArgumentParser()
+        self._args = None
+        self._dsph_root = rootdir
+        self._dsph_binpath = get_dsph_binpath(cpu, rootdir)
+        self._gencase_binpath = get_tool_binpath(&#34;gencase&#34;, rootdir)
+        self._run_gencase = run_gencase
+        self._run_dsph = run_dsph
+        self._gencase_options = []
+        self._dsph_options = []
+        self._exitcode = 0
+
+        if not cpu:
+            self._dsph_options.append(&#34;-gpu&#34;)
+
+        self._fix_ld_library_path()
+
+    @property
+    def cpu(self) -&gt; bool:
+        return self._cpu
+
+    @property
+    def exitcode(self) -&gt; int:
+        return self._exitcode
+
+    @property
+    def args(self) -&gt; argparse.Namespace:
+        return self._args
+
+    def enable_gpu(self) -&gt; None:
+        if self._cpu:
+            self._cpu = False
+            self._dsph_binpath = get_dsph_binpath(False, self._dsph_root)
+            self._dsph_options.append(&#34;-gpu&#34;)
+
+    def enable_cpu(self) -&gt; None:
+        if not self._cpu:
+            self._cpu = True
+            self._dsph_binpath = get_dsph_binpath(True, self._dsph_root)
+            for opt in self._dsph_options:
+                if opt.startswith(&#34;-gpu&#34;):
+                    self._dsph_options.remove(opt)
+
+    def enable_gencase_run(self) -&gt; None:
+        self._run_gencase = True
+
+    def enable_dsph_run(self) -&gt; None:
+        self._run_dsph = True
+
+    def disable_gencase_run(self) -&gt; None:
+        self._run_gencase = False
+
+    def disable_dsph_run(self) -&gt; None:
+        self._run_dsph = False
+
+    def is_gencase_active(self) -&gt; bool:
+        return self._run_gencase
+
+    def is_dsph_active(self) -&gt; bool:
+        return self._run_dsph
+
+    def add_gencase_option(self, option: str) -&gt; None:
+        self._gencase_options.append(option)
+
+    def add_dsph_option(self, option: str) -&gt; None:
+        self._dsph_options.append(option)
+
+    def add_gencase_options(self, options: Iterable[str]) -&gt; None:
+        self._gencase_options.extend(options)
+
+    def add_dsph_options(self, options: Iterable[str]) -&gt; None:
+        self._dsph_options.extend(options)
+
+    def add_cl_argument(self, *args, **kwargs):
+        self.parser.add_argument(*args, **kwargs)
+
+    def parse(self) -&gt; None:
+        if self._args is None:
+            self._args = self.parser.parse_args()
+
+    def run(self, fail: bool = True) -&gt; int:
+        self.parse()
+        if self.is_gencase_active():
+            ret = subprocess.run(
+                [self._gencase_binpath, *self._gencase_options], check=fail
+            )
+            self._exitcode = ret.returncode
+
+        if self._exitcode != 0:
+            print(&#34;[INFO] Runner: GenCase exited with non-zero exit code.&#34;)
+            return self.exitcode
+
+        if self.is_dsph_active():
+            ret = subprocess.run([self._dsph_binpath, *self._dsph_options], check=fail)
+        self._exitcode = ret.returncode
+
+        if self._exitcode != 0:
+            print(&#34;[INFO] Runner: DualSPHysics exited with non-zero exit code.&#34;)
+
+        return self._exitcode
+
+    def _fix_ld_library_path(self) -&gt; None:
+        ld_library_path = os.environ[&#34;LD_LIBRARY_PATH&#34;]
+        plat = platform.system()
+        dirbin = Path(self._dsph_root) / &#34;bin&#34;
+        if plat == &#34;Linux&#34;:
+            dirbin /= &#34;linux&#34;
+        elif plat == &#34;Windows&#34;:
+            dirbin /= &#34;windows&#34;
+
+        if ld_library_path:
+            os.environ[&#34;LD_LIBRARY_PATH&#34;] = ld_library_path + &#34;:&#34; + str(dirbin)
+        else:
+            os.environ[&#34;LD_LIBRARY_PATH&#34;] = str(dirbin)</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="pydsphtools.interfaces.Runner.args"><code class="name">var <span class="ident">args</span> : argparse.Namespace</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def args(self) -&gt; argparse.Namespace:
+    return self._args</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.interfaces.Runner.cpu"><code class="name">var <span class="ident">cpu</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def cpu(self) -&gt; bool:
+    return self._cpu</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.interfaces.Runner.exitcode"><code class="name">var <span class="ident">exitcode</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def exitcode(self) -&gt; int:
+    return self._exitcode</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="pydsphtools.interfaces.Runner.add_cl_argument"><code class="name flex">
+<span>def <span class="ident">add_cl_argument</span></span>(<span>self, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_cl_argument(self, *args, **kwargs):
+    self.parser.add_argument(*args, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.interfaces.Runner.add_dsph_option"><code class="name flex">
+<span>def <span class="ident">add_dsph_option</span></span>(<span>self, option: str) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_dsph_option(self, option: str) -&gt; None:
+    self._dsph_options.append(option)</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.interfaces.Runner.add_dsph_options"><code class="name flex">
+<span>def <span class="ident">add_dsph_options</span></span>(<span>self, options: Iterable[str]) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_dsph_options(self, options: Iterable[str]) -&gt; None:
+    self._dsph_options.extend(options)</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.interfaces.Runner.add_gencase_option"><code class="name flex">
+<span>def <span class="ident">add_gencase_option</span></span>(<span>self, option: str) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_gencase_option(self, option: str) -&gt; None:
+    self._gencase_options.append(option)</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.interfaces.Runner.add_gencase_options"><code class="name flex">
+<span>def <span class="ident">add_gencase_options</span></span>(<span>self, options: Iterable[str]) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_gencase_options(self, options: Iterable[str]) -&gt; None:
+    self._gencase_options.extend(options)</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.interfaces.Runner.disable_dsph_run"><code class="name flex">
+<span>def <span class="ident">disable_dsph_run</span></span>(<span>self) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def disable_dsph_run(self) -&gt; None:
+    self._run_dsph = False</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.interfaces.Runner.disable_gencase_run"><code class="name flex">
+<span>def <span class="ident">disable_gencase_run</span></span>(<span>self) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def disable_gencase_run(self) -&gt; None:
+    self._run_gencase = False</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.interfaces.Runner.enable_cpu"><code class="name flex">
+<span>def <span class="ident">enable_cpu</span></span>(<span>self) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def enable_cpu(self) -&gt; None:
+    if not self._cpu:
+        self._cpu = True
+        self._dsph_binpath = get_dsph_binpath(True, self._dsph_root)
+        for opt in self._dsph_options:
+            if opt.startswith(&#34;-gpu&#34;):
+                self._dsph_options.remove(opt)</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.interfaces.Runner.enable_dsph_run"><code class="name flex">
+<span>def <span class="ident">enable_dsph_run</span></span>(<span>self) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def enable_dsph_run(self) -&gt; None:
+    self._run_dsph = True</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.interfaces.Runner.enable_gencase_run"><code class="name flex">
+<span>def <span class="ident">enable_gencase_run</span></span>(<span>self) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def enable_gencase_run(self) -&gt; None:
+    self._run_gencase = True</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.interfaces.Runner.enable_gpu"><code class="name flex">
+<span>def <span class="ident">enable_gpu</span></span>(<span>self) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def enable_gpu(self) -&gt; None:
+    if self._cpu:
+        self._cpu = False
+        self._dsph_binpath = get_dsph_binpath(False, self._dsph_root)
+        self._dsph_options.append(&#34;-gpu&#34;)</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.interfaces.Runner.is_dsph_active"><code class="name flex">
+<span>def <span class="ident">is_dsph_active</span></span>(<span>self) -> bool</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_dsph_active(self) -&gt; bool:
+    return self._run_dsph</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.interfaces.Runner.is_gencase_active"><code class="name flex">
+<span>def <span class="ident">is_gencase_active</span></span>(<span>self) -> bool</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_gencase_active(self) -&gt; bool:
+    return self._run_gencase</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.interfaces.Runner.parse"><code class="name flex">
+<span>def <span class="ident">parse</span></span>(<span>self) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def parse(self) -&gt; None:
+    if self._args is None:
+        self._args = self.parser.parse_args()</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.interfaces.Runner.run"><code class="name flex">
+<span>def <span class="ident">run</span></span>(<span>self, fail: bool = True) -> int</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def run(self, fail: bool = True) -&gt; int:
+    self.parse()
+    if self.is_gencase_active():
+        ret = subprocess.run(
+            [self._gencase_binpath, *self._gencase_options], check=fail
+        )
+        self._exitcode = ret.returncode
+
+    if self._exitcode != 0:
+        print(&#34;[INFO] Runner: GenCase exited with non-zero exit code.&#34;)
+        return self.exitcode
+
+    if self.is_dsph_active():
+        ret = subprocess.run([self._dsph_binpath, *self._dsph_options], check=fail)
+    self._exitcode = ret.returncode
+
+    if self._exitcode != 0:
+        print(&#34;[INFO] Runner: DualSPHysics exited with non-zero exit code.&#34;)
+
+    return self._exitcode</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pydsphtools" href="index.html">pydsphtools</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="pydsphtools.interfaces.get_dsph_binpath" href="#pydsphtools.interfaces.get_dsph_binpath">get_dsph_binpath</a></code></li>
+<li><code><a title="pydsphtools.interfaces.get_tool_binpath" href="#pydsphtools.interfaces.get_tool_binpath">get_tool_binpath</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pydsphtools.interfaces.Runner" href="#pydsphtools.interfaces.Runner">Runner</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pydsphtools.interfaces.Runner.add_cl_argument" href="#pydsphtools.interfaces.Runner.add_cl_argument">add_cl_argument</a></code></li>
+<li><code><a title="pydsphtools.interfaces.Runner.add_dsph_option" href="#pydsphtools.interfaces.Runner.add_dsph_option">add_dsph_option</a></code></li>
+<li><code><a title="pydsphtools.interfaces.Runner.add_dsph_options" href="#pydsphtools.interfaces.Runner.add_dsph_options">add_dsph_options</a></code></li>
+<li><code><a title="pydsphtools.interfaces.Runner.add_gencase_option" href="#pydsphtools.interfaces.Runner.add_gencase_option">add_gencase_option</a></code></li>
+<li><code><a title="pydsphtools.interfaces.Runner.add_gencase_options" href="#pydsphtools.interfaces.Runner.add_gencase_options">add_gencase_options</a></code></li>
+<li><code><a title="pydsphtools.interfaces.Runner.args" href="#pydsphtools.interfaces.Runner.args">args</a></code></li>
+<li><code><a title="pydsphtools.interfaces.Runner.cpu" href="#pydsphtools.interfaces.Runner.cpu">cpu</a></code></li>
+<li><code><a title="pydsphtools.interfaces.Runner.disable_dsph_run" href="#pydsphtools.interfaces.Runner.disable_dsph_run">disable_dsph_run</a></code></li>
+<li><code><a title="pydsphtools.interfaces.Runner.disable_gencase_run" href="#pydsphtools.interfaces.Runner.disable_gencase_run">disable_gencase_run</a></code></li>
+<li><code><a title="pydsphtools.interfaces.Runner.enable_cpu" href="#pydsphtools.interfaces.Runner.enable_cpu">enable_cpu</a></code></li>
+<li><code><a title="pydsphtools.interfaces.Runner.enable_dsph_run" href="#pydsphtools.interfaces.Runner.enable_dsph_run">enable_dsph_run</a></code></li>
+<li><code><a title="pydsphtools.interfaces.Runner.enable_gencase_run" href="#pydsphtools.interfaces.Runner.enable_gencase_run">enable_gencase_run</a></code></li>
+<li><code><a title="pydsphtools.interfaces.Runner.enable_gpu" href="#pydsphtools.interfaces.Runner.enable_gpu">enable_gpu</a></code></li>
+<li><code><a title="pydsphtools.interfaces.Runner.exitcode" href="#pydsphtools.interfaces.Runner.exitcode">exitcode</a></code></li>
+<li><code><a title="pydsphtools.interfaces.Runner.is_dsph_active" href="#pydsphtools.interfaces.Runner.is_dsph_active">is_dsph_active</a></code></li>
+<li><code><a title="pydsphtools.interfaces.Runner.is_gencase_active" href="#pydsphtools.interfaces.Runner.is_gencase_active">is_gencase_active</a></code></li>
+<li><code><a title="pydsphtools.interfaces.Runner.parse" href="#pydsphtools.interfaces.Runner.parse">parse</a></code></li>
+<li><code><a title="pydsphtools.interfaces.Runner.run" href="#pydsphtools.interfaces.Runner.run">run</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
