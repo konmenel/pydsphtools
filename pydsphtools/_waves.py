@@ -56,7 +56,7 @@ def find_wavenumber(
     x0 = np.ones(omega.shape)
     ret = optimize.newton(_func, x0, fprime=_fprime, args=(omega, depth))
     if ret.size == 1:
-        return ret[0]
+        return float(ret)
     return ret
 
 

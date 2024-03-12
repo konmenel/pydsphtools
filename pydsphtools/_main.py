@@ -168,7 +168,7 @@ def get_var(
         df = pd.read_csv(stream, sep=";")
         return dtype(df[var][0])
 
-    except FileNotFoundError:
+    except (FileNotFoundError, KeyError):
         with open(f"{dirout}/Run.out") as file:
             for line in file:
                 pattern = r"{0}=\[({1})\]".format(var, RE_PATTERNS.NUMBER)
