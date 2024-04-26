@@ -120,10 +120,8 @@ def get_times_of_partfiles(dirout: Union[str, pathlib.Path]) -> list[tuple[int, 
     """
     ret = [(0, 0.0)]
     with open(f"{dirout}/Run.out", "r") as file:
-        print(file)
         # Skip useless header and `Part_0000 section`.
         for line in file:
-            print(line)
             if line.startswith("[Initialising simulation"):
                 break
 
@@ -131,7 +129,6 @@ def get_times_of_partfiles(dirout: Union[str, pathlib.Path]) -> list[tuple[int, 
             pattern = r"Part_(\d*)[ ]+({0})".format(RE_PATTERNS.NUMBER)
             part_and_time = re.match(pattern, line)
             if part_and_time:
-                print(part_and_time)
                 ret.append((int(part_and_time.group(1)), float(part_and_time.group(2))))
     ret[0] = (ret[1][0] - 1, 0.0)
     return ret
