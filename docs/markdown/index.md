@@ -15,9 +15,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Author: Constantinos Menelaou  
-Github: https://github.com/konmenel  
-Year: 2023
+Author: Constantinos Menelaou<br>
+Github: https://github.com/konmenel<br>
+Year: 2023<br>
 
 Sub-modules
 -----------
@@ -349,7 +349,7 @@ Functions
         doesn't exist.
 
     
-`xml_get_or_create_subelement(parent_elem: <cyfunction Element at 0x7b8429e946c0>, child: str)`
+`xml_get_or_create_subelement(parent_elem: <cyfunction Element at 0x7f9a0917c6c0>, child: str)`
 :   Get or created a subelement of an "lxml" element.
     
     Parameters
