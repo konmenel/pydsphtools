@@ -9,4 +9,7 @@ setuptools.setup(
     install_requires=["pandas", "numpy", "scipy", "lxml"],
     packages=setuptools.find_packages(),
     zip_safe=False,
+    extras_require={
+        "dev": ["black", "flake8", "pdoc3"],
+    },
 )
