@@ -487,10 +487,8 @@ are undefined.</dd>
     &#34;&#34;&#34;
     ret = [(0, 0.0)]
     with open(f&#34;{dirout}/Run.out&#34;, &#34;r&#34;) as file:
-        print(file)
         # Skip useless header and `Part_0000 section`.
         for line in file:
-            print(line)
             if line.startswith(&#34;[Initialising simulation&#34;):
                 break
 
@@ -498,7 +496,6 @@ are undefined.</dd>
             pattern = r&#34;Part_(\d*)[ ]+({0})&#34;.format(RE_PATTERNS.NUMBER)
             part_and_time = re.match(pattern, line)
             if part_and_time:
-                print(part_and_time)
                 ret.append((int(part_and_time.group(1)), float(part_and_time.group(2))))
     ret[0] = (ret[1][0] - 1, 0.0)
     return ret</code></pre>
@@ -1165,7 +1162,7 @@ doesn't exist.</dd>
 </details>
 </dd>
 <dt id="pydsphtools.xml_get_or_create_subelement"><code class="name flex">
-<span>def <span class="ident">xml_get_or_create_subelement</span></span>(<span>parent_elem: <cyfunction Element at 0x7f1308673d30>, child: str)</span>
+<span>def <span class="ident">xml_get_or_create_subelement</span></span>(<span>parent_elem: <cyfunction Element at 0x7686fa9e85f0>, child: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get or created a subelement of an "lxml" element.</p>

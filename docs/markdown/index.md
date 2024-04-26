@@ -335,7 +335,7 @@ Functions
         doesn't exist.
 
     
-`xml_get_or_create_subelement(parent_elem: <cyfunction Element at 0x7dcbdcb7fd30>, child: str)`
+`xml_get_or_create_subelement(parent_elem: <cyfunction Element at 0x702c833905f0>, child: str)`
 :   Get or created a subelement of an "lxml" element.
     
     Parameters
