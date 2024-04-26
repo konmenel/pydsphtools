@@ -32,6 +32,7 @@ __all__ = [
     "xml_get_or_create_subelement",
     "get_dualsphysics_root",
     "get_times_of_partfiles",
+    "get_number_of_partfiles",
 ]
 
 # BUG: There is a bug with the way DualSPHysics creates the `Run.csv`. It replaces all
@@ -103,6 +104,24 @@ def get_dualsphysics_root() -> str:
     if "DUALSPH_HOME2" in os.environ:
         ret = os.environ["DUALSPH_HOME2"]
     return ret
+
+
+def get_number_of_partfiles(dirout: Union[str, pathlib.Path]) -> int:
+    """Returns the total number of `Part_xxxx.bi4` files in the `data` directory.
+
+    Parameters
+    ----------
+    dirout : Union[str, pathlib.Path]
+        The output directory of the simulations
+
+    Returns
+    -------
+    int
+        The total number of `Part_xxxx.bi4` files in the `data` directory.
+    """
+    pattern = re.compile(r"Part_\d*.bi4")
+    partfiles = os.listdir(f"{dirout}/data")
+    return len(list(filter(pattern.match, partfiles)))
 
 
 def get_times_of_partfiles(dirout: Union[str, pathlib.Path]) -> list[tuple[int, float]]:

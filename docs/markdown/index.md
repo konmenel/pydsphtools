@@ -133,6 +133,20 @@ Functions
         are undefined.
 
     
+`get_number_of_partfiles(dirout: Union[str, pathlib.Path]) -> int`
+:   Returns the total number of `Part_xxxx.bi4` files in the `data` directory.
+    
+    Parameters
+    ----------
+    dirout : Union[str, pathlib.Path]
+        The output directory of the simulations
+    
+    Returns
+    -------
+    int
+        The total number of `Part_xxxx.bi4` files in the `data` directory.
+
+    
 `get_times_of_partfiles(dirout: Union[str, pathlib.Path]) -> list[tuple[int, float]]`
 :   Reads the times of each part file in output directory from the `Run.out` file.
     
@@ -335,7 +349,7 @@ Functions
         doesn't exist.
 
     
-`xml_get_or_create_subelement(parent_elem: <cyfunction Element at 0x702c833905f0>, child: str)`
+`xml_get_or_create_subelement(parent_elem: <cyfunction Element at 0x7b8429e946c0>, child: str)`
 :   Get or created a subelement of an "lxml" element.
     
     Parameters

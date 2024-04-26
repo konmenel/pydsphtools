@@ -33,6 +33,7 @@ from ._main import (
     xml_get_or_create_subelement,
     get_dualsphysics_root,
     get_times_of_partfiles,
+    get_number_of_partfiles,
 )
 
 __version__ = "1.0"
@@ -51,6 +52,7 @@ __all__ = [
     "xml_get_or_create_subelement",
     "get_dualsphysics_root",
     "get_times_of_partfiles",
+    "get_number_of_partfiles",
     "waves",
     "exceptions",
     "stats",
