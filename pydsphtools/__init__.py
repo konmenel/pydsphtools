@@ -31,6 +31,8 @@ from ._main import (
     get_chrono_property,
     run_measuretool,
     xml_get_or_create_subelement,
+    get_dualsphysics_root,
+    get_times_of_partfiles,
 )
 
 __version__ = "1.0"
@@ -47,6 +49,8 @@ __all__ = [
     "get_chrono_property",
     "run_measuretool",
     "xml_get_or_create_subelement",
+    "get_dualsphysics_root",
+    "get_times_of_partfiles",
     "waves",
     "exceptions",
     "stats",

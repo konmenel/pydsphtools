@@ -20,6 +20,7 @@ Author: Constantinos Menelaou
 Github: https://github.com/konmenel  
 Year: 2023  
 """
+
 import os
 import io
 import re
@@ -48,6 +49,8 @@ __all__ = [
     "get_chrono_property",
     "run_measuretool",
     "xml_get_or_create_subelement",
+    "get_dualsphysics_root",
+    "get_times_of_partfiles",
 ]
 
 # BUG: There is a bug with the way DualSPHysics creates the `Run.csv`. It replaces all
@@ -100,6 +103,57 @@ def read_and_fix_csv(dirout: Union[str, pathlib.Path]) -> io.StringIO:
         txt = file.read()
         txt = re.sub(ORIG_RE, REPL_RE, txt)
         return io.StringIO(txt)
+
+
+def get_dualsphysics_root() -> str:
+    """Returns the path of the DualSPHysics root from the
+    environment variables. `DUALSPH_HOME` or `DUALSPH_HOME`
+    should be defined. If not returns empty `str`.
+
+    Returns
+    -------
+    str
+        The path of DualSPHysics. Empty if environment variables
+        are undefined.
+    """
+    ret = ""
+    if "DUALSPH_HOME" in os.environ:
+        ret = os.environ["DUALSPH_HOME"]
+    if "DUALSPH_HOME2" in os.environ:
+        ret = os.environ["DUALSPH_HOME2"]
+    return ret
+
+
+def get_times_of_partfiles(dirout: Union[str, pathlib.Path]) -> list[tuple[int, float]]:
+    """Reads the times of each part file in output directory from the `Run.out` file.
+
+    Parameters
+    ----------
+    dirout : Union[str, pathlib.Path]
+        The output directory of the simulations
+
+    Returns
+    -------
+    list[tuple[int, float]]
+        A list of the part number and the corresponding time.
+    """
+    ret = [(0, 0.0)]
+    with open(f"{dirout}/Run.out", "r") as file:
+        print(file)
+        # Skip useless header and `Part_0000 section`.
+        for line in file:
+            print(line)
+            if line.startswith("[Initialising simulation"):
+                break
+
+        for line in file:
+            pattern = r"Part_(\d*)[ ]+({0})".format(RE_PATTERNS.NUMBER)
+            part_and_time = re.match(pattern, line)
+            if part_and_time:
+                print(part_and_time)
+                ret.append((int(part_and_time.group(1)), float(part_and_time.group(2))))
+    ret[0] = (ret[1][0] - 1, 0.0)
+    return ret
 
 
 def get_dp(dirout: Union[str, pathlib.Path]) -> float:
@@ -522,13 +576,15 @@ def run_measuretool(
         dirbin = binpath / "windows"
         binary = dirbin / "MeasureTool_win64"
 
-    # If `options are specified run use those.
+    # If `options` is specified run use those.
     if options is not None:
         if print_options:
             print(f'Running MeasureTool with options: "{options}"')
-        subprocess.run([binary, *options.split(" ")])
-        _run_and_capture_measuretool([binary, *options.split(" ")])
-        return
+        # subprocess.run([binary, *options.split(" ")])
+        return _run_and_capture_measuretool([binary, *options.split(" ")])
+    else:
+        # just because pylance is active wierd without the else
+        pass
 
     if dirout is None:
         dirout = dirin / "measuretool"
