@@ -74,6 +74,8 @@ from ._main import (
     get_chrono_property,
     run_measuretool,
     xml_get_or_create_subelement,
+    get_dualsphysics_root,
+    get_times_of_partfiles,
 )
 
 __version__ = &#34;1.0&#34;
@@ -90,6 +92,8 @@ __all__ = [
     &#34;get_chrono_property&#34;,
     &#34;run_measuretool&#34;,
     &#34;xml_get_or_create_subelement&#34;,
+    &#34;get_dualsphysics_root&#34;,
+    &#34;get_times_of_partfiles&#34;,
     &#34;waves&#34;,
     &#34;exceptions&#34;,
     &#34;stats&#34;,
@@ -411,6 +415,93 @@ or property with the specified name doesn't exist.</dd>
                     return float(number.groups()[0])
 
         raise NotFoundInOutput(&#34;Variable `Dp`&#34;)</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.get_dualsphysics_root"><code class="name flex">
+<span>def <span class="ident">get_dualsphysics_root</span></span>(<span>) -> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the path of the DualSPHysics root from the
+environment variables. <code>DUALSPH_HOME</code> or <code>DUALSPH_HOME</code>
+should be defined. If not returns empty <code>str</code>.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>The path of DualSPHysics. Empty if environment variables
+are undefined.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_dualsphysics_root() -&gt; str:
+    &#34;&#34;&#34;Returns the path of the DualSPHysics root from the
+    environment variables. `DUALSPH_HOME` or `DUALSPH_HOME`
+    should be defined. If not returns empty `str`.
+
+    Returns
+    -------
+    str
+        The path of DualSPHysics. Empty if environment variables
+        are undefined.
+    &#34;&#34;&#34;
+    ret = &#34;&#34;
+    if &#34;DUALSPH_HOME&#34; in os.environ:
+        ret = os.environ[&#34;DUALSPH_HOME&#34;]
+    if &#34;DUALSPH_HOME2&#34; in os.environ:
+        ret = os.environ[&#34;DUALSPH_HOME2&#34;]
+    return ret</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.get_times_of_partfiles"><code class="name flex">
+<span>def <span class="ident">get_times_of_partfiles</span></span>(<span>dirout: Union[str, pathlib.Path]) -> list[tuple[int, float]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reads the times of each part file in output directory from the <code>Run.out</code> file.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>dirout</code></strong> :&ensp;<code>Union[str, pathlib.Path]</code></dt>
+<dd>The output directory of the simulations</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list[tuple[int, float]]</code></dt>
+<dd>A list of the part number and the corresponding time.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_times_of_partfiles(dirout: Union[str, pathlib.Path]) -&gt; list[tuple[int, float]]:
+    &#34;&#34;&#34;Reads the times of each part file in output directory from the `Run.out` file.
+
+    Parameters
+    ----------
+    dirout : Union[str, pathlib.Path]
+        The output directory of the simulations
+
+    Returns
+    -------
+    list[tuple[int, float]]
+        A list of the part number and the corresponding time.
+    &#34;&#34;&#34;
+    ret = [(0, 0.0)]
+    with open(f&#34;{dirout}/Run.out&#34;, &#34;r&#34;) as file:
+        print(file)
+        # Skip useless header and `Part_0000 section`.
+        for line in file:
+            print(line)
+            if line.startswith(&#34;[Initialising simulation&#34;):
+                break
+
+        for line in file:
+            pattern = r&#34;Part_(\d*)[ ]+({0})&#34;.format(RE_PATTERNS.NUMBER)
+            part_and_time = re.match(pattern, line)
+            if part_and_time:
+                print(part_and_time)
+                ret.append((int(part_and_time.group(1)), float(part_and_time.group(2))))
+    ret[0] = (ret[1][0] - 1, 0.0)
+    return ret</code></pre>
 </details>
 </dd>
 <dt id="pydsphtools.get_usr_def_var"><code class="name flex">
@@ -899,13 +990,15 @@ doesn't exist.</dd>
         dirbin = binpath / &#34;windows&#34;
         binary = dirbin / &#34;MeasureTool_win64&#34;
 
-    # If `options are specified run use those.
+    # If `options` is specified run use those.
     if options is not None:
         if print_options:
             print(f&#39;Running MeasureTool with options: &#34;{options}&#34;&#39;)
-        subprocess.run([binary, *options.split(&#34; &#34;)])
-        _run_and_capture_measuretool([binary, *options.split(&#34; &#34;)])
-        return
+        # subprocess.run([binary, *options.split(&#34; &#34;)])
+        return _run_and_capture_measuretool([binary, *options.split(&#34; &#34;)])
+    else:
+        # just because pylance is active wierd without the else
+        pass
 
     if dirout is None:
         dirout = dirin / &#34;measuretool&#34;
@@ -1072,7 +1165,7 @@ doesn't exist.</dd>
 </details>
 </dd>
 <dt id="pydsphtools.xml_get_or_create_subelement"><code class="name flex">
-<span>def <span class="ident">xml_get_or_create_subelement</span></span>(<span>parent_elem: <cyfunction Element at 0x77eb8a4185f0>, child: str)</span>
+<span>def <span class="ident">xml_get_or_create_subelement</span></span>(<span>parent_elem: <cyfunction Element at 0x7f1308673d30>, child: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get or created a subelement of an "lxml" element.</p>
@@ -1176,6 +1269,8 @@ large.</p></div>
 <li><code><a title="pydsphtools.get_chrono_mass" href="#pydsphtools.get_chrono_mass">get_chrono_mass</a></code></li>
 <li><code><a title="pydsphtools.get_chrono_property" href="#pydsphtools.get_chrono_property">get_chrono_property</a></code></li>
 <li><code><a title="pydsphtools.get_dp" href="#pydsphtools.get_dp">get_dp</a></code></li>
+<li><code><a title="pydsphtools.get_dualsphysics_root" href="#pydsphtools.get_dualsphysics_root">get_dualsphysics_root</a></code></li>
+<li><code><a title="pydsphtools.get_times_of_partfiles" href="#pydsphtools.get_times_of_partfiles">get_times_of_partfiles</a></code></li>
 <li><code><a title="pydsphtools.get_usr_def_var" href="#pydsphtools.get_usr_def_var">get_usr_def_var</a></code></li>
 <li><code><a title="pydsphtools.get_var" href="#pydsphtools.get_var">get_var</a></code></li>
 <li><code><a title="pydsphtools.read_and_fix_csv" href="#pydsphtools.read_and_fix_csv">read_and_fix_csv</a></code></li>
