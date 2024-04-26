@@ -14,7 +14,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 Author: Constantinos Menelaou<br>
-Github: https://github.com/konmenel<br>
+Github: https://github.com/konmenel <br>
 Year: 2023<br>
 """
 from . import waves, exceptions, stats, mlpistons, relaxzones
