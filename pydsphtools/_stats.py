@@ -6,11 +6,10 @@
 # including this file, may be copied, modified, propagated, or distributed except
 # according to the terms contained in the LICENSE file.
 import numpy as np
-import numpy.typing as npt
 from typing import Sequence, Optional
 
 
-def agreement_idx(obs: npt.ArrayLike, pred: npt.ArrayLike, c: float = 2) -> float:
+def agreement_idx(obs: Sequence[float], pred: Sequence[float], c: float = 2) -> float:
     """Calulcates the index of agreement (dr) following the paper by Willmott et al.[1].
 
     Parameters

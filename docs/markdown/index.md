@@ -31,6 +31,36 @@ Functions
 ---------
 
     
+`get_binary_path(name: str, binpath: str = None) -> str`
+:   Gets the full path of a binary of the DualSPHysics.
+    
+    Parameters
+    ----------
+    name : str
+        The name of the binary. Case insensitive.
+    binpath : str, optional
+        The path of the binary folder of DualSPHysics. If not defined the
+        environment variable "DUALSPH_HOME" must be defined. For example,
+        "/home/myuser/DualSPHysics_5.2/bin". By default None.
+    
+    Returns
+    -------
+    str
+        The absolute path of the binary.
+    
+    Raises
+    ------
+    MissingEnvironmentVariable
+        If `binpath` is None, and environment variables `DUALSPH_HOME`
+        and `DUALSPH_HOME2` are undefined.
+    
+    UnsupportedPlatform
+        If the platform is neither windows or linux.
+    
+    DSPHBinaryNotFound
+        If the binary does not exists in the binary directory.
+
+    
 `get_chrono_inertia(dirout: Union[str, pathlib.Path], bname: str) -> numpy.ndarray`
 :   Finds the inertia tensor of a floating chrono body (only diagonal elements).
     
@@ -123,7 +153,7 @@ Functions
     
 `get_dualsphysics_root() -> str`
 :   Returns the path of the DualSPHysics root from the
-    environment variables. `DUALSPH_HOME` or `DUALSPH_HOME`
+    environment variables. `DUALSPH_HOME` or `DUALSPH_HOME2`
     should be defined. If not returns empty `str`.
     
     Returns
@@ -133,12 +163,26 @@ Functions
         are undefined.
 
     
-`get_number_of_partfiles(dirout: Union[str, pathlib.Path]) -> int`
-:   Returns the total number of `Part_xxxx.bi4` files in the `data` directory.
+`get_number_of_partfiles(diroutdata: Union[str, pathlib.Path]) -> int`
+:   Returns the total number of `Part_xxxx.bi4` files in the `diroutdata` directory.
     
     Parameters
     ----------
-    dirout : Union[str, pathlib.Path]
+    diroutdata : Union[str, pathlib.Path]
+        The output directory of the simulations containing the Part files
+    
+    Returns
+    -------
+    int
+        The total number of `Part_xxxx.bi4` files in the `data` directory.
+
+    
+`get_partfiles(diroutdata: Union[str, pathlib.Path]) -> list[str]`
+:   Returns a list of all `Part_xxxx.bi4` files in the `data` directory.
+    
+    Parameters
+    ----------
+    diroutdata : Union[str, pathlib.Path]
         The output directory of the simulations
     
     Returns
@@ -332,7 +376,7 @@ Functions
         Enable the variables or magnitudes that are going to be computed as an
         interpolation of the selected particles around a given position.
     binpath : str, optional
-        The path of the binary folder of DualSPHysics. If not defined the an
+        The path of the binary folder of DualSPHysics. If not defined the
         environment variable "DUALSPH_HOME" must be defined. By default None.
     options : str, optional
         A string of the command line option to be pass. If this argument is pass
@@ -349,7 +393,7 @@ Functions
         doesn't exist.
 
     
-`xml_get_or_create_subelement(parent_elem: <cyfunction Element at 0x7fc9605f86c0>, child: str)`
+`xml_get_or_create_subelement(parent_elem: <cyfunction Element at 0x7914d0d3a0c0>, child: str)`
 :   Get or created a subelement of an "lxml" element.
     
     Parameters

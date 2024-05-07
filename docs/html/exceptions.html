@@ -79,11 +79,54 @@ class InvalidTimeInterval(Exception):
 
 
 class MissingEnvironmentVariable(Exception):
+    &#34;&#34;&#34;Raised if an enviroment variable is undefined.
+
+    Attributes
+    ----------
+        var_name : str
+            The name of the environment variable.
+    &#34;&#34;&#34;
     var_name: str
 
     def __init__(self, var_name: str, *args) -&gt; None:
         self.var_name = var_name
-        super().__init__(*args)</code></pre>
+        super().__init__(*args)
+
+
+class UnsupportedPlatform(Exception):
+    &#34;&#34;&#34;Raised if the platform is not supperted by DualSPHysics/
+
+    Attributes
+    ----------
+    platform : str
+        Name of the platform
+    &#34;&#34;&#34;
+    platform: str
+
+    def __init__(self, platform: str, *args: object) -&gt; None:
+        self.platform = platform
+        super().__init__(f&#39;Unsupported platform &#34;{self.platform}&#34;.&#39;)
+
+
+class DSPHBinaryNotFound(Exception):
+    &#34;&#34;&#34;Raised if a binary is not found in the path.
+
+    Attributes
+    ----------
+    binary_name : str
+        Name of the binary
+    path : str
+        The path that was searched.
+    &#34;&#34;&#34;
+    binary_name: str
+    path: str
+
+    def __init__(self, binary_name: str, path: str, *args: object) -&gt; None:
+        self.binary_name = binary_name
+        self.path = path
+        super().__init__(
+            f&#39;DualSPHysics binary &#34;{self.binary_name}&#34; not found in &#34;{path}&#34;.&#39;
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -95,6 +138,49 @@ class MissingEnvironmentVariable(Exception):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="pydsphtools.exceptions.DSPHBinaryNotFound"><code class="flex name class">
+<span>class <span class="ident">DSPHBinaryNotFound</span></span>
+<span>(</span><span>binary_name: str, path: str, *args: object)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raised if a binary is not found in the path.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>binary_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>Name of the binary</dd>
+<dt><strong><code>path</code></strong> :&ensp;<code>str</code></dt>
+<dd>The path that was searched.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DSPHBinaryNotFound(Exception):
+    &#34;&#34;&#34;Raised if a binary is not found in the path.
+
+    Attributes
+    ----------
+    binary_name : str
+        Name of the binary
+    path : str
+        The path that was searched.
+    &#34;&#34;&#34;
+    binary_name: str
+    path: str
+
+    def __init__(self, binary_name: str, path: str, *args: object) -&gt; None:
+        self.binary_name = binary_name
+        self.path = path
+        super().__init__(
+            f&#39;DualSPHysics binary &#34;{self.binary_name}&#34; not found in &#34;{path}&#34;.&#39;
+        )</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
 <dt id="pydsphtools.exceptions.InvalidTimeInterval"><code class="flex name class">
 <span>class <span class="ident">InvalidTimeInterval</span></span>
 <span>(</span><span>tmin: float, tmax: float)</span>
@@ -143,12 +229,23 @@ class MissingEnvironmentVariable(Exception):
 <span>(</span><span>var_name: str, *args)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<div class="desc"><p>Raised if an enviroment variable is undefined.</p>
+<h2 id="attributes">Attributes</h2>
+<pre><code>var_name : str
+    The name of the environment variable.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MissingEnvironmentVariable(Exception):
+    &#34;&#34;&#34;Raised if an enviroment variable is undefined.
+
+    Attributes
+    ----------
+        var_name : str
+            The name of the environment variable.
+    &#34;&#34;&#34;
     var_name: str
 
     def __init__(self, var_name: str, *args) -&gt; None:
@@ -206,6 +303,41 @@ class MissingEnvironmentVariable(Exception):
 <li>builtins.BaseException</li>
 </ul>
 </dd>
+<dt id="pydsphtools.exceptions.UnsupportedPlatform"><code class="flex name class">
+<span>class <span class="ident">UnsupportedPlatform</span></span>
+<span>(</span><span>platform: str, *args: object)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raised if the platform is not supperted by DualSPHysics/</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>platform</code></strong> :&ensp;<code>str</code></dt>
+<dd>Name of the platform</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class UnsupportedPlatform(Exception):
+    &#34;&#34;&#34;Raised if the platform is not supperted by DualSPHysics/
+
+    Attributes
+    ----------
+    platform : str
+        Name of the platform
+    &#34;&#34;&#34;
+    platform: str
+
+    def __init__(self, platform: str, *args: object) -&gt; None:
+        self.platform = platform
+        super().__init__(f&#39;Unsupported platform &#34;{self.platform}&#34;.&#39;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
 </dl>
 </section>
 </article>
@@ -223,6 +355,9 @@ class MissingEnvironmentVariable(Exception):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
+<h4><code><a title="pydsphtools.exceptions.DSPHBinaryNotFound" href="#pydsphtools.exceptions.DSPHBinaryNotFound">DSPHBinaryNotFound</a></code></h4>
+</li>
+<li>
 <h4><code><a title="pydsphtools.exceptions.InvalidTimeInterval" href="#pydsphtools.exceptions.InvalidTimeInterval">InvalidTimeInterval</a></code></h4>
 </li>
 <li>
@@ -230,6 +365,9 @@ class MissingEnvironmentVariable(Exception):
 </li>
 <li>
 <h4><code><a title="pydsphtools.exceptions.NotFoundInOutput" href="#pydsphtools.exceptions.NotFoundInOutput">NotFoundInOutput</a></code></h4>
+</li>
+<li>
+<h4><code><a title="pydsphtools.exceptions.UnsupportedPlatform" href="#pydsphtools.exceptions.UnsupportedPlatform">UnsupportedPlatform</a></code></h4>
 </li>
 </ul>
 </li>

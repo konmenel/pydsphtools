@@ -51,8 +51,51 @@ class InvalidTimeInterval(Exception):
 
 
 class MissingEnvironmentVariable(Exception):
+    """Raised if an enviroment variable is undefined.
+
+    Attributes
+    ----------
+        var_name : str
+            The name of the environment variable.
+    """
     var_name: str
 
     def __init__(self, var_name: str, *args) -> None:
         self.var_name = var_name
         super().__init__(*args)
+
+
+class UnsupportedPlatform(Exception):
+    """Raised if the platform is not supperted by DualSPHysics/
+
+    Attributes
+    ----------
+    platform : str
+        Name of the platform
+    """
+    platform: str
+
+    def __init__(self, platform: str, *args: object) -> None:
+        self.platform = platform
+        super().__init__(f'Unsupported platform "{self.platform}".')
+
+
+class DSPHBinaryNotFound(Exception):
+    """Raised if a binary is not found in the path.
+
+    Attributes
+    ----------
+    binary_name : str
+        Name of the binary
+    path : str
+        The path that was searched.
+    """
+    binary_name: str
+    path: str
+
+    def __init__(self, binary_name: str, path: str, *args: object) -> None:
+        self.binary_name = binary_name
+        self.path = path
+        super().__init__(
+            f'DualSPHysics binary "{self.binary_name}" not found in "{path}".'
+        )

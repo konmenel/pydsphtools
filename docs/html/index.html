@@ -61,41 +61,13 @@ Github: https://github.com/konmenel &lt;br&gt;
 Year: 2023&lt;br&gt;
 &#34;&#34;&#34;
 from . import waves, exceptions, stats, mlpistons, relaxzones
-from ._main import (
-    DEG2RAD,
-    RAD2DEG,
-    RE_PATTERNS,
-    read_and_fix_csv,
-    get_dp,
-    get_var,
-    get_usr_def_var,
-    get_chrono_mass,
-    get_chrono_inertia,
-    get_chrono_property,
-    run_measuretool,
-    xml_get_or_create_subelement,
-    get_dualsphysics_root,
-    get_times_of_partfiles,
-    get_number_of_partfiles,
-)
+from ._main import __all__ as _all_in_main
+# flake8: noqa: F403
+from ._main import *
 
 __version__ = &#34;1.0&#34;
 __all__ = [
-    &#34;DEG2RAD&#34;,
-    &#34;RAD2DEG&#34;,
-    &#34;RE_PATTERNS&#34;,
-    &#34;read_and_fix_csv&#34;,
-    &#34;get_dp&#34;,
-    &#34;get_var&#34;,
-    &#34;get_usr_def_var&#34;,
-    &#34;get_chrono_mass&#34;,
-    &#34;get_chrono_inertia&#34;,
-    &#34;get_chrono_property&#34;,
-    &#34;run_measuretool&#34;,
-    &#34;xml_get_or_create_subelement&#34;,
-    &#34;get_dualsphysics_root&#34;,
-    &#34;get_times_of_partfiles&#34;,
-    &#34;get_number_of_partfiles&#34;,
+    *_all_in_main,
     &#34;waves&#34;,
     &#34;exceptions&#34;,
     &#34;stats&#34;,
@@ -136,6 +108,98 @@ the Relaxation Zone technic of DualSPHysics.</p></div>
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="pydsphtools.get_binary_path"><code class="name flex">
+<span>def <span class="ident">get_binary_path</span></span>(<span>name: str, binpath: str = None) -> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets the full path of a binary of the DualSPHysics.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the binary. Case insensitive.</dd>
+<dt><strong><code>binpath</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>The path of the binary folder of DualSPHysics. If not defined the
+environment variable "DUALSPH_HOME" must be defined. For example,
+"/home/myuser/DualSPHysics_5.2/bin". By default None.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>The absolute path of the binary.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>MissingEnvironmentVariable</code></dt>
+<dd>If <code>binpath</code> is None, and environment variables <code>DUALSPH_HOME</code>
+and <code>DUALSPH_HOME2</code> are undefined.</dd>
+<dt><code>UnsupportedPlatform</code></dt>
+<dd>If the platform is neither windows or linux.</dd>
+<dt><code>DSPHBinaryNotFound</code></dt>
+<dd>If the binary does not exists in the binary directory.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_binary_path(name: str, binpath: str = None) -&gt; str:
+    &#34;&#34;&#34;Gets the full path of a binary of the DualSPHysics.
+
+    Parameters
+    ----------
+    name : str
+        The name of the binary. Case insensitive.
+    binpath : str, optional
+        The path of the binary folder of DualSPHysics. If not defined the
+        environment variable &#34;DUALSPH_HOME&#34; must be defined. For example,
+        &#34;/home/myuser/DualSPHysics_5.2/bin&#34;. By default None.
+
+    Returns
+    -------
+    str
+        The absolute path of the binary.
+
+    Raises
+    ------
+    MissingEnvironmentVariable
+        If `binpath` is None, and environment variables `DUALSPH_HOME`
+        and `DUALSPH_HOME2` are undefined.
+
+    UnsupportedPlatform
+        If the platform is neither windows or linux.
+
+    DSPHBinaryNotFound
+        If the binary does not exists in the binary directory.
+    &#34;&#34;&#34;
+    if binpath is None:
+        dsph_root = get_dualsphysics_root()
+        if not dsph_root:
+            raise MissingEnvironmentVariable(
+                &#34;DUALSPH_HOME&#34;,
+                message=(
+                    &#34;Root directory of DualSPHysics not found. Either specify the &#34;
+                    &#39;environment variable &#34;DUALSPH_HOMe&#34; or use `binpath`.&#39;,
+                ),
+            )
+        binpath = f&#34;{dsph_root}/bin&#34;
+
+    plat = platform.system()
+    binpath = Path(binpath)
+    if plat == &#34;Linux&#34;:
+        binpath /= &#34;linux&#34;
+    elif plat == &#34;Windows&#34;:
+        binpath /= &#34;windows&#34;
+    else:
+        raise UnsupportedPlatform(plat)
+
+    files_iter: Generator[Path] = (item for item in binpath.iterdir() if item.is_file())
+
+    for file in files_iter:
+        if file.name.lower().split(&#34;_&#34;)[0] == name:
+            return str(file.absolute())
+
+    raise DSPHBinaryNotFound(name, str(binpath))</code></pre>
+</details>
+</dd>
 <dt id="pydsphtools.get_chrono_inertia"><code class="name flex">
 <span>def <span class="ident">get_chrono_inertia</span></span>(<span>dirout: Union[str, pathlib.Path], bname: str) -> numpy.ndarray</span>
 </code></dt>
@@ -424,7 +488,7 @@ or property with the specified name doesn't exist.</dd>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the path of the DualSPHysics root from the
-environment variables. <code>DUALSPH_HOME</code> or <code>DUALSPH_HOME</code>
+environment variables. <code>DUALSPH_HOME</code> or <code>DUALSPH_HOME2</code>
 should be defined. If not returns empty <code>str</code>.</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -438,7 +502,7 @@ are undefined.</dd>
 </summary>
 <pre><code class="python">def get_dualsphysics_root() -&gt; str:
     &#34;&#34;&#34;Returns the path of the DualSPHysics root from the
-    environment variables. `DUALSPH_HOME` or `DUALSPH_HOME`
+    environment variables. `DUALSPH_HOME` or `DUALSPH_HOME2`
     should be defined. If not returns empty `str`.
 
     Returns
@@ -456,13 +520,50 @@ are undefined.</dd>
 </details>
 </dd>
 <dt id="pydsphtools.get_number_of_partfiles"><code class="name flex">
-<span>def <span class="ident">get_number_of_partfiles</span></span>(<span>dirout: Union[str, pathlib.Path]) -> int</span>
+<span>def <span class="ident">get_number_of_partfiles</span></span>(<span>diroutdata: Union[str, pathlib.Path]) -> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the total number of <code>Part_xxxx.bi4</code> files in the <code>data</code> directory.</p>
+<div class="desc"><p>Returns the total number of <code>Part_xxxx.bi4</code> files in the <code>diroutdata</code> directory.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>dirout</code></strong> :&ensp;<code>Union[str, pathlib.Path]</code></dt>
+<dt><strong><code>diroutdata</code></strong> :&ensp;<code>Union[str, pathlib.Path]</code></dt>
+<dd>The output directory of the simulations containing the Part files</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>The total number of <code>Part_xxxx.bi4</code> files in the <code>data</code> directory.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_number_of_partfiles(diroutdata: Union[str, pathlib.Path]) -&gt; int:
+    &#34;&#34;&#34;Returns the total number of `Part_xxxx.bi4` files in the `diroutdata` directory.
+
+    Parameters
+    ----------
+    diroutdata : Union[str, pathlib.Path]
+        The output directory of the simulations containing the Part files
+
+    Returns
+    -------
+    int
+        The total number of `Part_xxxx.bi4` files in the `data` directory.
+    &#34;&#34;&#34;
+    pattern = re.compile(r&#34;Part_\d*.bi4&#34;)
+    partfiles = os.listdir(f&#34;{diroutdata}&#34;)
+    return len(list(filter(pattern.match, partfiles)))</code></pre>
+</details>
+</dd>
+<dt id="pydsphtools.get_partfiles"><code class="name flex">
+<span>def <span class="ident">get_partfiles</span></span>(<span>diroutdata: Union[str, pathlib.Path]) -> list[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list of all <code>Part_xxxx.bi4</code> files in the <code>data</code> directory.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>diroutdata</code></strong> :&ensp;<code>Union[str, pathlib.Path]</code></dt>
 <dd>The output directory of the simulations</dd>
 </dl>
 <h2 id="returns">Returns</h2>
@@ -474,12 +575,12 @@ are undefined.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_number_of_partfiles(dirout: Union[str, pathlib.Path]) -&gt; int:
-    &#34;&#34;&#34;Returns the total number of `Part_xxxx.bi4` files in the `data` directory.
+<pre><code class="python">def get_partfiles(diroutdata: Union[str, pathlib.Path]) -&gt; list[str]:
+    &#34;&#34;&#34;Returns a list of all `Part_xxxx.bi4` files in the `data` directory.
 
     Parameters
     ----------
-    dirout : Union[str, pathlib.Path]
+    diroutdata : Union[str, pathlib.Path]
         The output directory of the simulations
 
     Returns
@@ -488,8 +589,14 @@ are undefined.</dd>
         The total number of `Part_xxxx.bi4` files in the `data` directory.
     &#34;&#34;&#34;
     pattern = re.compile(r&#34;Part_\d*.bi4&#34;)
-    partfiles = os.listdir(f&#34;{dirout}/data&#34;)
-    return len(list(filter(pattern.match, partfiles)))</code></pre>
+    diroutdata = Path(diroutdata)
+    return sorted(
+        [
+            str(partfile.absolute())
+            for partfile in diroutdata.iterdir()
+            if partfile.is_file() and pattern.match(partfile.name)
+        ]
+    )</code></pre>
 </details>
 </dd>
 <dt id="pydsphtools.get_times_of_partfiles"><code class="name flex">
@@ -840,7 +947,7 @@ default vel,rhop or empty when elevation/tke calculation is enabled.</dd>
 <dd>Enable the variables or magnitudes that are going to be computed as an
 interpolation of the selected particles around a given position.</dd>
 <dt><strong><code>binpath</code></strong> :&ensp;<code>str</code>, optional</dt>
-<dd>The path of the binary folder of DualSPHysics. If not defined the an
+<dd>The path of the binary folder of DualSPHysics. If not defined the
 environment variable "DUALSPH_HOME" must be defined. By default None.</dd>
 <dt><strong><code>options</code></strong> :&ensp;<code>str</code>, optional</dt>
 <dd>A string of the command line option to be pass. If this argument is pass
@@ -990,7 +1097,7 @@ doesn't exist.</dd>
         Enable the variables or magnitudes that are going to be computed as an
         interpolation of the selected particles around a given position.
     binpath : str, optional
-        The path of the binary folder of DualSPHysics. If not defined the an
+        The path of the binary folder of DualSPHysics. If not defined the
         environment variable &#34;DUALSPH_HOME&#34; must be defined. By default None.
     options : str, optional
         A string of the command line option to be pass. If this argument is pass
@@ -1201,7 +1308,7 @@ doesn't exist.</dd>
 </details>
 </dd>
 <dt id="pydsphtools.xml_get_or_create_subelement"><code class="name flex">
-<span>def <span class="ident">xml_get_or_create_subelement</span></span>(<span>parent_elem: <cyfunction Element at 0x7f08b7f946c0>, child: str)</span>
+<span>def <span class="ident">xml_get_or_create_subelement</span></span>(<span>parent_elem: <cyfunction Element at 0x7bd1c8d420c0>, child: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get or created a subelement of an "lxml" element.</p>
@@ -1301,12 +1408,14 @@ large.</p></div>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="pydsphtools.get_binary_path" href="#pydsphtools.get_binary_path">get_binary_path</a></code></li>
 <li><code><a title="pydsphtools.get_chrono_inertia" href="#pydsphtools.get_chrono_inertia">get_chrono_inertia</a></code></li>
 <li><code><a title="pydsphtools.get_chrono_mass" href="#pydsphtools.get_chrono_mass">get_chrono_mass</a></code></li>
 <li><code><a title="pydsphtools.get_chrono_property" href="#pydsphtools.get_chrono_property">get_chrono_property</a></code></li>
 <li><code><a title="pydsphtools.get_dp" href="#pydsphtools.get_dp">get_dp</a></code></li>
 <li><code><a title="pydsphtools.get_dualsphysics_root" href="#pydsphtools.get_dualsphysics_root">get_dualsphysics_root</a></code></li>
 <li><code><a title="pydsphtools.get_number_of_partfiles" href="#pydsphtools.get_number_of_partfiles">get_number_of_partfiles</a></code></li>
+<li><code><a title="pydsphtools.get_partfiles" href="#pydsphtools.get_partfiles">get_partfiles</a></code></li>
 <li><code><a title="pydsphtools.get_times_of_partfiles" href="#pydsphtools.get_times_of_partfiles">get_times_of_partfiles</a></code></li>
 <li><code><a title="pydsphtools.get_usr_def_var" href="#pydsphtools.get_usr_def_var">get_usr_def_var</a></code></li>
 <li><code><a title="pydsphtools.get_var" href="#pydsphtools.get_var">get_var</a></code></li>

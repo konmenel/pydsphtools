@@ -18,41 +18,13 @@ Github: https://github.com/konmenel <br>
 Year: 2023<br>
 """
 from . import waves, exceptions, stats, mlpistons, relaxzones
-from ._main import (
-    DEG2RAD,
-    RAD2DEG,
-    RE_PATTERNS,
-    read_and_fix_csv,
-    get_dp,
-    get_var,
-    get_usr_def_var,
-    get_chrono_mass,
-    get_chrono_inertia,
-    get_chrono_property,
-    run_measuretool,
-    xml_get_or_create_subelement,
-    get_dualsphysics_root,
-    get_times_of_partfiles,
-    get_number_of_partfiles,
-)
+from ._main import __all__ as _all_in_main
+# flake8: noqa: F403
+from ._main import *
 
 __version__ = "1.0"
 __all__ = [
-    "DEG2RAD",
-    "RAD2DEG",
-    "RE_PATTERNS",
-    "read_and_fix_csv",
-    "get_dp",
-    "get_var",
-    "get_usr_def_var",
-    "get_chrono_mass",
-    "get_chrono_inertia",
-    "get_chrono_property",
-    "run_measuretool",
-    "xml_get_or_create_subelement",
-    "get_dualsphysics_root",
-    "get_times_of_partfiles",
-    "get_number_of_partfiles",
+    *_all_in_main,
     "waves",
     "exceptions",
     "stats",
