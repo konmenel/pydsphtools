@@ -1,8 +1,10 @@
 from __future__ import annotations
 import os
 import io
+import json
 import struct
 from enum import Enum
+import numpy as np
 
 
 # Structure of file:
@@ -122,10 +124,43 @@ class Array:
     array_type: DataType
     count: int
     array_size: int
-    data: list[None | bool | str | int | float | tuple[float, float, float]]
+    data: np.ndarray
+
+    __slots__ = (
+        "_name",
+        "_hide",
+        "_array_type",
+        "_count",
+        "_array_size",
+        "_data",
+    )
 
     def __init__(self) -> None:
         raise NotImplementedError
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def hide(self) -> bool:
+        return self._hide
+
+    @property
+    def array_type(self) -> DataType:
+        return self._array_type
+
+    @property
+    def count(self) -> int:
+        return self._count
+
+    @property
+    def array_size(self) -> int:
+        return self._array_size
+
+    @property
+    def data(self) -> np.ndarray:
+        return self._data
 
 
 class Item:
@@ -248,8 +283,8 @@ class Item:
     @classmethod
     def from_bytes(cls, bytes: bytes, endianness: Endianness) -> Item:
         return cls.from_stream(io.BytesIO(bytes), endianness)
-    
-    @property 
+
+    @property
     def item_size(self) -> int:
         return self._item_size
 
@@ -260,11 +295,11 @@ class Item:
     @property
     def hide(self) -> bool:
         return self._hide
-    
+
     @property
     def hide_values(self) -> bool:
         return self._hide_values
-    
+
     @property
     def fmt_float(self) -> str:
         return self._fmt_float
@@ -272,7 +307,7 @@ class Item:
     @property
     def fmt_double(self) -> str:
         return self._fmt_double
-    
+
     @property
     def num_arrays(self) -> int:
         return self.num_arrays
@@ -286,7 +321,9 @@ class Item:
         return self._size_values
 
     @property
-    def values(self) -> dict[str, None | bool | str | int | float | tuple[float, float, float]]:
+    def values(
+        self,
+    ) -> dict[str, None | bool | str | int | float | tuple[float, float, float]]:
         return self._values
 
     @property
@@ -295,33 +332,46 @@ class Item:
 
     def __str__(self) -> str:
         return self.pretty_print()
-    
+
     def __repr__(self) -> str:
         return self.pretty_print()
 
-    def pretty_print(self, indent=0) -> str:
-        indent_str = "  "
+    def pretty_print(self, indent=0, indent_str="  ") -> str:
         ret = (
             f"{indent_str*indent}Item(\n"
-            f"{indent_str*(indent+1)}item_size={self._item_size},\n"
-            f"{indent_str*(indent+1)}name={self._name},\n"
-            f"{indent_str*(indent+1)}hide={self._hide},\n"
-            f"{indent_str*(indent+1)}hide_values={self._hide_values},\n"
-            f"{indent_str*(indent+1)}fmt_float={self._fmt_float},\n"
-            f"{indent_str*(indent+1)}fmt_double={self._fmt_double},\n"
-            f"{indent_str*(indent+1)}num_arrays={self._num_arrays},\n"
-            f"{indent_str*(indent+1)}num_items={self._num_items},\n"
-            f"{indent_str*(indent+1)}size_values={self._size_values},\n"
-            f"{indent_str*(indent+1)}values={self._values},\n"
+            f"{indent_str*(indent+1)}item_size = {self._item_size},\n"
+            f"{indent_str*(indent+1)}name = {self._name},\n"
+            f"{indent_str*(indent+1)}hide = {self._hide},\n"
+            f"{indent_str*(indent+1)}hide_values = {self._hide_values},\n"
+            f"{indent_str*(indent+1)}fmt_float = {self._fmt_float},\n"
+            f"{indent_str*(indent+1)}fmt_double = {self._fmt_double},\n"
+            f"{indent_str*(indent+1)}num_arrays = {self._num_arrays},\n"
+            f"{indent_str*(indent+1)}num_items = {self._num_items},\n"
+            f"{indent_str*(indent+1)}size_values = {self._size_values},\n"
+            f"{indent_str*(indent+1)}values = {{\n"
+            f"{self._pretty_print_dict(self.values, indent=indent+1)}"
+            f"{indent_str*(indent+1)}}}\n"
         )
         if self._num_items:
-            ret += f"{indent_str*(indent+1)}items=[\n"
+            ret += f"{indent_str*(indent+1)}items = [\n"
             for item in self._items:
                 ret += f"{indent_str*indent}{item.pretty_print(indent+2)}"
             ret += f"{indent_str*(indent+1)}]\n"
         else:
-            ret += f"{indent_str*(indent+1)}items=[]\n"
+            ret += f"{indent_str*(indent+1)}items = []\n"
         ret += f"{indent_str*indent})\n"
+        return ret
+
+    def _pretty_print_dict(self, d: dict, indent=0, indent_str="  ") -> str:
+        ret = ""
+        for key, value in d.items():
+            ret += f"{indent_str*(indent+1)}{key}: "
+            if isinstance(value, dict):
+                ret += "{\n"
+                ret += f"{self._pretty_print_dict(value, indent+1)}"
+                ret += f"{indent_str*(indent+1)}}}\n"
+            else:
+                ret += f"{value}\n"
         return ret
 
     @staticmethod
@@ -388,7 +438,6 @@ def read_bi4(partfile: str | os.PathLike) -> None:
         print(f"{extra}")
         main_item = Item.from_stream(file, byteorder)
         print(main_item)
-
 
 
 if __name__ == "__main__":
