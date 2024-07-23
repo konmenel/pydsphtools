@@ -24,7 +24,7 @@ import numpy as np
 # - uint32 num_items
 # - uint32 size_values
 #   - uint32 str_size (7)
-#   - "VALUES"
+#   - "\nVALUES"
 #   - uint32 num_values
 #   - [value_0]
 #       - uint32 str_size
@@ -39,8 +39,9 @@ import numpy as np
 # [item_n]
 # [array_0]
 # uint32 size_array_def [n]
-# - uint32 str_size (5)
-# - "ARRAY"
+# - uint32 str_size (6)
+# - "\nARRAY"
+# - uint32 str_size
 # - str name
 # - bool hide (as int32)
 # - int32 type
@@ -94,6 +95,10 @@ class DataType(Enum):
     float3 = 22
     double3 = 23
 
+    @classmethod
+    def from_bytes(cls: DataType, bytes: bytes, endianness: Endianness) -> DataType:
+        return cls(int.from_bytes(bytes, endianness.name))
+
     def to_python_type(self) -> type:
         if self == DataType.null:
             return type(None)
@@ -135,8 +140,53 @@ class Array:
         "_data",
     )
 
-    def __init__(self) -> None:
-        raise NotImplementedError
+    def __init__(
+        self,
+        name: str,
+        hide: bool,
+        array_type: DataType,
+        count: int,
+        array_size: int,
+        data: np.ndarray,
+    ) -> None:
+        self._name = name
+        self._hide = hide
+        self._array_type = array_type
+        self._count = count
+        self._array_size = array_size
+        self._data = data
+
+    @classmethod
+    def from_stream(
+        cls: Array, byte_stream: io.BytesIO, endianness: Endianness
+    ) -> Array:
+        array_def_size = int.from_bytes(byte_stream.read(UINT_SIZE), endianness.name)
+        buf = byte_stream.read(array_def_size)
+        stream = io.BytesIO(buf)
+
+        array_str_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
+        assert array_str_size == 6, f"Expected 6 but found {array_str_size}"
+        array_str = stream.read(array_str_size).decode("utf-8")
+        assert array_str == "\nARRAY", f"Expected '\nARRAY' but found'{array_str}'"
+        name_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
+        name = stream.read(name_size).decode("utf-8")
+        hide = bool.from_bytes(stream.read(UINT_SIZE), endianness.name)
+        array_type = DataType.from_bytes(stream.read(INT_SIZE), endianness)
+        count = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
+        array_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
+        assert stream.read() == b"", "Array definition buffer is not empty."
+
+        # Update buffer with the size of the array
+        buf = byte_stream.read(array_size)
+        stream = io.BytesIO(buf)
+        data = np.array([])
+
+        return cls(name, hide, array_type, count, array_size, data)
+
+
+    @classmethod
+    def from_bytes(cls: Array, bytes: bytes, endianness: Endianness) -> Array:
+        return cls.from_stream(io.BytesIO(bytes), endianness)
 
     @property
     def name(self) -> str:
@@ -175,8 +225,8 @@ class Item:
     size_values: int
     values: dict[str, None | bool | str | int | float | tuple[float, float, float]]
     items: list[Item]
-    # Arrays should not be loaded as they can be too big
-    # arrays: list[Array]
+    # TODO: Arrays should not be loaded as they can be too big
+    arrays: list[Array]
 
     __slots__ = (
         "_item_size",
@@ -190,6 +240,7 @@ class Item:
         "_size_values",
         "_values",
         "_items",
+        "_arrays",
     )
 
     def __init__(
@@ -205,7 +256,7 @@ class Item:
         size_values: int,
         values: dict[str, None | bool | str | int | float | tuple[float, float, float]],
         items: list[Item],
-        # arrays: list[Array],
+        arrays: list[Array],
     ) -> None:
         self._item_size = item_size
         self._name = name
@@ -218,7 +269,7 @@ class Item:
         self._size_values = size_values
         self._values = values
         self._items = items
-        # self._arrays = arrays
+        self._arrays = arrays
 
     @classmethod
     def from_stream(
@@ -245,26 +296,26 @@ class Item:
         assert stream.read() == b"", "Item buffer is not empty."
 
         # Update buffer since we the items definition is finished
-        buff = bytes_stream.read(size_values)
-        stream = io.BytesIO(buff)
-        values_str_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-        assert values_str_size == 7, f"Expected 7 but found {values_str_size}"
-        values_str = stream.read(values_str_size).decode("utf-8")
-        assert (
-            values_str == "\nVALUES"
-        ), f"Expected '\\nVALUES' but found '{values_str}'"
-        num_values = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-        values = {
-            name: value
-            for _ in range(num_values)
-            for name, value in [Item._parse_value_from_stream(stream, endianness)]
-        }
-        assert stream.read() == b"", "Values buffer is not empty."
+        if size_values:
+            buff = bytes_stream.read(size_values)
+            stream = io.BytesIO(buff)
+            values_str_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
+            assert values_str_size == 7, f"Expected 7 but found {values_str_size}"
+            values_str = stream.read(values_str_size).decode("utf-8")
+            assert (
+                values_str == "\nVALUES"
+            ), f"Expected '\\nVALUES' but found '{values_str}'"
+            num_values = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
+            values = {
+                name: value
+                for _ in range(num_values)
+                for name, value in [Item._parse_value_from_stream(stream, endianness)]
+            }
+            assert stream.read() == b"", "Values buffer is not empty."
 
         # Update buffer since we reached the end of values
-        buff = bytes_stream.read(size_values)
-        stream = io.BytesIO(buff)
-        items = [Item.from_stream(stream, endianness) for _ in range(num_items)]
+        items = [Item.from_stream(bytes_stream, endianness) for _ in range(num_items)]
+        arrays = [Array.from_stream(bytes_stream, endianness) for _ in range(num_arrays)]
 
         return cls(
             item_size,
@@ -278,10 +329,11 @@ class Item:
             size_values,
             values,
             items,
+            arrays,
         )
 
     @classmethod
-    def from_bytes(cls, bytes: bytes, endianness: Endianness) -> Item:
+    def from_bytes(cls: Item, bytes: bytes, endianness: Endianness) -> Item:
         return cls.from_stream(io.BytesIO(bytes), endianness)
 
     @property
