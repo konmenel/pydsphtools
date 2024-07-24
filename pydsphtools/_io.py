@@ -335,7 +335,7 @@ class Item:
     num_arrays: int
     num_items: int
     size_values: int
-    values: dict[str, None | bool | str | int | float | tuple[float, float, float]]
+    values: list[Value]
     items: list[Item]
     # TODO: Arrays should not be loaded as they can be too big
     arrays: list[Array]
@@ -484,9 +484,7 @@ class Item:
         return self._size_values
 
     @property
-    def values(
-        self,
-    ) -> dict[str, None | bool | str | int | float | tuple[float, float, float]]:
+    def values(self) -> list[Value]:
         return self._values
 
     @property
