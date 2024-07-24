@@ -1,7 +1,6 @@
 from __future__ import annotations
 import os
 import io
-import json
 import struct
 from enum import Enum
 import numpy as np
@@ -179,10 +178,10 @@ class Array:
         # Update buffer with the size of the array
         buf = byte_stream.read(array_size)
         stream = io.BytesIO(buf)
+        # TODO: Read data using numpy
         data = np.array([])
 
         return cls(name, hide, array_type, count, array_size, data)
-
 
     @classmethod
     def from_bytes(cls: Array, bytes: bytes, endianness: Endianness) -> Array:
@@ -211,6 +210,119 @@ class Array:
     @property
     def data(self) -> np.ndarray:
         return self._data
+
+
+class Value:
+    name: str
+    value_type: DataType
+    value: (
+        None
+        | bool
+        | str
+        | int
+        | float
+        | tuple[float, float, float]
+        | tuple[int, int, int]
+    )
+
+    __slots__ = ("_name", "_value_type", "_value")
+
+    def __init__(
+        self,
+        name: str,
+        value_type: DataType,
+        value: (
+            None
+            | bool
+            | str
+            | int
+            | float
+            | tuple[float, float, float]
+            | tuple[int, int, int]
+        ),
+    ) -> None:
+        self._name = name
+        self._value_type = value_type
+        self._value = value
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def value_type(self) -> DataType:
+        return self._value_type
+
+    @property
+    def value(
+        self,
+    ) -> (
+        None
+        | bool
+        | str
+        | int
+        | float
+        | tuple[float, float, float]
+        | tuple[int, int, int]
+    ):
+        return self._value
+
+    @classmethod
+    def from_stream(
+        cls: Value,
+        stream: io.BytesIO,
+        endianness: Endianness,
+    ) -> tuple[str, None | bool | str | int | float | tuple[float, float, float]]:
+        name_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
+        name = stream.read(name_size).decode("utf-8")
+        data_type = DataType(int.from_bytes(stream.read(INT_SIZE), endianness.name))
+        edn_fmt = "<" if endianness == Endianness.little else ">"
+
+        match data_type:
+            case DataType.null:
+                data = None
+            case DataType.char | DataType.uchar:
+                data = stream.read(CHAR_SIZE).decode("utf-8")
+            case DataType.text:
+                str_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
+                data = stream.read(str_size).decode("utf-8")
+            case DataType.short | DataType.ushort:
+                data = int.from_bytes(stream.read(SHORT_SIZE), endianness.name)
+            case DataType.int | DataType.uint | DataType.bool:
+                data = int.from_bytes(stream.read(INT_SIZE), endianness.name)
+            case DataType.llong | DataType.ullong:
+                data = int.from_bytes(stream.read(LONG_SIZE), endianness.name)
+            case DataType.float:
+                data = struct.unpack(f"{edn_fmt}f", stream.read(FLOAT_SIZE))[0]
+            case DataType.double:
+                data = struct.unpack(f"{edn_fmt}d", stream.read(DOUBLE_SIZE))[0]
+            case DataType.int3 | DataType.uint3:
+                data = (
+                    int.from_bytes(stream.read(INT_SIZE), endianness.name),
+                    int.from_bytes(stream.read(INT_SIZE), endianness.name),
+                    int.from_bytes(stream.read(INT_SIZE), endianness.name),
+                )
+            case DataType.float3:
+                data = struct.unpack(f"{edn_fmt}3f", stream.read(FLOAT3_SIZE))
+            case DataType.double3:
+                data = struct.unpack(f"{edn_fmt}3d", stream.read(DOUBLE3_SIZE))
+            case _:
+                raise NotImplementedError(
+                    f"Can't parse value of data type {data_type}"
+                    " because it is not implemented"
+                )
+
+        return cls(name, data_type, data)
+
+    @classmethod
+    def from_bytes(cls: Value, bytes: bytes, endianness: Endianness) -> Value:
+        return cls.from_stream(io.BytesIO(bytes), endianness)
+
+    def pretty_print(self, indent=0, indent_str="  ") -> str:
+        return f"{indent_str * indent}{self}"
+
+    def __str__(self) -> str:
+        return f"{self.name}: {self. value}"
 
 
 class Item:
@@ -254,7 +366,7 @@ class Item:
         num_arrays: int,
         num_items: int,
         size_values: int,
-        values: dict[str, None | bool | str | int | float | tuple[float, float, float]],
+        values: list[Value],
         items: list[Item],
         arrays: list[Array],
     ) -> None:
@@ -294,28 +406,27 @@ class Item:
         num_items = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
         size_values = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
         assert stream.read() == b"", "Item buffer is not empty."
+        stream.close()
 
         # Update buffer since we the items definition is finished
-        if size_values:
-            buff = bytes_stream.read(size_values)
-            stream = io.BytesIO(buff)
-            values_str_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-            assert values_str_size == 7, f"Expected 7 but found {values_str_size}"
-            values_str = stream.read(values_str_size).decode("utf-8")
-            assert (
-                values_str == "\nVALUES"
-            ), f"Expected '\\nVALUES' but found '{values_str}'"
-            num_values = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-            values = {
-                name: value
-                for _ in range(num_values)
-                for name, value in [Item._parse_value_from_stream(stream, endianness)]
-            }
-            assert stream.read() == b"", "Values buffer is not empty."
+        buff = bytes_stream.read(size_values)
+        stream = io.BytesIO(buff)
+        values_str_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
+        assert values_str_size == 7, f"Expected 7 but found {values_str_size}"
+        values_str = stream.read(values_str_size).decode("utf-8")
+        assert (
+            values_str == "\nVALUES"
+        ), f"Expected '\\nVALUES' but found '{values_str}'"
+        num_values = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
+        values = [Value.from_stream(stream, endianness) for _ in range(num_values)]
+        assert stream.read() == b"", "Values buffer is not empty."
+        stream.close()
 
         # Update buffer since we reached the end of values
         items = [Item.from_stream(bytes_stream, endianness) for _ in range(num_items)]
-        arrays = [Array.from_stream(bytes_stream, endianness) for _ in range(num_arrays)]
+        arrays = [
+            Array.from_stream(bytes_stream, endianness) for _ in range(num_arrays)
+        ]
 
         return cls(
             item_size,
@@ -400,10 +511,12 @@ class Item:
             f"{indent_str*(indent+1)}num_arrays = {self._num_arrays},\n"
             f"{indent_str*(indent+1)}num_items = {self._num_items},\n"
             f"{indent_str*(indent+1)}size_values = {self._size_values},\n"
-            f"{indent_str*(indent+1)}values = {{\n"
-            f"{self._pretty_print_dict(self.values, indent=indent+1)}"
-            f"{indent_str*(indent+1)}}}\n"
+            f"{indent_str*(indent+1)}values = [\n"
         )
+        for value in self._values:
+            ret += f"{value.pretty_print(indent=indent+2)}\n"
+        ret += f"{indent_str*(indent+1)}]\n"
+
         if self._num_items:
             ret += f"{indent_str*(indent+1)}items = [\n"
             for item in self._items:
@@ -425,50 +538,6 @@ class Item:
             else:
                 ret += f"{value}\n"
         return ret
-
-    @staticmethod
-    def _parse_value_from_stream(
-        stream: io.BytesIO,
-        endianness: Endianness,
-    ) -> tuple[str, None | bool | str | int | float | tuple[float, float, float]]:
-        name_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-        name = stream.read(name_size).decode("utf-8")
-        data_type = DataType(int.from_bytes(stream.read(INT_SIZE), endianness.name))
-        edn_fmt = "<" if endianness == Endianness.little else ">"
-
-        match data_type:
-            case DataType.null:
-                return name, None
-            case DataType.char | DataType.uchar:
-                return name, stream.read(CHAR_SIZE).decode("utf-8")
-            case DataType.text:
-                str_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-                return name, stream.read(str_size).decode("utf-8")
-            case DataType.short | DataType.ushort:
-                return name, int.from_bytes(stream.read(SHORT_SIZE), endianness.name)
-            case DataType.int | DataType.uint | DataType.bool:
-                return name, int.from_bytes(stream.read(INT_SIZE), endianness.name)
-            case DataType.llong | DataType.ullong:
-                return name, int.from_bytes(stream.read(LONG_SIZE), endianness.name)
-            case DataType.float:
-                return name, struct.unpack(f"{edn_fmt}f", stream.read(FLOAT_SIZE))[0]
-            case DataType.double:
-                return name, struct.unpack(f"{edn_fmt}d", stream.read(DOUBLE_SIZE))[0]
-            case DataType.int3 | DataType.uint3:
-                return name, (
-                    int.from_bytes(stream.read(INT_SIZE), endianness.name),
-                    int.from_bytes(stream.read(INT_SIZE), endianness.name),
-                    int.from_bytes(stream.read(INT_SIZE), endianness.name),
-                )
-            case DataType.float3:
-                return name, struct.unpack(f"{edn_fmt}3f", stream.read(FLOAT3_SIZE))
-            case DataType.double3:
-                return name, struct.unpack(f"{edn_fmt}3d", stream.read(DOUBLE3_SIZE))
-            case _:
-                raise NotImplementedError(
-                    f"Can't parse value of data type {data_type}"
-                    " because it is not implemented"
-                )
 
 
 class Bi4File:
