@@ -5,6 +5,11 @@ import struct
 from enum import Enum
 import numpy as np
 
+# TODO: Add docstring
+# TODO: Implement creating and writing of Bi4File
+# TODO: Add methods for modifying Item, Value, Array attributes safely
+# TODO: Arrays should not be loaded by default as they can be too big. Only load them
+#       when trying to access them
 
 # Structure of file:
 # ===================================
@@ -185,7 +190,7 @@ class Array:
         stream.close()
 
         typefmt = cls._get_numpy_fmt(array_type, endianness)
-        data = np.frombuffer(
+        data: np.ndarray = np.frombuffer(
             byte_stream.read(array_size),
             dtype=np.dtype(typefmt),
             count=count * 3 if array_type.is_vector() else count,
@@ -375,7 +380,6 @@ class Item:
     size_values: int
     values: list[Value]
     items: list[Item]
-    # TODO: Arrays should not be loaded by default as they can be too big
     arrays: list[Array]
 
     __slots__ = (
@@ -567,6 +571,18 @@ class Item:
         ret += f"{indent_str*indent})\n"
         return ret
 
+    def get_value_by_name(self, name: str) -> Value | None:
+        for value in self.values:
+            if value.name == name:
+                return value
+
+        for item in self.items:
+            value = item.get_value_by_name(name)
+            if value is not None:
+                return value
+
+        return None
+
     def _pretty_print_dict(self, d: dict, indent=0, indent_str="  ") -> str:
         ret = ""
         for key, value in d.items():
@@ -581,25 +597,36 @@ class Item:
 
 
 class Bi4File:
-    filename: str
-    item: Item
+    filepath: str | os.PathLike
+    title: str
+    main_item: Item
 
-    def __init__(self, filepath: str | os.PathLike) -> None:
-        raise NotImplementedError
+    def __init__(self, filepath: str | os.PathLike, load_arrays: bool = False) -> None:
+        with open(filepath, "rb") as file:
+            title = file.read(60).decode("utf-8")
+            byteorder = Endianness.from_bytes(file.read(1))
+            _ = file.read(3)  # ignore extra header bytes
+            main_item = Item.from_stream(file, byteorder)
+        self._filepath = filepath
+        self._title = title
+        self._main_item = main_item
 
+    @property
+    def filepeth(self) -> str | os.PathLike:
+        return self._filepath
 
-def read_bi4(partfile: str | os.PathLike) -> None:
-    with open(partfile, "rb") as file:
-        title = file.read(60)
-        assert title[-1] == 0x00
-        title = title[:-1].decode("utf-8")
-        byteorder = Endianness.from_bytes(file.read(1))
-        extra = file.read(3)
-        print(f"{title}", end="")
-        print(f"{extra}")
-        main_item = Item.from_stream(file, byteorder)
-        print(main_item)
+    @property
+    def title(self) -> str:
+        return self._title
+
+    @property
+    def main_item(self) -> Item:
+        return self._main_item
+
+    def get_value_by_name(self, name: str) -> Value | None:
+        return self.main_item.get_value_by_name(name)
 
 
 if __name__ == "__main__":
-    read_bi4("Part_0000.bi4")
+    bi4file = Bi4File("Part_0001.bi4")
+    print(f"Timestep={bi4file.get_value_by_name('TimeStep')}")
