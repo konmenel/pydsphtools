@@ -375,7 +375,7 @@ class Item:
     size_values: int
     values: list[Value]
     items: list[Item]
-    # TODO: Arrays should not be loaded as they can be too big
+    # TODO: Arrays should not be loaded by default as they can be too big
     arrays: list[Array]
 
     __slots__ = (
@@ -530,7 +530,7 @@ class Item:
         return self._items
 
     @property
-    def arrays(self) -> list[Item]:
+    def arrays(self) -> list[Array]:
         return self._arrays
 
     def __str__(self) -> str:
