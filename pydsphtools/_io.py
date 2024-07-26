@@ -188,7 +188,7 @@ class Array:
         data = np.frombuffer(
             byte_stream.read(array_size),
             dtype=np.dtype(typefmt),
-            count=count*3 if array_type.is_vector() else count,
+            count=count * 3 if array_type.is_vector() else count,
         )
         if array_type.is_vector():
             data = data.reshape((-1, 3))
@@ -528,6 +528,10 @@ class Item:
     @property
     def items(self) -> list[Item]:
         return self._items
+
+    @property
+    def arrays(self) -> list[Item]:
+        return self._arrays
 
     def __str__(self) -> str:
         return self.pretty_print()
