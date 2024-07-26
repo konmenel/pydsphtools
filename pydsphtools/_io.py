@@ -112,6 +112,12 @@ class DataType(Enum):
         elif self.value in range(20, 24):
             return tuple
 
+    def is_scalar(self) -> bool:
+        return self.value in range(5, 13)
+
+    def is_vector(self) -> bool:
+        return self.value in range(20, 24)
+
 
 class Endianness(Enum):
     little = 0
@@ -159,27 +165,33 @@ class Array:
     def from_stream(
         cls: Array, byte_stream: io.BytesIO, endianness: Endianness
     ) -> Array:
-        array_def_size = int.from_bytes(byte_stream.read(UINT_SIZE), endianness.name)
+        array_def_size: int = int.from_bytes(
+            byte_stream.read(UINT_SIZE), endianness.name
+        )
         buf = byte_stream.read(array_def_size)
         stream = io.BytesIO(buf)
 
-        array_str_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
+        array_str_size: int = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
         assert array_str_size == 6, f"Expected 6 but found {array_str_size}"
-        array_str = stream.read(array_str_size).decode("utf-8")
+        array_str: str = stream.read(array_str_size).decode("utf-8")
         assert array_str == "\nARRAY", f"Expected '\nARRAY' but found'{array_str}'"
-        name_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-        name = stream.read(name_size).decode("utf-8")
-        hide = bool.from_bytes(stream.read(UINT_SIZE), endianness.name)
-        array_type = DataType.from_bytes(stream.read(INT_SIZE), endianness)
-        count = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-        array_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
+        name_size: int = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
+        name: str = stream.read(name_size).decode("utf-8")
+        hide: bool = bool.from_bytes(stream.read(UINT_SIZE), endianness.name)
+        array_type: DataType = DataType.from_bytes(stream.read(INT_SIZE), endianness)
+        count: int = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
+        array_size: int = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
         assert stream.read() == b"", "Array definition buffer is not empty."
+        stream.close()
 
-        # Update buffer with the size of the array
-        buf = byte_stream.read(array_size)
-        stream = io.BytesIO(buf)
-        # TODO: Read data using numpy
-        data = np.array([])
+        typefmt = cls._get_numpy_fmt(array_type, endianness)
+        data = np.frombuffer(
+            byte_stream.read(array_size),
+            dtype=np.dtype(typefmt),
+            count=count*3 if array_type.is_vector() else count,
+        )
+        if array_type.is_vector():
+            data = data.reshape((-1, 3))
 
         return cls(name, hide, array_type, count, array_size, data)
 
@@ -210,6 +222,32 @@ class Array:
     @property
     def data(self) -> np.ndarray:
         return self._data
+
+    @staticmethod
+    def _get_numpy_fmt(data_type: DataType, endianness: Endianness) -> str:
+        bo = "<" if endianness == Endianness.little else ">"
+        match data_type:
+            case DataType.int | DataType.int3:
+                return f"{bo}i{INT_SIZE}"
+            case DataType.uint | DataType.uint3:
+                return f"{bo}u{UINT_SIZE}"
+            case DataType.short:
+                return f"{bo}i{SHORT_SIZE}"
+            case DataType.ushort:
+                return f"{bo}u{SHORT_SIZE}"
+            case DataType.llong:
+                return f"{bo}i{LONG_SIZE}"
+            case DataType.ullong:
+                return f"{bo}i{ULONG_SIZE}"
+            case DataType.float | DataType.float3:
+                return f"{bo}f{FLOAT_SIZE}"
+            case DataType.double | DataType.double3:
+                return f"{bo}f{DOUBLE_SIZE}"
+            case _:
+                raise NotImplementedError(
+                    f"Can't parse array of data type {data_type}"
+                    " because it is not implemented."
+                )
 
 
 class Value:
