@@ -20,6 +20,14 @@ Classes
     * builtins.Exception
     * builtins.BaseException
 
+    ### Class variables
+
+    `binary_name: str`
+    :
+
+    `path: str`
+    :
+
 `InvalidTimeInterval(tmin: float, tmax: float)`
 :   Raised when a variable is not found in the output file.
     
@@ -35,6 +43,14 @@ Classes
     * builtins.Exception
     * builtins.BaseException
 
+    ### Class variables
+
+    `tmax: float`
+    :
+
+    `tmin: float`
+    :
+
 `MissingEnvironmentVariable(var_name: str, *args)`
 :   Raised if an enviroment variable is undefined.
     
@@ -47,6 +63,11 @@ Classes
 
     * builtins.Exception
     * builtins.BaseException
+
+    ### Class variables
+
+    `var_name: str`
+    :
 
 `NotFoundInOutput(missing: str, filename: str = 'Run.out')`
 :   Raised when a variable is not found in the output file.
@@ -64,6 +85,14 @@ Classes
     * builtins.Exception
     * builtins.BaseException
 
+    ### Class variables
+
+    `filename: str`
+    :
+
+    `missing: str`
+    :
+
 `UnsupportedPlatform(platform: str, *args: object)`
 :   Raised if the platform is not supperted by DualSPHysics/
     
@@ -76,3 +105,8 @@ Classes
 
     * builtins.Exception
     * builtins.BaseException
+
+    ### Class variables
+
+    `platform: str`
+    :

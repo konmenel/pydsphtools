@@ -119,7 +119,7 @@ def ricker_spectrum(
     The spectrum is calculated using the equation:
 
     .. math::
-      A_r \\sqrt{T} (1 - \\alpha(\\omega_m T - 1)) e^{-\\omega^m T}
+      A_r \\sqrt{T} (1 - \\alpha(\\omega^m T - 1)) e^{-\\omega^m T}
 
     The peak frequency is given by:
 
