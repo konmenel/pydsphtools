@@ -380,7 +380,7 @@ Functions
         If a binary path is not passed and an environment variable "DUALSPH_HOME"
         doesn't exist.
 
-`xml_get_or_create_subelement(parent_elem: <cyfunction Element at 0x7a7cf0f29150>, child: str)`
+`xml_get_or_create_subelement(parent_elem: <cyfunction Element at 0x7618abb29150>, child: str)`
 :   Get or created a subelement of an "lxml" element.
     
     Parameters

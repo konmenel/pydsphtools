@@ -134,9 +134,13 @@ def ricker_spectrum_simple(
 ) -> Union[float, np.ndarray]:
     """A simple ricker spectrum implementation. The spectrum is the same as
     the generalized ricker, `ricker_spectrum`, spectrum with the parameters equal to:
+
     - Ar = (4 / π)^0.5
+
     - m = 2
+
     - a = -1
+
     - T = (1 / omegap)^2
 
     Parameters
@@ -218,8 +222,9 @@ def wavemaker_transfer_func(
     Raises
     ------
     Exception
-        Raises exception if:
+
         - The hinge is less than or equal to zero.
+
         - An unknown wavemaker type is passed to `wv_type`.
 
     Notes
@@ -315,9 +320,11 @@ def generate_ricker_signal(
     Raises
     ------
     Exception
-        Raises exception if:
+
         - The hinge is less than or equal to zero.
+
         - Unknown angle units are passed to `angle_units`.
+        
         - An unknown wavemaker type is passed to `wv_type`.
     """
     wv_type = wv_type.lower()

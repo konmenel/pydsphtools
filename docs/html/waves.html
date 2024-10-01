@@ -128,10 +128,19 @@ calculation. By default, 5000</dd>
 <h2 id="raises">Raises</h2>
 <dl>
 <dt><code>Exception</code></dt>
-<dd>Raises exception if:
-- The hinge is less than or equal to zero.
-- Unknown angle units are passed to <code>angle_units</code>.
-- An unknown wavemaker type is passed to <code>wv_type</code>.</dd>
+<dd>
+<ul>
+<li>
+<p>The hinge is less than or equal to zero.</p>
+</li>
+<li>
+<p>Unknown angle units are passed to <code>angle_units</code>.</p>
+</li>
+<li>
+<p>An unknown wavemaker type is passed to <code>wv_type</code>.</p>
+</li>
+</ul>
+</dd>
 </dl></div>
 </dd>
 <dt id="pydsphtools.waves.ricker_spectrum"><code class="name flex">
@@ -169,11 +178,21 @@ calculation. By default, 5000</dd>
 </code></dt>
 <dd>
 <div class="desc"><p>A simple ricker spectrum implementation. The spectrum is the same as
-the generalized ricker, <code><a title="pydsphtools.waves.ricker_spectrum" href="#pydsphtools.waves.ricker_spectrum">ricker_spectrum()</a></code>, spectrum with the parameters equal to:
-- Ar = (4 / π)^0.5
-- m = 2
-- a = -1
-- T = (1 / omegap)^2</p>
+the generalized ricker, <code><a title="pydsphtools.waves.ricker_spectrum" href="#pydsphtools.waves.ricker_spectrum">ricker_spectrum()</a></code>, spectrum with the parameters equal to:</p>
+<ul>
+<li>
+<p>Ar = (4 / π)^0.5</p>
+</li>
+<li>
+<p>m = 2</p>
+</li>
+<li>
+<p>a = -1</p>
+</li>
+<li>
+<p>T = (1 / omegap)^2</p>
+</li>
+</ul>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>omega</code></strong> :&ensp;<code>float</code> or <code>numpy array-like</code></dt>
@@ -239,9 +258,16 @@ with the same dimensions.</dd>
 <h2 id="raises">Raises</h2>
 <dl>
 <dt><code>Exception</code></dt>
-<dd>Raises exception if:
-- The hinge is less than or equal to zero.
-- An unknown wavemaker type is passed to <code>wv_type</code>.</dd>
+<dd>
+<ul>
+<li>
+<p>The hinge is less than or equal to zero.</p>
+</li>
+<li>
+<p>An unknown wavemaker type is passed to <code>wv_type</code>.</p>
+</li>
+</ul>
+</dd>
 </dl>
 <h2 id="notes">Notes</h2>
 <p>Equation calculated:</p>

@@ -99,9 +99,11 @@ Functions
     Raises
     ------
     Exception
-        Raises exception if:
+    
         - The hinge is less than or equal to zero.
+    
         - Unknown angle units are passed to `angle_units`.
+        
         - An unknown wavemaker type is passed to `wv_type`.
 
 `ricker_spectrum(omega: Union[float, numpy.ndarray], Ar: float, T: float, a: float, m: float) ‑> Union[float, numpy.ndarray]`
@@ -141,9 +143,13 @@ Functions
 `ricker_spectrum_simple(omega: Union[float, numpy.ndarray], omegap: float) ‑> Union[float, numpy.ndarray]`
 :   A simple ricker spectrum implementation. The spectrum is the same as
     the generalized ricker, `ricker_spectrum`, spectrum with the parameters equal to:
+    
     - Ar = (4 / π)^0.5
+    
     - m = 2
+    
     - a = -1
+    
     - T = (1 / omegap)^2
     
     Parameters
@@ -208,8 +214,9 @@ Functions
     Raises
     ------
     Exception
-        Raises exception if:
+    
         - The hinge is less than or equal to zero.
+    
         - An unknown wavemaker type is passed to `wv_type`.
     
     Notes
