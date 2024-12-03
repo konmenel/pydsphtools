@@ -577,18 +577,18 @@ def run_measuretool(
         of the array should be (n, 3) or should be a valid array for the numpy
         function `numpy.reshape((-1, 3))` to be used.  By default None
     ptls_list : np.ndarray, optional
-        A list of "POINTSLIST" in the format:
-        [[<x0>,<dx>:<nx>],
-         [<y0>:<dy>:<ny>],
-         [<z0>:<dz>:<nz>]].
+        A list of "POINTSLIST" in the format:  
+        [[x0,dx:nx],  
+         [y0:dy:ny],  
+         [z0:dz:nz]].  
         The shape of the array should be (n, 3, 3) or should be a valid array for
         the numpy function `numpy.reshape((-1, 3, 3))` to be used.
         By default None
     ptels_list : np.ndarray, optional
-        A list of "POINTSENDLIST" in the format:
-        [[<x0>,<dx>:<xf>],
-         [<y0>:<dy>:<yf>]  ,
-         [<z0>:<dz>:<zf>]].
+        A list of "POINTSENDLIST" in the format:  
+        [[x0,dx:xf],  
+         [y0:dy:yf],  
+         [z0:dz:zf]].  
         The shape of the array should be (n, 3, 3) or should be a valid array for
         the numpy function `numpy.reshape((-1, 3, 3))` to be used.
         By default None
