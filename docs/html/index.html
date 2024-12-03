@@ -402,19 +402,18 @@ of the array should be (n, 3) or should be a valid array for the numpy
 function <code>numpy.reshape((-1, 3))</code> to be used.
 By default None</dd>
 <dt><strong><code>ptls_list</code></strong> :&ensp;<code>np.ndarray</code>, optional</dt>
-<dd>A list of "POINTSLIST" in the format:
-[[<x0>,<dx>:<nx>],
-[<y0>:<dy>:<ny>],
-[<z0>:<dz>:<nz>]].
+<dd>A list of "POINTSLIST" in the format:<br>
+[[x0,dx:nx],<br>
+[y0:dy:ny],<br>
+[z0:dz:nz]].<br>
 The shape of the array should be (n, 3, 3) or should be a valid array for
 the numpy function <code>numpy.reshape((-1, 3, 3))</code> to be used.
 By default None</dd>
 <dt><strong><code>ptels_list</code></strong> :&ensp;<code>np.ndarray</code>, optional</dt>
-<dd>A list of "POINTSENDLIST" in the format:
-[[<x0>,<dx>:<xf>],
-[<y0>:<dy>:<yf>]
-,
-[<z0>:<dz>:<zf>]].
+<dd>A list of "POINTSENDLIST" in the format:<br>
+[[x0,dx:xf],<br>
+[y0:dy:yf],<br>
+[z0:dz:zf]].<br>
 The shape of the array should be (n, 3, 3) or should be a valid array for
 the numpy function <code>numpy.reshape((-1, 3, 3))</code> to be used.
 By default None</dd>
@@ -469,7 +468,7 @@ doesn't exist.</dd>
 </dl></div>
 </dd>
 <dt id="pydsphtools.xml_get_or_create_subelement"><code class="name flex">
-<span>def <span class="ident">xml_get_or_create_subelement</span></span>(<span>parent_elem: <cyfunction Element at 0x7498b3115150>, child: str)</span>
+<span>def <span class="ident">xml_get_or_create_subelement</span></span>(<span>parent_elem: <cyfunction Element at 0x75bf02edd7d0>, child: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get or created a subelement of an "lxml" element.</p>

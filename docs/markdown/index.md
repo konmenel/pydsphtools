@@ -316,18 +316,18 @@ Functions
         of the array should be (n, 3) or should be a valid array for the numpy
         function `numpy.reshape((-1, 3))` to be used.  By default None
     ptls_list : np.ndarray, optional
-        A list of "POINTSLIST" in the format:
-        [[<x0>,<dx>:<nx>],
-         [<y0>:<dy>:<ny>],
-         [<z0>:<dz>:<nz>]].
+        A list of "POINTSLIST" in the format:  
+        [[x0,dx:nx],  
+         [y0:dy:ny],  
+         [z0:dz:nz]].  
         The shape of the array should be (n, 3, 3) or should be a valid array for
         the numpy function `numpy.reshape((-1, 3, 3))` to be used.
         By default None
     ptels_list : np.ndarray, optional
-        A list of "POINTSENDLIST" in the format:
-        [[<x0>,<dx>:<xf>],
-         [<y0>:<dy>:<yf>]  ,
-         [<z0>:<dz>:<zf>]].
+        A list of "POINTSENDLIST" in the format:  
+        [[x0,dx:xf],  
+         [y0:dy:yf],  
+         [z0:dz:zf]].  
         The shape of the array should be (n, 3, 3) or should be a valid array for
         the numpy function `numpy.reshape((-1, 3, 3))` to be used.
         By default None
@@ -380,7 +380,7 @@ Functions
         If a binary path is not passed and an environment variable "DUALSPH_HOME"
         doesn't exist.
 
-`xml_get_or_create_subelement(parent_elem: <cyfunction Element at 0x7618abb29150>, child: str)`
+`xml_get_or_create_subelement(parent_elem: <cyfunction Element at 0x771ae50157d0>, child: str)`
 :   Get or created a subelement of an "lxml" element.
     
     Parameters
