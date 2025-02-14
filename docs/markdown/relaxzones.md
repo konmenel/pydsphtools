@@ -6,7 +6,8 @@ the Relaxation Zone technic of DualSPHysics.
 Functions
 ---------
 
-`relaxzone_from_dsph(xmlfile: str, dirin: str, xloc: float, yloc: float, width: float, zrange: Tuple[float, float], xlayers: int, zlayers: int, *, first_layer: float = 4, last_layer: float = 2, depth: float = 0, swl: float = 0, usevelz: bool = False, smooth: int = 0, psi: float = 0.9, beta: float = 1, drift_corr: float = 0, file_prefix: str = 'RZ_SPH', dirout: str = 'RelaxationZones', binpath: str = None, overwrite_fs: bool = False, overwrite_vel: bool = False, overwrite_xml: bool = False, cleanup: bool = False, dt: float = 0.01, tmin: float = 0.0, tmax: float = 0.0) ‑> None`
+    
+`relaxzone_from_dsph(xmlfile: str, dirin: str, xloc: float, yloc: float, width: float, zrange: Tuple[float, float], xlayers: int, zlayers: int, *, first_layer: float = 4, last_layer: float = 2, depth: float = 0, swl: float = 0, usevelz: bool = False, smooth: int = 0, psi: float = 0.9, beta: float = 1, drift_corr: float = 0, file_prefix: str = 'RZ_SPH', dirout: str = 'RelaxationZones', binpath: str = None, overwrite_fs: bool = False, overwrite_vel: bool = False, overwrite_xml: bool = False, cleanup: bool = False, dt: float = 0.01, tmin: float = 0.0, tmax: float = 0.0) ‑> NoneType`
 :   Create the nessesary csv file to run a DualSPHysics Multi-Layer 1D Piston
     simulation using data from a previous DualSPHysics simulation. The function
     uses "measuretool" to find the surface elevation at a specific x-location
@@ -92,7 +93,8 @@ Functions
     InvalidTimeInterval
         If `tmax` is less than or equal to `tmin`.
 
-`write_rzexternal_xml(xmlfile: Union[str, pathlib.Path], velfile_prefix: str, files_init: int, files_count: int, center: Tuple[float, float, float], width: float, *, depth: float = 0, swl: float = 0, smooth: int = 0, movedata: Tuple[float, float, float] = (0, 0, 0), usevelz: bool = False, psi: float = 0.9, beta: float = 1, drift_corr: float = 0, overwrite: bool = False) ‑> None`
+    
+`write_rzexternal_xml(xmlfile: Union[pathlib.Path, str], velfile_prefix: str, files_init: int, files_count: int, center: Tuple[float, float, float], width: float, *, depth: float = 0, swl: float = 0, smooth: int = 0, movedata: Tuple[float, float, float] = (0, 0, 0), usevelz: bool = False, psi: float = 0.9, beta: float = 1, drift_corr: float = 0, overwrite: bool = False) ‑> NoneType`
 :   Modifies the xml file to add the nessesary fields (in "special") for
     a relaxation zone simulation.
     

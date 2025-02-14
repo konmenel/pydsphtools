@@ -5,6 +5,7 @@ A module with basic statistics functions.
 Functions
 ---------
 
+    
 `agreement_idx(obs: Sequence[float], pred: Sequence[float], c: float = 2) ‑> float`
 :   Calulcates the index of agreement (dr) following the paper by Willmott et al.[1].
     
@@ -29,6 +30,7 @@ Functions
     pages 2088-2094, 15 November 2012,
     https://rmets.onlinelibrary.wiley.com/doi/10.1002/joc.2419.
 
+    
 `l1_norm(signal1: Sequence[float], signal2: Sequence[float], x: Optional[Sequence[float]] = None, dx: float = 1.0) ‑> float`
 :   Calculates the L¹-norm between signal. See Notes for more details.
     
@@ -58,6 +60,7 @@ Functions
     
     where \( f_1(x) \) is `signal1` and \( f_2(x) \) is `signal2`.
 
+    
 `rmse(y: Sequence[float], obs: Sequence[float]) ‑> float`
 :   Calculates Root Mean Square Error between two signals.
     

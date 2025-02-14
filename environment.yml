@@ -1,9 +1,12 @@
-name: pydsphtools
+name: pdsh-dev
 channels:
   - defaults
 dependencies:
-  - python=3.10
-  - numpy=1.23.5
-  - pandas=1.5.2
-  - scipy=1.10.0
-  - lxml=4.9.2
+  - python>=3.10
+  - numpy
+  - pandas
+  - scipy
+  - lxml
+  - pdoc3
+  - ruff
+  - black

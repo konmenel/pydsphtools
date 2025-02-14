@@ -2,24 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-<meta name="generator" content="pdoc3 0.11.1">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>pydsphtools.mlpistons API documentation</title>
 <meta name="description" content="The contains functions that allows for couple between two DualSPHysics
-simulations using the Multi-Layer Pistons approach of DualSPHysics.">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+simulations using the Multi-Layer Pistons approach of DualSPHysics." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script type="text/x-mathjax-config">MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });</script>
 <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => {
-hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
-hljs.highlightAll();
-})</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
 </head>
 <body>
 <main>
@@ -30,6 +26,33 @@ hljs.highlightAll();
 <section id="section-intro">
 <p>The contains functions that allows for couple between two DualSPHysics
 simulations using the Multi-Layer Pistons approach of DualSPHysics.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;The contains functions that allows for couple between two DualSPHysics
+simulations using the Multi-Layer Pistons approach of DualSPHysics.
+&#34;&#34;&#34;
+# This file is part of PyDSPHtools. It is subject to the license terms in the
+# LICENSE file found in the top-level directory of this distribution and at
+# https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
+# including this file, may be copied, modified, propagated, or distributed except
+# according to the terms contained in the LICENSE file.
+from ._mlpistons import (
+    mlpistons2d_from_dsph,
+    mlpistons1d_from_dsph,
+    write_mlpiston2d_xml,
+    write_mlpiston1d_xml,
+)
+
+
+__all__ = [
+    &#34;mlpistons2d_from_dsph&#34;,
+    &#34;mlpistons1d_from_dsph&#34;,
+    &#34;write_mlpiston2d_xml&#34;,
+    &#34;write_mlpiston1d_xml&#34;,
+]</code></pre>
+</details>
 </section>
 <section>
 </section>
@@ -39,7 +62,7 @@ simulations using the Multi-Layer Pistons approach of DualSPHysics.</p>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pydsphtools.mlpistons.mlpistons1d_from_dsph"><code class="name flex">
-<span>def <span class="ident">mlpistons1d_from_dsph</span></span>(<span>xmlfile: str, dirin: str, xloc: float, yloc: float, zrange: Tuple[float, float], layers: int, mkbound: int, *, smooth: int = 0, file_prefix: str = 'MLPiston1D_SPH_velx', dirout: str = 'MLPiston1D', binpath: str = None, overwrite: bool = False, cleanup: bool = False, dt: float = 0.01, tmin: float = 0.0, tmax: float = 0.0) ‑> None</span>
+<span>def <span class="ident">mlpistons1d_from_dsph</span></span>(<span>xmlfile: str, dirin: str, xloc: float, yloc: float, zrange: Tuple[float, float], layers: int, mkbound: int, *, smooth: int = 0, file_prefix: str = 'MLPiston1D_SPH_velx', dirout: str = 'MLPiston1D', binpath: str = None, overwrite: bool = False, cleanup: bool = False, dt: float = 0.01, tmin: float = 0.0, tmax: float = 0.0) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Create the nessesary csv file to run a DualSPHysics Multi-Layer 1D Piston
@@ -97,9 +120,277 @@ run but modification will not be made no valid xml is provided.</dd>
 <dt><code>InvalidTimeInterval</code></dt>
 <dd>If <code>tmax</code> is less than or equal to <code>tmin</code>.</dd>
 </dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mlpistons1d_from_dsph(
+    xmlfile: str,
+    dirin: str,
+    xloc: float,
+    yloc: float,
+    zrange: Tuple[float, float],
+    layers: int,
+    mkbound: int,
+    *,
+    smooth: int = 0,
+    file_prefix: str = &#34;MLPiston1D_SPH_velx&#34;,
+    dirout: str = &#34;MLPiston1D&#34;,
+    binpath: str = None,
+    overwrite: bool = False,
+    cleanup: bool = False,
+    dt: float = 0.01,
+    tmin: float = 0.0,
+    tmax: float = 0.0,
+) -&gt; None:
+    &#34;&#34;&#34;Create the nessesary csv file to run a DualSPHysics Multi-Layer 1D Piston
+    simulation using data from a previous DualSPHysics simulation. The function
+    uses &#34;measuretool&#34; to find the surface elevation at a specific x-location
+    and creates an 1D grid at every timestep with a given number of vertical layers.
+
+    Parameters
+    ----------
+    xmlfile : str
+        The xml file that defines the simulation. The file will be modified to
+        create the &#34;mlayerpistons&#34; element. If no extention is provided the
+        code assumes a &#34;.xml&#34; at the end.
+    dirin : str
+        The output directory of the old simulation.
+    xloc : float
+        The x-location where the velocities will be interpolated.
+    yloc : float
+        The y-location where the velocities will be interpolated.
+    zrange : Tuple[float, float]
+        The domain limits of the fluid in the z-direction.
+    layers : int
+        The number of layers in the vertical direction.
+    mkbound : int
+        The mk value of the piston particles.
+    smooth : int, optional
+        Smooth motion level between layers (xml attribute), by default 0.
+    dirout : str
+        The name of the folder where the csv files will be placed. By default
+        &#34;MLPiston2D&#34;.
+    file_prefix : str, optional
+        The prefix of the csv files, by default &#34;MLPiston2D_SPH_velx&#34;.
+    binpath : str, optional
+        The path of the binary folder of DualSPHysics. If not defined the an
+        environment variable &#34;DUALSPH_HOME&#34; must be defined. By default None.
+    overwrite : bool
+        If `True` the raw velocity data files will be overwritten. By default
+        `False`.
+    cleanup : bool
+        If `True` the raw velocity data files will be removed at the end. Be
+        default `False`.
+    dt : float
+        The dt used for the interpolation of the velocities. The calculated
+        velocities are used in a cubic interpolation to created a smoother signal.
+    tmin : float
+        Defines the start time of the output file.
+    tmax : float
+        Defines the final time of the output file. If 0 the end time will be
+        the final time of the simulation.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the xml file could not be found. The rest of the code will still
+        run but modification will not be made no valid xml is provided.
+    InvalidTimeInterval
+        If `tmax` is less than or equal to `tmin`.
+    &#34;&#34;&#34;
+    # File and directory names
+    xmlfile = os.path.abspath(xmlfile)
+    xmldir, _ = os.path.split(xmlfile)
+    config_fpath = f&#34;{dirin}/measuretool/MLPiston1D_config.csv&#34;
+    freesurface_fname = &#34;MLPiston1D_freesurf&#34;
+    freesurface_fpath = f&#34;{dirin}/measuretool/{freesurface_fname}_Elevation.csv&#34;
+
+    def rawdata_fname(p):
+        return f&#34;MLPiston1D_data_raw_Part{p}&#34;
+
+    rawdata_fpath = (
+        lambda p: f&#34;{dirin}/measuretool/rawveldata/{rawdata_fname(p)}_Vel.csv&#34;
+    )
+
+    dp = get_dp(dirin)
+    first_dist = 4 * dp  # Distance of first poit from free surface
+    last_dist = 2 * dp  # Distance of last poit from free surface
+
+    tmax = tmax or get_var(dirin, &#34;PhysicalTime&#34;, float)
+    if tmax &lt;= tmin:
+        raise InvalidTimeInterval(tmin, tmax)
+
+    # Save configuration
+    config = pd.DataFrame(
+        {&#34;yLocation&#34;: [yloc], &#34;NoLayers&#34;: [layers], &#34;xLocation&#34;: [xloc]}
+    )
+
+    # Find the free surface for each column (y-direction)
+    ptels_list = [[xloc, 0, xloc], [yloc, 0, yloc], [zrange[0], 0.0001, zrange[1]]]
+    exclude_list = [&#34;all&#34;]
+    include_list = [&#34;fluid&#34;]
+    disable_hvars = [&#34;all&#34;]
+    enable_hvars = [&#34;eta&#34;]
+
+    # Check if there are old config files
+    old_config = None
+    if os.path.exists(config_fpath):
+        old_config = np.loadtxt(config_fpath, delimiter=&#34;;&#34;, skiprows=1)
+    # Check if need to update elevation files
+    if (
+        not os.path.exists(freesurface_fpath)
+        or old_config is None
+        or (old_config != config.iloc[0].values).any()
+    ):
+        config.to_csv(config_fpath, index=False, sep=&#34;;&#34;)
+        run_measuretool(
+            dirin,
+            savecsv=freesurface_fname,
+            ptels_list=ptels_list,
+            include_types=include_list,
+            exclude_types=exclude_list,
+            elevations=True,
+            enable_hvars=enable_hvars,
+            disable_hvars=disable_hvars,
+            binpath=binpath,
+        )
+        # Cleaning old vel files.
+        for f in glob.glob(
+            f&#34;{dirin}/measuretool/rawveldata/{rawdata_fname(&#39;*&#39;)}_PointsDef.vtk&#34;
+        ):
+            os.remove(f)
+        for f in glob.glob(rawdata_fpath(&#34;*&#34;)):
+            os.remove(f)
+
+    # Read elevations
+    df_fs = pd.read_csv(freesurface_fpath, header=3, sep=&#34;;&#34;)
+
+    # remove units, eg `Vel [m/s^2]` -&gt; `Vel`
+    def _sub_map(x):
+        return re.sub(r&#34;\ \[[A-Za-z\^0-9/]*\]$&#34;, &#34;&#34;, x)
+
+    df_fs.columns = df_fs.columns.map(_sub_map)
+
+    # Create the point where the velocities will be calculated
+    points_per_time = []
+    for _, row in df_fs.iterrows():
+        row = row.drop([&#34;Time&#34;, &#34;Part&#34;])
+        elevation = row.iloc[0]
+        highest_point = elevation - first_dist
+        zs = np.linspace(highest_point, last_dist, layers)
+        points_per_time.append(zs)
+
+    # Find velocity data from the points
+    outfiles_dir = f&#34;{xmldir}/{dirout}&#34;
+    if not os.path.exists(outfiles_dir):
+        os.mkdir(outfiles_dir)
+
+    disable_vars = [&#34;all&#34;]
+    enable_vars = [&#34;vel&#34;]
+
+    columns = pd.Series(
+        [
+            &#34;time&#34;,
+            *(f&#34;pz_{i}&#34; for i in range(layers)),
+            *(f&#34;vel_{i}&#34; for i in range(layers)),
+        ]
+    )
+
+    # Interpolation array format
+    # [[t0,z0],[t0,z1],...,[t0,zn],[t1,z0],...,[tn, zn]]
+    sz0 = len(points_per_time) * layers
+    interp_pnts = np.zeros((sz0, 2))
+    interp_vals = np.zeros(sz0)
+    for i, zs in enumerate(points_per_time):
+        if df_fs.Time[i] &lt; tmin or df_fs.Time[i] &gt; tmax:
+            continue
+
+        if overwrite or not os.path.exists(rawdata_fpath(i)):
+            run_measuretool(
+                dirin,
+                savecsv=rawdata_fname(i),
+                dirout=f&#34;{dirin}/measuretool/rawveldata&#34;,
+                file_nums=(i,),
+                pt_list=[(xloc, yloc, z) for z in zs],
+                include_types=include_list,
+                exclude_types=exclude_list,
+                enable_vars=enable_vars,
+                disable_vars=disable_vars,
+                binpath=binpath,
+            )
+        df_vel = pd.read_csv(rawdata_fpath(i), header=1, sep=&#34;;&#34;)
+        time = df_vel.loc[0, &#34;Time [s]&#34;]
+        df_vel = df_vel.loc[:, df_vel.columns.str.contains(&#34;x&#34;)]
+
+        idx = i * layers
+        interp_pnts[idx : idx + layers, 0] = time
+        interp_pnts[idx : idx + layers, 1] = zs
+        interp_vals[idx : idx + layers] = df_vel.iloc[0, :].to_numpy()
+
+    # Cubic spline interpolation of velocity at 0.025 timesteps
+    fsurf_spline = interpolate.CubicSpline(df_fs[&#34;Time&#34;], df_fs[&#34;Elevation_0&#34;])
+    time_series = np.arange(tmin, tmax + dt, dt)
+    szi = len(time_series) * layers
+    interp_xi = np.zeros((szi, 2))
+
+    def _get_key_fmt(x, y):
+        return f&#34;px:;{x};py:;{y}&#34;
+
+    df = pd.DataFrame(columns=columns, index=range(len(time_series)))
+    outfile = {_get_key_fmt(xloc, yloc): df.copy()}
+
+    for i, time in enumerate(time_series):
+        idx = i * layers
+        interp_xi[idx : idx + layers, 0] = time
+        interp_xi[idx : idx + layers, 1] = np.linspace(
+            fsurf_spline(time) - first_dist, last_dist, layers
+        )
+    vels = interpolate.griddata(interp_pnts, interp_vals, interp_xi, method=&#34;cubic&#34;)
+    # Fill nans using linear interpolation
+    for i in range(layers):
+        subsetx = interp_xi[i::layers, 0]
+        subsety = vels[i::layers]
+        mask = np.isnan(subsety)
+        subsety[mask] = np.interp(subsetx[mask], subsetx[~mask], subsety[~mask])
+        vels[i::layers] = subsety
+
+    # Prepare output dataframe
+    for i, time in enumerate(time_series):
+        idx = i * layers
+        key = _get_key_fmt(xloc, yloc)
+        outfile[key].iloc[i, 0] = time - tmin
+        outfile[key].iloc[i, 1 : layers + 1] = interp_xi[
+            idx : idx + layers, 1
+        ] - fsurf_spline(time)
+        outfile[key].iloc[i, layers + 1 :] = vels[idx : idx + layers]
+
+    # Save the input file
+    fname = f&#34;{outfiles_dir}/{file_prefix}_y00.csv&#34;
+    key = _get_key_fmt(xloc, yloc)
+    if os.path.exists(fname):
+        os.remove(fname)
+    with open(fname, &#34;a&#34;) as f:
+        f.write(f&#34;{key}\n&#34;)
+        outfile[key].to_csv(f, sep=&#34;;&#34;, index=False)
+    np.savetxt(f&#34;{outfiles_dir}/freesurface_spline.csv&#34;, fsurf_spline(time_series))
+    print(f&#39;Csv input files created in directory &#34;{outfiles_dir}&#34;.&#39;)
+
+    velfile = f&#34;{outfiles_dir}/{file_prefix}_y00.csv&#34;
+    write_mlpiston1d_xml(xmlfile, mkbound, velfile, smooth=smooth)
+
+    # Clean-up
+    if cleanup:
+        for f in glob.glob(
+            f&#34;{dirin}/measuretool/rawveldata/{rawdata_fname(&#39;*&#39;)}_PointsDef.vtk&#34;
+        ):
+            os.remove(f)
+        for f in glob.glob(rawdata_fpath(&#34;*&#34;)):
+            os.remove(f)</code></pre>
+</details>
 </dd>
 <dt id="pydsphtools.mlpistons.mlpistons2d_from_dsph"><code class="name flex">
-<span>def <span class="ident">mlpistons2d_from_dsph</span></span>(<span>xmlfile: str, dirin: str, xloc: float, yrange: Tuple[float, float], zrange: Tuple[float, float], ylayers: int, zlayers: int, mkbound: int, *, smoothz: int = 0, smoothy: int = 0, file_prefix: str = 'MLPiston2D_SPH_velx', dirout: str = 'MLPiston2D', binpath: str = None) ‑> None</span>
+<span>def <span class="ident">mlpistons2d_from_dsph</span></span>(<span>xmlfile: str, dirin: str, xloc: float, yrange: Tuple[float, float], zrange: Tuple[float, float], ylayers: int, zlayers: int, mkbound: int, *, smoothz: int = 0, smoothy: int = 0, file_prefix: str = 'MLPiston2D_SPH_velx', dirout: str = 'MLPiston2D', binpath: str = None) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Create the nessesary csv file to run a DualSPHysics Multi-Layer 2D Piston
@@ -145,9 +436,222 @@ environment variable "DUALSPH_HOME" must be defined. By default None.</dd>
 <dd>If the xml file could not be found. The rest of the code will still
 run but modification will not be made no valid xml is provided.</dd>
 </dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mlpistons2d_from_dsph(
+    xmlfile: str,
+    dirin: str,
+    xloc: float,
+    yrange: Tuple[float, float],
+    zrange: Tuple[float, float],
+    ylayers: int,
+    zlayers: int,
+    mkbound: int,
+    *,
+    smoothz: int = 0,
+    smoothy: int = 0,
+    file_prefix: str = &#34;MLPiston2D_SPH_velx&#34;,
+    dirout: str = &#34;MLPiston2D&#34;,
+    binpath: str = None,
+) -&gt; None:
+    &#34;&#34;&#34;Create the nessesary csv file to run a DualSPHysics Multi-Layer 2D Piston
+    simulation using data from a previous DualSPHysics simulation. The function
+    uses &#34;measuretool&#34; to find the surface elevation at a specific x-location
+    and creates a grid at every timestep with a given number of vertical layers.
+
+    Parameters
+    ----------
+    xmlfile : str
+        The xml file that defines the simulation. The file will be modified to
+        create the &#34;mlayerpistons&#34; element. If no extention is provided the
+        code assumes a &#34;.xml&#34; at the end.
+    dirin : str
+        The output directory of the old simulation.
+    xloc : float
+        The x-location where the velocities will be interpolated.
+    yrange : Tuple[float, float]
+        The domain limits of the fluid in the y-direction.
+    zrange : Tuple[float, float]
+        The domain limits of the fluid in the z-direction.
+    ylayers : int
+        The number of layers in the lateral direction.
+    zlayers : int
+        The number of layers in the vertical direction.
+    mkbound : int
+        The mk value of the piston particles.
+    smoothz : int, optional
+        Smooth motion level in Z (xml attribute), by default 0.
+    smoothy : int, optional
+        Smooth motion level in Y (xml attribute), by default 0.
+    dirout : str
+        The name of the folder where the csv files will be placed. By default
+        &#34;MLPiston2D&#34;.
+    file_prefix : str, optional
+        The prefix of the csv files, by default &#34;MLPiston2D_SPH_velx&#34;.
+    binpath : str, optional
+        The path of the binary folder of DualSPHysics. If not defined the an
+        environment variable &#34;DUALSPH_HOME&#34; must be defined. By default None.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the xml file could not be found. The rest of the code will still
+        run but modification will not be made no valid xml is provided.
+    &#34;&#34;&#34;
+    # File and directory names
+    xmlfile = os.path.abspath(xmlfile)
+    xmldir, _ = os.path.split(xmlfile)
+    config_fpath = f&#34;{dirin}/measuretool/MLPiston2D_config.csv&#34;
+    rawdata_fname = &#34;MLPiston2D_data_raw&#34;
+    rawdata_fpath = f&#34;{dirin}/measuretool/{rawdata_fname}_Vel.csv&#34;
+    freesurface_fname = &#34;MLPiston2D_freesurf&#34;
+    freesurface_fpath = f&#34;{dirin}/measuretool/{freesurface_fname}_Elevation.csv&#34;
+
+    dp = get_dp(dirin)
+
+    # Save configuration
+    config = pd.DataFrame(
+        {&#34;NoLayers_y&#34;: [ylayers], &#34;NoLayers_z&#34;: [zlayers], &#34;xLocation&#34;: [xloc]}
+    )
+
+    # Find the free surface for each column (y-direction)
+    y0 = yrange[0] + 3 * dp
+    yf = yrange[1] - 3 * dp
+    ylen = yf - y0
+    dy = ylen / ylayers
+    z0 = zrange[0]
+    zf = zrange[1]
+    dz = (zf - z0) / 1000
+    ptels_list = [[xloc, 0, xloc], [y0, dy, yf], [z0, dz, zf]]
+    exclude_list = [&#34;all&#34;]
+    include_list = [&#34;fluid&#34;]
+    disable_hvars = [&#34;all&#34;]
+    enable_hvars = [&#34;eta&#34;]
+
+    old_config = None
+    if os.path.exists(config_fpath):
+        old_config = np.loadtxt(config_fpath, delimiter=&#34;;&#34;, skiprows=1)
+    if (
+        not os.path.exists(freesurface_fpath)
+        or old_config is None
+        or (old_config != config.iloc[0].values).any()
+    ):
+        config.to_csv(config_fpath, index=False, sep=&#34;;&#34;)
+        run_measuretool(
+            dirin,
+            savecsv=freesurface_fname,
+            ptels_list=ptels_list,
+            include_types=include_list,
+            exclude_types=exclude_list,
+            elevations=True,
+            enable_hvars=enable_hvars,
+            disable_hvars=disable_hvars,
+            binpath=binpath,
+        )
+
+    # Read elevations and create the point list for with the layers
+    df_fs = pd.read_csv(freesurface_fpath, header=3, sep=&#34;;&#34;)
+    # remove units, eg `Vel [m/s^2]` -&gt; `Vel`
+    df_fs.columns = df_fs.columns.map(
+        lambda x: re.sub(r&#34;\ \[[A-Za-z\^0-9/]*\]$&#34;, &#34;&#34;, x)
+    )
+    # time_series = df_fs.Time
+    points_per_time = []
+    ys = np.arange(y0, ylen, dy)
+    grid_y = np.tile(ys, (zlayers, 1))
+    for _, row in df_fs.iterrows():
+        row = row.drop([&#34;Time&#34;, &#34;Part&#34;])
+        grid_z = np.zeros((zlayers, ylayers))
+        for j, elevation in enumerate(row):
+            highest_point = elevation - 3 * dp
+            # dz = highest_point / zlayers
+            grid_z[:, j] = np.linspace(highest_point, dp, zlayers)
+        points_per_time.append((grid_y, grid_z))
+
+    # Find velocity data from the points and create the dataframe
+    outfiles_dir = f&#34;{xmldir}/{dirout}&#34;
+    if not os.path.exists(outfiles_dir):
+        os.mkdir(outfiles_dir)
+
+    disable_vars = [&#34;all&#34;]
+    enable_vars = [&#34;vel&#34;]
+
+    columns = pd.Series(
+        [
+            &#34;time&#34;,
+            *(f&#34;pz_{i}&#34; for i in range(zlayers)),
+            *(f&#34;vel_{i}&#34; for i in range(zlayers)),
+        ]
+    )
+
+    def _get_key_fmt(x, y):
+        return f&#34;px:;{x};py:;{y}&#34;
+
+    dfs = pd.DataFrame(columns=columns, index=range(len(df_fs.Part)))
+    outfiles = {_get_key_fmt(xloc, y): dfs.copy() for y in ys}
+
+    for i, (grid_y, grid_z) in enumerate(points_per_time):
+        if os.path.exists(f&#34;{outfiles_dir}/{file_prefix}_y00.csv&#34;):
+            break
+
+        run_measuretool(
+            dirin,
+            savecsv=rawdata_fname,
+            file_nums=(i,),
+            pt_list=[
+                (xloc, grid_y[i, j], grid_z[i, j])
+                for i in range(zlayers)
+                for j in range(ylayers)
+            ],
+            include_types=include_list,
+            exclude_types=exclude_list,
+            enable_vars=enable_vars,
+            disable_vars=disable_vars,
+            binpath=binpath,
+        )
+        df_vel = pd.read_csv(rawdata_fpath, header=1, sep=&#34;;&#34;)
+        time = df_vel.loc[0, &#34;Time [s]&#34;]
+        df_vel = df_vel.loc[:, df_vel.columns.str.contains(&#34;x&#34;)]
+
+        for j, y in enumerate(ys):
+            key = _get_key_fmt(xloc, y)
+            zs = grid_z[:, j]
+            free_surface = zs.max() + 3 * dp
+            outfiles[key].iloc[i, 0] = time
+            outfiles[key].iloc[i, 1 : zlayers + 1] = zs - free_surface
+            outfiles[key].iloc[i, zlayers + 1 :] = df_vel.iloc[0, j::ylayers]
+
+    # Save the input files
+    written = True
+    for i in range(len(ys)):
+        fname = f&#34;{outfiles_dir}/{file_prefix}_y{i:02d}.csv&#34;
+        key = _get_key_fmt(xloc, ys[i])
+        if os.path.exists(fname):
+            written = False
+            break
+
+        with open(fname, &#34;a&#34;) as f:
+            f.write(f&#34;{key}\n&#34;)
+            outfiles[key].to_csv(f, sep=&#34;;&#34;, index=False)
+    if written:
+        print(f&#39;Input csv files created in directory &#34;{outfiles_dir}&#34;.&#39;)
+
+    velfiles = (f&#34;{outfiles_dir}/{file_prefix}_y{i:02d}.csv&#34; for i in range(ylayers))
+    write_mlpiston2d_xml(
+        xmlfile, mkbound, velfiles, ys, smoothz=smoothz, smoothy=smoothy
+    )
+
+    # Clean-up
+    if os.path.exists(rawdata_fpath):
+        os.remove(rawdata_fpath)
+    if os.path.exists(f&#34;{dirin}/measuretool/{rawdata_fname}_PointsDef.vtk&#34;):
+        os.remove(f&#34;{dirin}/measuretool/{rawdata_fname}_PointsDef.vtk&#34;)</code></pre>
+</details>
 </dd>
 <dt id="pydsphtools.mlpistons.write_mlpiston1d_xml"><code class="name flex">
-<span>def <span class="ident">write_mlpiston1d_xml</span></span>(<span>xmlfile: str, mkbound: int, velfile: str, *, smooth: int = 0) ‑> None</span>
+<span>def <span class="ident">write_mlpiston1d_xml</span></span>(<span>xmlfile: str, mkbound: int, velfile: str, *, smooth: int = 0) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Modifies the xml file to add the nessesary fields (in "motion" and "special") for
@@ -168,9 +672,106 @@ a 1D multilayer piston simulation.</p>
 <dt><code>FileNotFoundError</code></dt>
 <dd>If the xml file is not found</dd>
 </dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def write_mlpiston1d_xml(
+    xmlfile: str,
+    mkbound: int,
+    velfile: str,
+    *,
+    smooth: int = 0,
+) -&gt; None:
+    &#34;&#34;&#34;Modifies the xml file to add the nessesary fields (in &#34;motion&#34; and &#34;special&#34;) for
+    a 1D multilayer piston simulation.
+
+    Parameters
+    ----------
+    xmlfile : str
+        The path to the xml file.
+    mkbound : int
+        The mkbound of the piston boundary.
+    velfile : str
+        The file with the velocity data for the layers.
+    smooth : int, optional
+        Smooth motion level between layers (xml attribute), by default 0.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the xml file is not found
+    &#34;&#34;&#34;
+    # Check if the xml exist
+    if not os.path.exists(xmlfile):
+        if xmlfile.endswith(&#34;.xml&#34;):
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), xmlfile)
+
+        xmlfile = f&#34;{xmlfile}.xml&#34;
+        if not os.path.exists(xmlfile):
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), xmlfile)
+
+    xmldir, _ = os.path.split(xmlfile)
+    fpath_rel = os.path.relpath(velfile, xmldir)
+    tree = ET.parse(xmlfile)
+
+    # Add to `motion` section
+    elem_casedef = xml_get_or_create_subelement(tree, &#34;casedef&#34;)
+    elem_motion = xml_get_or_create_subelement(elem_casedef, &#34;motion&#34;)
+    elem_objreal = ET.SubElement(
+        elem_motion,
+        &#34;objreal&#34;,
+        attrib={&#34;ref&#34;: str(mkbound)},
+    )
+    ET.SubElement(
+        elem_objreal,
+        &#34;begin&#34;,
+        attrib={&#34;mov&#34;: &#34;100&#34;, &#34;start&#34;: &#34;0&#34;},
+    )
+    ET.SubElement(
+        elem_objreal,
+        &#34;mvnull&#34;,
+        attrib={&#34;id&#34;: &#34;100&#34;},
+    )
+    print(&#34;[xml file] `motion` section updated.&#34;)
+
+    # Add to `special` section
+    elem_exec = xml_get_or_create_subelement(tree, &#34;execution&#34;)
+    elem_special = xml_get_or_create_subelement(elem_exec, &#34;special&#34;)
+
+    mlayer_elem = xml_get_or_create_subelement(elem_special, &#34;mlayerpistons&#34;)
+    if mlayer_elem.find(&#34;piston1d&#34;) is not None:
+        print(
+            (
+                &#34;*WARNING* [xml file]`piston1d` already exist in xml. Exitting without &#34;
+                &#34;modifying the xml.&#34;
+            )
+        )
+        return
+    piston1d = ET.SubElement(mlayer_elem, &#34;piston1d&#34;)
+    ET.SubElement(
+        piston1d,
+        &#34;mkbound&#34;,
+        attrib={&#34;value&#34;: str(mkbound), &#34;comment&#34;: &#34;Mk-Bound of selected particles&#34;},
+    )
+    ET.SubElement(
+        piston1d,
+        &#34;filevelx&#34;,
+        attrib={&#34;value&#34;: fpath_rel, &#34;comment&#34;: &#34;File name with X velocity&#34;},
+    )
+    ET.SubElement(
+        piston1d,
+        &#34;smooth&#34;,
+        attrib={&#34;value&#34;: str(smooth), &#34;comment&#34;: &#34;Smooth motion level (def=0)&#34;},
+    )
+    print(&#34;[xml file] `special` section updated. `piston1d` added.&#34;)
+
+    ET.indent(tree, &#34; &#34; * 4)
+    tree.write(xmlfile)</code></pre>
+</details>
 </dd>
 <dt id="pydsphtools.mlpistons.write_mlpiston2d_xml"><code class="name flex">
-<span>def <span class="ident">write_mlpiston2d_xml</span></span>(<span>xmlfile: str, mkbound: int, velfiles: Iterable[str], yvals: Iterable[float], *, smoothz: int = 0, smoothy: int = 0) ‑> None</span>
+<span>def <span class="ident">write_mlpiston2d_xml</span></span>(<span>xmlfile: str, mkbound: int, velfiles: Iterable[str], yvals: Iterable[float], *, smoothz: int = 0, smoothy: int = 0) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Modifies the xml file to add the nessesary fields (in "motion" and "special") for
@@ -195,6 +796,121 @@ a 2D multilayer piston simulation.</p>
 <dt><code>FileNotFoundError</code></dt>
 <dd>If the xml file is not found</dd>
 </dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def write_mlpiston2d_xml(
+    xmlfile: str,
+    mkbound: int,
+    velfiles: Iterable[str],
+    yvals: Iterable[float],
+    *,
+    smoothz: int = 0,
+    smoothy: int = 0,
+) -&gt; None:
+    &#34;&#34;&#34;Modifies the xml file to add the nessesary fields (in &#34;motion&#34; and &#34;special&#34;) for
+    a 2D multilayer piston simulation.
+
+    Parameters
+    ----------
+    xmlfile : str
+        The path to the xml file.
+    mkbound : int
+        The mkbound of the piston boundary.
+    velfiles : Iterable[str]
+        The list of files with the velocity data for the layers.
+    yvals : Iterable[float]
+        The list of y values of each file in the same order as `velfiles`.
+    smoothz : int, optional
+        Smooth motion level in Z (xml attribute), by default 0.
+    smoothy : int, optional
+        Smooth motion level in Y (xml attribute), by default 0.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the xml file is not found
+    &#34;&#34;&#34;
+    # Check if the xml exist
+    if not os.path.exists(xmlfile):
+        if xmlfile.endswith(&#34;.xml&#34;):
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), xmlfile)
+
+        xmlfile = f&#34;{xmlfile}.xml&#34;
+        if not os.path.exists(xmlfile):
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), xmlfile)
+
+    xmldir, _ = os.path.split(xmlfile)
+    tree = ET.parse(xmlfile)
+
+    # Add to `motion` section
+    elem_casedef = xml_get_or_create_subelement(tree, &#34;casedef&#34;)
+    elem_motion = xml_get_or_create_subelement(elem_casedef, &#34;motion&#34;)
+    elem_objreal = ET.SubElement(
+        elem_motion,
+        &#34;objreal&#34;,
+        attrib={&#34;ref&#34;: str(mkbound)},
+    )
+    ET.SubElement(
+        elem_objreal,
+        &#34;begin&#34;,
+        attrib={&#34;mov&#34;: &#34;100&#34;, &#34;start&#34;: &#34;0&#34;},
+    )
+    ET.SubElement(
+        elem_objreal,
+        &#34;mvnull&#34;,
+        attrib={&#34;id&#34;: &#34;100&#34;},
+    )
+    print(&#34;[xml file] `motion` section updated.&#34;)
+
+    # Add to `special` section
+    elem_exec = xml_get_or_create_subelement(tree, &#34;execution&#34;)
+    elem_special = xml_get_or_create_subelement(elem_exec, &#34;special&#34;)
+
+    mlayer_elem = xml_get_or_create_subelement(elem_special, &#34;mlayerpistons&#34;)
+    if mlayer_elem.find(&#34;piston2d&#34;) is not None:
+        print(
+            (
+                &#34;*WARNING* [xml file]`piston2d` already exist in xml. Exitting without &#34;
+                &#34;modifying the xml.&#34;
+            )
+        )
+        return
+    piston2d = ET.SubElement(mlayer_elem, &#34;piston2d&#34;)
+    ET.SubElement(
+        piston2d,
+        &#34;mkbound&#34;,
+        attrib={&#34;value&#34;: str(mkbound), &#34;comment&#34;: &#34;Mk-Bound of selected particles&#34;},
+    )
+    ET.SubElement(
+        piston2d,
+        &#34;smoothz&#34;,
+        attrib={&#34;value&#34;: str(smoothz), &#34;comment&#34;: &#34;Smooth motion level in Z (def=0)&#34;},
+    )
+    ET.SubElement(
+        piston2d,
+        &#34;smoothy&#34;,
+        attrib={&#34;value&#34;: str(smoothy), &#34;comment&#34;: &#34;Smooth motion level in Y (def=0)&#34;},
+    )
+    for fname, y in zip(velfiles, yvals):
+        fname = os.path.relpath(fname, xmldir)
+        veldata = ET.SubElement(piston2d, &#34;veldata&#34;)
+        ET.SubElement(
+            veldata,
+            &#34;filevelx&#34;,
+            attrib={&#34;value&#34;: fname, &#34;comment&#34;: &#34;File name with X velocity&#34;},
+        )
+        ET.SubElement(
+            veldata,
+            &#34;posy&#34;,
+            attrib={&#34;value&#34;: str(y), &#34;comment&#34;: &#34;Position Y of data&#34;},
+        )
+    print(&#34;[xml file] `special` section updated. `piston2d` added.&#34;)
+
+    ET.indent(tree, &#34; &#34; * 4)
+    tree.write(xmlfile)</code></pre>
+</details>
 </dd>
 </dl>
 </section>
@@ -202,6 +918,7 @@ a 2D multilayer piston simulation.</p>
 </section>
 </article>
 <nav id="sidebar">
+<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -223,7 +940,7 @@ a 2D multilayer piston simulation.</p>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

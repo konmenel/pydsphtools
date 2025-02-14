@@ -17,8 +17,7 @@ git clone https://github.com/konmenel/pydsphtools.git
 
 Else you can simple download the zip from https://github.com/konmenel/pydsphtools
 
-## (Optional) Create a virtual environment
-### With Conda
+## (Optional) Create a conda environment for development
 Create a new conda environment:
 ```bash
 conda env create -f environment.yml
@@ -26,39 +25,24 @@ conda env create -f environment.yml
 
 Active the environment:
 ```bash
-conda activate pydsphtools
-```
-### With venv
-Create a new virtual environment
-```bash
-python -m venv ./venv
-```
-
-Active the environment:
-```bash
-venv\Scripts\Activate
-```
-
-Install the dependencies
-```bash
-python -m pip install -r requirements.txt 
+conda activate pdsh-dev
 ```
 
 ## Install the package
 To install the package locally simply run:
 ```bash
-pip install -e .
+pip install .
+```
+
+To install the development package run:
+```bash
+pip install -e ".[dev]"
 ```
 
 # Documentation
 The documentation generated with [pdoc](https://pdoc3.github.io/pdoc/) of the package can be found in the `doc/` directory. Open the file `doc/pydsphtools/index.html` in the browser to read it.
 
-To generate the documenation install pdoc using pip
+To generate the documenation run
 ```bash
-pip install pdoc3
-```
-
-and then run from the root directory of package
-```bash
-pdoc --html -c latex_math=True -o doc pydsphtool
+python generate_doc.py
 ```

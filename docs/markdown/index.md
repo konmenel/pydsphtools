@@ -31,6 +31,7 @@ Sub-modules
 Functions
 ---------
 
+    
 `get_binary_path(name: str, binpath: str = None) ‑> str`
 :   Gets the full path of a binary of the DualSPHysics.
     
@@ -60,6 +61,7 @@ Functions
     DSPHBinaryNotFound
         If the binary does not exists in the binary directory.
 
+    
 `get_chrono_inertia(dirout: Union[str, pathlib.Path], bname: str) ‑> numpy.ndarray`
 :   Finds the inertia tensor of a floating chrono body (only diagonal elements).
     
@@ -81,6 +83,7 @@ Functions
         If the either the chorno section or a chrono body with the
         specified name doesn't exist.
 
+    
 `get_chrono_mass(dirout: Union[str, pathlib.Path], bname: str) ‑> float`
 :   Finds the mass of a floating chrono body.
     
@@ -102,6 +105,7 @@ Functions
         If the either the chorno section or a chrono body with the
         specified name doesn't exist.
 
+    
 `get_chrono_property(dirout: Union[str, pathlib.Path], bname: str, pname: str) ‑> Union[float, numpy.ndarray, str]`
 :   Finds and returns any property for a specified chrono floating body.
     
@@ -128,6 +132,7 @@ Functions
         If the either the chorno section or a chrono body with the specified name
         or property with the specified name doesn't exist.
 
+    
 `get_dp(dirout: Union[str, pathlib.Path]) ‑> float`
 :   Gets the inital particle distance of the simulation, aka `Dp`.
     
@@ -146,6 +151,7 @@ Functions
     NotFoundInOutput
         If `Dp` is not pressent in `Run.out`.
 
+    
 `get_dualsphysics_root() ‑> str`
 :   Returns the path of the DualSPHysics root from the
     environment variables. `DUALSPH_HOME` or `DUALSPH_HOME2`
@@ -157,6 +163,7 @@ Functions
         The path of DualSPHysics. Empty if environment variables
         are undefined.
 
+    
 `get_number_of_partfiles(diroutdata: Union[str, pathlib.Path]) ‑> int`
 :   Returns the total number of `Part_xxxx.bi4` files in the `diroutdata` directory.
     
@@ -170,6 +177,7 @@ Functions
     int
         The total number of `Part_xxxx.bi4` files in the `data` directory.
 
+    
 `get_partfiles(diroutdata: Union[str, pathlib.Path]) ‑> list[str]`
 :   Returns a list of all `Part_xxxx.bi4` files in the `data` directory.
     
@@ -183,6 +191,7 @@ Functions
     int
         The total number of `Part_xxxx.bi4` files in the `data` directory.
 
+    
 `get_times_of_partfiles(dirout: Union[str, pathlib.Path]) ‑> list[tuple[int, float]]`
 :   Reads the times of each part file in output directory from the `Run.out` file.
     
@@ -196,6 +205,7 @@ Functions
     list[tuple[int, float]]
         A list of the part number and the corresponding time.
 
+    
 `get_usr_def_var(dirout: Union[str, pathlib.Path], var: str, dtype: Callable[[str], ~_R] = builtins.float) ‑> ~_R`
 :   Finds and parses the value of any user defined variable from the simulation
     output.
@@ -222,6 +232,7 @@ Functions
     NotFoundInOutput
         If the user defined variable is not pressent in `Run.out`.
 
+    
 `get_var(dirout: Union[str, pathlib.Path], var: str, dtype: Callable[[str], ~_R] = builtins.str) ‑> ~_R`
 :   Gets any variable that is defined in `Run.csv` or `Run.out` files.
     
@@ -247,6 +258,7 @@ Functions
     NotFoundInOutput
         If `Dp` is not pressent in `Run.out`.
 
+    
 `read_and_fix_csv(dirout: Union[str, pathlib.Path]) ‑> _io.StringIO`
 :   Fixed the bug with the csv where if shifting is present in the `Run.csv` it has
     key that are `;` separated, e.g. Shifting(_txt_;_num_;_num_;_txt_). This causes a
@@ -268,7 +280,8 @@ Functions
     >>> stream = read_and_fix_csv(dirout=".")
     >>> df = pd.read_csv(stream, sep=";")
 
-`run_measuretool(dirin: str, *, first_file: int = None, last_file: int = None, file_nums: List[int] = None, dirout: str = None, savecsv: str = 'Measure', saveascii: str = None, savevtk: str = None, csvsep: bool = None, onlypos: Dict[str, Tuple[float, float, float]] = None, onlymk: int = None, onlyid: int = None, include_types: List[str] = None, exclude_types: List[str] = None, points_file=None, pt_list: numpy.ndarray = None, ptls_list: numpy.ndarray = None, ptels_list: numpy.ndarray = None, kclimit: float = None, kcdummy: float = None, kcusedummy: bool = None, kcmass: bool = None, distinter_2h: float = None, distinter: float = None, elevations: Union[bool, float] = None, enable_hvars: List[str] = None, disable_hvars: List[str] = None, enable_vars: List[str] = None, disable_vars: List[str] = None, binpath: str = None, options: str = None, print_options: bool = False) ‑> None`
+    
+`run_measuretool(dirin: str, *, first_file: int = None, last_file: int = None, file_nums: List[int] = None, dirout: str = None, savecsv: str = 'Measure', saveascii: str = None, savevtk: str = None, csvsep: bool = None, onlypos: Dict[str, Tuple[float, float, float]] = None, onlymk: int = None, onlyid: int = None, include_types: List[str] = None, exclude_types: List[str] = None, points_file=None, pt_list: numpy.ndarray = None, ptls_list: numpy.ndarray = None, ptels_list: numpy.ndarray = None, kclimit: float = None, kcdummy: float = None, kcusedummy: bool = None, kcmass: bool = None, distinter_2h: float = None, distinter: float = None, elevations: Union[bool, float] = None, enable_hvars: List[str] = None, disable_hvars: List[str] = None, enable_vars: List[str] = None, disable_vars: List[str] = None, binpath: str = None, options: str = None, print_options: bool = False) ‑> NoneType`
 :   A python wrapper of "measuretool" of DualSPHysics. If `None` is used in any
     of the option the default option of the tool will be used (check `-h` option).
     
@@ -380,7 +393,8 @@ Functions
         If a binary path is not passed and an environment variable "DUALSPH_HOME"
         doesn't exist.
 
-`xml_get_or_create_subelement(parent_elem: <cyfunction Element at 0x771ae50157d0>, child: str)`
+    
+`xml_get_or_create_subelement(parent_elem: <cyfunction Element at 0x7fa4f8735a40>, child: str)`
 :   Get or created a subelement of an "lxml" element.
     
     Parameters

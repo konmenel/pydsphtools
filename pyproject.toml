@@ -1,0 +1,14 @@
+[project]
+name = "pydsphtools"
+authors = [{ name = "Constantinos Menelaou" }]
+dynamic = ["version"]
+description = "Useful functions for post processing DualSPHysics cases"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = ["pandas", "numpy", "scipy", "lxml"]
+
+[project.optional-dependencies]
+dev = ["black", "ruff", "pdoc3"]
+
+[tool.setuptools.dynamic]
+version = { attr = "pydsphtools._version.__version__" }
