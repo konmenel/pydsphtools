@@ -4,11 +4,12 @@ from __future__ import annotations
 import os
 import subprocess
 from pathlib import Path
-from collections.abc import Iterable
+from typing import Self
 
 from ._main import get_binary_path, get_dualsphysics_root
 
 # TODO: Implement all binaries
+
 
 class Binary:
     name: str
@@ -23,23 +24,26 @@ class Binary:
     def __str__(self) -> str:
         return f"{self.path} {' '.join(self.args)}"
 
-    def add_args(self, *args: *tuple[str]):
+    def add_args(self, *args: *tuple[str]) -> Self:
         self.args.extend(args)
+        return self
 
     def get_command_list(self) -> list[str]:
         return [self.path] + self.args
 
+    def run(self, *args, **kwargs) -> Self:
+        subprocess.run(self.get_command_list(), *args, **kwargs)
+
 
 class Dualsphysics(Binary):
-    def __init__(self, *args: *tuple[str], gpu: bool = True):
-        name = "dualsphysics" + "" if gpu else "cpu"
-        super.__init__(name, *args)
+    def __init__(self, *args: *tuple[str], gpu: bool = True, version: str = "5.2"):
+        name = f"dualsphysics{version}" + "" if gpu else "cpu"
+        super().__init__(name, *args)
 
 
 class Gencase(Binary):
     def __init__(self, *args: *tuple[str]):
-        super.__init__("gencase", *args)
-
+        super().__init__("gencase", *args)
 
 
 class Job:
@@ -47,25 +51,32 @@ class Job:
 
     Attributes
     ----------
-    commands : list[list[str] | str]
-        Commands that will be passed to `subproccess.run`. It is recommended
-        that all commands are the same type, i.e. `list[str]` or `str`. If
-        `str` is passed the command must be the name of the program without
-        arguments eitherwise `shell=True` must be passed. See `subproccess`
-        package documentation.
-    shell : bool
-        Same as `shell` argument in `subproccess.run` and `subproccess.Popen`.
+    binaries: list[Binary]
+        The binary objects that will be run. Each binary will be run sequentially
+        in the order that they have been passed.
+    verbose : bool
+        Prints information the job when `run()` is called. Default, `True`.
+
+    Examples
+    --------
+    ```python
+    from pydsphtools import Job
+
+    job = Job()
+    job.add_binaries(Dualsphysics("-h"), verbose=True)
+    job.run()
+    ```
     """
-    commands: list[list[str] | str]
-    shell: bool
+
+    binaries: list[Binary]
+    verbose: bool
 
     # Private attributes
     _env: dict[str, str]  # Environment variables
 
-    def __init__(self, *commands: *tuple[str | list[str]], shell: bool = False):
-        self.shell = shell
-        self.commands = []
-        self.add_commands(*commands)
+    def __init__(self, *binaries: *tuple[Binary], verbose: bool = True):
+        self.verbose = verbose
+        self.binaries = list(binaries)
         self._env = dict(**os.environ)
         dirbin = Path(get_dualsphysics_root()) / "bin" / "linux"
         self._env.update(
@@ -79,25 +90,28 @@ class Job:
             }
         )
 
+    @property
+    def env(self) -> dict[str, str]:
+        return self._env
+
     def __str__(self) -> str:
-        return "\n".join(" ".join(c) for c in self.commands)
+        return "\n".join(str(bin) for bin in self.binaries)
 
-    def add_commands(self, *commands: *tuple[str | list[str]]):
-        for command in commands:
-            if isinstance(command, str):
-                self.commands.append(command)
-            elif isinstance(command, Iterable):
-                self.commands.append(list(command))
-            else:
-                TypeError(f"'{command=}' is not of type `list[str]` or `str`")
+    def print_env(self):
+        for k, v in self.env:
+            print(f"{k}: {v}")
 
-    def add_binary_run(self, binary: Binary):
-        if isinstance(binary, Binary):
-            self.commands.append(binary.get_command_list())
-        else:
-            raise TypeError(f"{binary=} is not of type `Binary`")
+    def add_binaries(self, *binaries: *tuple[Binary]) -> Self:
+        self.binaries.extend(binaries)
+        return self
 
     def run(self):
-        for command in self.commands:
-            print(f"[INFO] Running command '{command}'")
-            subprocess.run(command, check=True, shell=self.shell, env=self._env)
+        if self.verbose:
+            print("Job commands:")
+            print(self)
+            print()
+
+        for bin in self.binaries:
+            if self.verbose:
+                print(f"[INFO] Running command {bin}")
+            bin.run(check=True, env=self._env)
