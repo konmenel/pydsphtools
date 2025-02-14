@@ -17,14 +17,17 @@ Author: Constantinos Menelaou<br>
 Github: https://github.com/konmenel <br>
 Year: 2023<br>
 """
-from . import waves, exceptions, stats, mlpistons, relaxzones
+
+from ._version import __version__
+from . import waves, exceptions, stats, mlpistons, relaxzones, io
 from ._main import __all__ as _all_in_main
+
 # flake8: noqa: F403
 from ._main import *
 
-__version__ = "1.0"
 __all__ = [
     *_all_in_main,
+    "__version__",
     "waves",
     "exceptions",
     "stats",
