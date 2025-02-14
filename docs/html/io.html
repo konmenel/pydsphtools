@@ -2,19 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
 <title>pydsphtools.io API documentation</title>
-<meta name="description" content="A module which handles input and output operation for DualSPHysics files." />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<meta name="description" content="A module which handles input and output operation for DualSPHysics files.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });</script>
 <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
 </head>
 <body>
 <main>
@@ -24,22 +28,6 @@
 </header>
 <section id="section-intro">
 <p>A module which handles input and output operation for DualSPHysics files.</p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">&#34;&#34;&#34;A module which handles input and output operation for DualSPHysics files.&#34;&#34;&#34;
-
-# This file is part of PyDSPHtools. It is subject to the license terms in the
-# LICENSE file found in the top-level directory of this distribution and at
-# https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
-# including this file, may be copied, modified, propagated, or distributed except
-# according to the terms contained in the LICENSE file.
-
-from ._io import Bi4File, Item, Value, Array, Endianness, DataType
-
-__all__ = [&#34;Bi4File&#34;, &#34;Item&#34;, &#34;Value&#34;, &#34;Array&#34;, &#34;Endianness&#34;, &#34;DataType&#34;]</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -55,12 +43,45 @@ __all__ = [&#34;Bi4File&#34;, &#34;Item&#34;, &#34;Value&#34;, &#34;Array&#34;, 
 <span>(</span><span>name: str, hide: bool, array_type: <a title="pydsphtools.io.DataType" href="#pydsphtools.io.DataType">DataType</a>, count: int, array_size: int, data: np.ndarray)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Class that represents the a bi4 array.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>Name of the array.</dd>
+<dt><strong><code>hide</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Wheither or not the array is hidden.</dd>
+<dt><strong><code>array_type</code></strong> :&ensp;<code><a title="pydsphtools.io.DataType" href="#pydsphtools.io.DataType">DataType</a></code></dt>
+<dd>The type of the array data.</dd>
+<dt><strong><code>count</code></strong> :&ensp;<code>int</code></dt>
+<dd>The number of elements in the array.</dd>
+<dt><strong><code>array_size</code></strong> :&ensp;<code>int</code></dt>
+<dd>The size of the array in bytes.</dd>
+<dt><strong><code>data</code></strong> :&ensp;<code>np.ndarray</code></dt>
+<dd>The data of the array.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Array:
+    &#34;&#34;&#34;Class that represents the a bi4 array.
+
+    Attributes
+    ----------
+    name : str
+        Name of the array.
+    hide : bool
+        Wheither or not the array is hidden.
+    array_type : DataType
+        The type of the array data.
+    count : int
+        The number of elements in the array.
+    array_size : int
+        The size of the array in bytes.
+    data : np.ndarray
+        The data of the array.
+    &#34;&#34;&#34;
+
     name: str
     hide: bool
     array_type: DataType
@@ -97,6 +118,20 @@ __all__ = [&#34;Bi4File&#34;, &#34;Item&#34;, &#34;Value&#34;, &#34;Array&#34;, 
     def from_stream(
         cls: Array, byte_stream: io.BytesIO, endianness: Endianness
     ) -&gt; Array:
+        &#34;&#34;&#34;Constructor from bytes.
+
+        Parameters
+        ----------
+        bytes : bytes
+            The byte stream.
+        endianness : Endianness
+            The endianness of the bytes.
+
+        Returns
+        -------
+        DataType
+            The new object.
+        &#34;&#34;&#34;
         array_def_size: int = int.from_bytes(
             byte_stream.read(UINT_SIZE), endianness.name
         )
@@ -129,6 +164,20 @@ __all__ = [&#34;Bi4File&#34;, &#34;Item&#34;, &#34;Value&#34;, &#34;Array&#34;, 
 
     @classmethod
     def from_bytes(cls: Array, bytes: bytes, endianness: Endianness) -&gt; Array:
+        &#34;&#34;&#34;Constructor from bytes.
+
+        Parameters
+        ----------
+        bytes : bytes
+            The byte array.
+        endianness : Endianness
+            The endianness of the bytes.
+
+        Returns
+        -------
+        DataType
+            The new object.
+        &#34;&#34;&#34;
         return cls.from_stream(io.BytesIO(bytes), endianness)
 
     @property
@@ -187,64 +236,42 @@ __all__ = [&#34;Bi4File&#34;, &#34;Item&#34;, &#34;Value&#34;, &#34;Array&#34;, 
 <span>def <span class="ident">from_bytes</span></span>(<span>bytes: bytes, endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.Array</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def from_bytes(cls: Array, bytes: bytes, endianness: Endianness) -&gt; Array:
-    return cls.from_stream(io.BytesIO(bytes), endianness)</code></pre>
-</details>
+<div class="desc"><p>Constructor from bytes.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>bytes</code></strong> :&ensp;<code>bytes</code></dt>
+<dd>The byte array.</dd>
+<dt><strong><code>endianness</code></strong> :&ensp;<code><a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a></code></dt>
+<dd>The endianness of the bytes.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="pydsphtools.io.DataType" href="#pydsphtools.io.DataType">DataType</a></code></dt>
+<dd>The new object.</dd>
+</dl></div>
 </dd>
 <dt id="pydsphtools.io.Array.from_stream"><code class="name flex">
 <span>def <span class="ident">from_stream</span></span>(<span>byte_stream: io.BytesIO, endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.Array</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def from_stream(
-    cls: Array, byte_stream: io.BytesIO, endianness: Endianness
-) -&gt; Array:
-    array_def_size: int = int.from_bytes(
-        byte_stream.read(UINT_SIZE), endianness.name
-    )
-    buf = byte_stream.read(array_def_size)
-    stream = io.BytesIO(buf)
-
-    array_str_size: int = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-    assert array_str_size == 6, f&#34;Expected 6 but found {array_str_size}&#34;
-    array_str: str = stream.read(array_str_size).decode(&#34;utf-8&#34;)
-    assert array_str == &#34;\nARRAY&#34;, f&#34;Expected &#39;\nARRAY&#39; but found&#39;{array_str}&#39;&#34;
-    name_size: int = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-    name: str = stream.read(name_size).decode(&#34;utf-8&#34;)
-    hide: bool = bool.from_bytes(stream.read(UINT_SIZE), endianness.name)
-    array_type: DataType = DataType.from_bytes(stream.read(INT_SIZE), endianness)
-    count: int = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-    array_size: int = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-    assert stream.read() == b&#34;&#34;, &#34;Array definition buffer is not empty.&#34;
-    stream.close()
-
-    typefmt = cls._get_numpy_fmt(array_type, endianness)
-    data: np.ndarray = np.frombuffer(
-        byte_stream.read(array_size),
-        dtype=np.dtype(typefmt),
-        count=count * 3 if array_type.is_vector() else count,
-    )
-    if array_type.is_vector():
-        data = data.reshape((-1, 3))
-
-    return cls(name, hide, array_type, count, array_size, data)</code></pre>
-</details>
+<div class="desc"><p>Constructor from bytes.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>bytes</code></strong> :&ensp;<code>bytes</code></dt>
+<dd>The byte stream.</dd>
+<dt><strong><code>endianness</code></strong> :&ensp;<code><a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a></code></dt>
+<dd>The endianness of the bytes.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="pydsphtools.io.DataType" href="#pydsphtools.io.DataType">DataType</a></code></dt>
+<dd>The new object.</dd>
+</dl></div>
 </dd>
 </dl>
 <h3>Instance variables</h3>
 <dl>
-<dt id="pydsphtools.io.Array.array_size"><code class="name">var <span class="ident">array_size</span> : int</code></dt>
+<dt id="pydsphtools.io.Array.array_size"><code class="name">prop <span class="ident">array_size</span> : int</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -256,7 +283,7 @@ def array_size(self) -&gt; int:
     return self._array_size</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Array.array_type"><code class="name">var <span class="ident">array_type</span> : pydsphtools._io.DataType</code></dt>
+<dt id="pydsphtools.io.Array.array_type"><code class="name">prop <span class="ident">array_type</span> : pydsphtools._io.DataType</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -268,7 +295,7 @@ def array_type(self) -&gt; DataType:
     return self._array_type</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Array.count"><code class="name">var <span class="ident">count</span> : int</code></dt>
+<dt id="pydsphtools.io.Array.count"><code class="name">prop <span class="ident">count</span> : int</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -280,7 +307,7 @@ def count(self) -&gt; int:
     return self._count</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Array.data"><code class="name">var <span class="ident">data</span> : numpy.ndarray</code></dt>
+<dt id="pydsphtools.io.Array.data"><code class="name">prop <span class="ident">data</span> : numpy.ndarray</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -292,7 +319,7 @@ def data(self) -&gt; np.ndarray:
     return self._data</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Array.hide"><code class="name">var <span class="ident">hide</span> : bool</code></dt>
+<dt id="pydsphtools.io.Array.hide"><code class="name">prop <span class="ident">hide</span> : bool</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -304,7 +331,7 @@ def hide(self) -&gt; bool:
     return self._hide</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Array.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dt id="pydsphtools.io.Array.name"><code class="name">prop <span class="ident">name</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -367,7 +394,7 @@ def name(self) -&gt; str:
 </dl>
 <h3>Instance variables</h3>
 <dl>
-<dt id="pydsphtools.io.Bi4File.filepeth"><code class="name">var <span class="ident">filepeth</span> : str | os.PathLike</code></dt>
+<dt id="pydsphtools.io.Bi4File.filepeth"><code class="name">prop <span class="ident">filepeth</span> : str | os.PathLike</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -379,7 +406,7 @@ def filepeth(self) -&gt; str | os.PathLike:
     return self._filepath</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Bi4File.main_item"><code class="name">var <span class="ident">main_item</span> : pydsphtools._io.Item</code></dt>
+<dt id="pydsphtools.io.Bi4File.main_item"><code class="name">prop <span class="ident">main_item</span> : pydsphtools._io.Item</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -391,7 +418,7 @@ def main_item(self) -&gt; Item:
     return self._main_item</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Bi4File.title"><code class="name">var <span class="ident">title</span> : str</code></dt>
+<dt id="pydsphtools.io.Bi4File.title"><code class="name">prop <span class="ident">title</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -411,13 +438,6 @@ def title(self) -&gt; str:
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_value_by_name(self, name: str) -&gt; Value | None:
-    return self.main_item.get_value_by_name(name)</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -426,61 +446,14 @@ def title(self) -&gt; str:
 <span>(</span><span>*args, **kwds)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Create a collection of name/value pairs.</p>
-<p>Example enumeration:</p>
-<pre><code class="language-python-repl">&gt;&gt;&gt; class Color(Enum):
-...     RED = 1
-...     BLUE = 2
-...     GREEN = 3
-</code></pre>
-<p>Access them by:</p>
-<ul>
-<li>attribute access:</li>
-</ul>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>Color.RED
-<Color.RED: 1></p>
-</blockquote>
-</blockquote>
-</blockquote>
-<ul>
-<li>value lookup:</li>
-</ul>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>Color(1)
-<Color.RED: 1></p>
-</blockquote>
-</blockquote>
-</blockquote>
-<ul>
-<li>name lookup:</li>
-</ul>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>Color['RED']
-<Color.RED: 1></p>
-</blockquote>
-</blockquote>
-</blockquote>
-<p>Enumerations can be iterated over, and know how many members they have:</p>
-<pre><code class="language-python-repl">&gt;&gt;&gt; len(Color)
-3
-</code></pre>
-<pre><code class="language-python-repl">&gt;&gt;&gt; list(Color)
-[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]
-</code></pre>
-<p>Methods can be added to enumerations, and members can have their own
-attributes &ndash; see the documentation for details.</p></div>
+<div class="desc"><p>Enum that handles the data type</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class DataType(Enum):
+    &#34;&#34;&#34;Enum that handles the data type&#34;&#34;&#34;
+
     # bytes
     null = 0
     text = 1
@@ -508,9 +481,36 @@ attributes &ndash; see the documentation for details.</p></div>
 
     @classmethod
     def from_bytes(cls: DataType, bytes: bytes, endianness: Endianness) -&gt; DataType:
+        &#34;&#34;&#34;Constructor from bytes.
+
+        Parameters
+        ----------
+        bytes : bytes
+            The byte array.
+        endianness : Endianness
+            The endianness of the bytes.
+
+        Returns
+        -------
+        DataType
+            The new object.
+        &#34;&#34;&#34;
         return cls(int.from_bytes(bytes, endianness.name))
 
     def to_python_type(self) -&gt; type:
+        &#34;&#34;&#34;Converts the enum value to a python type
+
+        Returns
+        -------
+        type
+            The follow mapping is used:\\
+            - &#34;null&#34; =&gt; `None`\\
+            - &#34;text&#34;, &#34;char&#34;, &#34;uchar&#34; =&gt; `str`\\
+            - &#34;bool&#34; =&gt; `bool`\\
+            - &#34;short&#34;, &#34;ushort&#34;, &#34;int&#34;, &#34;uint&#34;, &#34;long&#34; &#34;ulong&#34; =&gt; `int`\\
+            - &#34;float&#34;, &#34;double&#34; =&gt; `float`\\
+            - &#34;int3&#34;, &#34;uint3&#34;, &#34;float3&#34;, &#34;double3&#34; =&gt; tuple\\
+        &#34;&#34;&#34;
         if self == DataType.null:
             return type(None)
         elif self == DataType.bool:
@@ -611,15 +611,19 @@ attributes &ndash; see the documentation for details.</p></div>
 <span>def <span class="ident">from_bytes</span></span>(<span>bytes: bytes, endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.DataType</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def from_bytes(cls: DataType, bytes: bytes, endianness: Endianness) -&gt; DataType:
-    return cls(int.from_bytes(bytes, endianness.name))</code></pre>
-</details>
+<div class="desc"><p>Constructor from bytes.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>bytes</code></strong> :&ensp;<code>bytes</code></dt>
+<dd>The byte array.</dd>
+<dt><strong><code>endianness</code></strong> :&ensp;<code><a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a></code></dt>
+<dd>The endianness of the bytes.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="pydsphtools.io.DataType" href="#pydsphtools.io.DataType">DataType</a></code></dt>
+<dd>The new object.</dd>
+</dl></div>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -629,50 +633,29 @@ def from_bytes(cls: DataType, bytes: bytes, endianness: Endianness) -&gt; DataTy
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def is_scalar(self) -&gt; bool:
-    return self.value in range(5, 13)</code></pre>
-</details>
 </dd>
 <dt id="pydsphtools.io.DataType.is_vector"><code class="name flex">
 <span>def <span class="ident">is_vector</span></span>(<span>self) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def is_vector(self) -&gt; bool:
-    return self.value in range(20, 24)</code></pre>
-</details>
 </dd>
 <dt id="pydsphtools.io.DataType.to_python_type"><code class="name flex">
 <span>def <span class="ident">to_python_type</span></span>(<span>self) ‑> type</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_python_type(self) -&gt; type:
-    if self == DataType.null:
-        return type(None)
-    elif self == DataType.bool:
-        return bool
-    elif self.value in (1, 3, 4):
-        return str
-    elif self.value in range(5, 11):
-        return int
-    elif self.value in (11, 12):
-        return float
-    elif self.value in range(20, 24):
-        return tuple</code></pre>
-</details>
+<div class="desc"><p>Converts the enum value to a python type</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>type</code></dt>
+<dd>The follow mapping is used:\
+- "null" =&gt; <code>None</code>\
+- "text", "char", "uchar" =&gt; <code>str</code>\
+- "bool" =&gt; <code>bool</code>\
+- "short", "ushort", "int", "uint", "long" "ulong" =&gt; <code>int</code>\
+- "float", "double" =&gt; <code>float</code>\
+- "int3", "uint3", "float3", "double3" =&gt; tuple\</dd>
+</dl></div>
 </dd>
 </dl>
 </dd>
@@ -681,66 +664,31 @@ def from_bytes(cls: DataType, bytes: bytes, endianness: Endianness) -&gt; DataTy
 <span>(</span><span>*args, **kwds)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Create a collection of name/value pairs.</p>
-<p>Example enumeration:</p>
-<pre><code class="language-python-repl">&gt;&gt;&gt; class Color(Enum):
-...     RED = 1
-...     BLUE = 2
-...     GREEN = 3
-</code></pre>
-<p>Access them by:</p>
-<ul>
-<li>attribute access:</li>
-</ul>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>Color.RED
-<Color.RED: 1></p>
-</blockquote>
-</blockquote>
-</blockquote>
-<ul>
-<li>value lookup:</li>
-</ul>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>Color(1)
-<Color.RED: 1></p>
-</blockquote>
-</blockquote>
-</blockquote>
-<ul>
-<li>name lookup:</li>
-</ul>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>Color['RED']
-<Color.RED: 1></p>
-</blockquote>
-</blockquote>
-</blockquote>
-<p>Enumerations can be iterated over, and know how many members they have:</p>
-<pre><code class="language-python-repl">&gt;&gt;&gt; len(Color)
-3
-</code></pre>
-<pre><code class="language-python-repl">&gt;&gt;&gt; list(Color)
-[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]
-</code></pre>
-<p>Methods can be added to enumerations, and members can have their own
-attributes &ndash; see the documentation for details.</p></div>
+<div class="desc"><p>Enum that represents the endianness.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Endianness(Enum):
+    &#34;&#34;&#34;Enum that represents the endianness.&#34;&#34;&#34;
+
     little = 0
     big = 1
 
     @classmethod
     def from_bytes(cls, bytes: bytes) -&gt; Endianness:
+        &#34;&#34;&#34;Constructor from bytes arrays
+
+        Parameters
+        ----------
+        bytes : bytes
+            The byte array
+
+        Returns
+        -------
+        Endianness
+            The new object
+        &#34;&#34;&#34;
         return cls(int.from_bytes(bytes))</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -764,15 +712,17 @@ attributes &ndash; see the documentation for details.</p></div>
 <span>def <span class="ident">from_bytes</span></span>(<span>bytes: bytes) ‑> pydsphtools._io.Endianness</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def from_bytes(cls, bytes: bytes) -&gt; Endianness:
-    return cls(int.from_bytes(bytes))</code></pre>
-</details>
+<div class="desc"><p>Constructor from bytes arrays</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>bytes</code></strong> :&ensp;<code>bytes</code></dt>
+<dd>The byte array</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a></code></dt>
+<dd>The new object</dd>
+</dl></div>
 </dd>
 </dl>
 </dd>
@@ -874,15 +824,15 @@ def from_bytes(cls, bytes: bytes) -&gt; Endianness:
         values_str_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
         assert values_str_size == 7, f&#34;Expected 7 but found {values_str_size}&#34;
         values_str = stream.read(values_str_size).decode(&#34;utf-8&#34;)
-        assert (
-            values_str == &#34;\nVALUES&#34;
-        ), f&#34;Expected &#39;\\nVALUES&#39; but found &#39;{values_str}&#39;&#34;
+        assert values_str == &#34;\nVALUES&#34;, (
+            f&#34;Expected &#39;\\nVALUES&#39; but found &#39;{values_str}&#39;&#34;
+        )
         num_values = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
         values = [Value.from_stream(stream, endianness) for _ in range(num_values)]
         assert stream.read() == b&#34;&#34;, &#34;Values buffer is not empty.&#34;
         stream.close()
 
-        # Update buffer since we reached the end of values
+        # TODO: Can save file pointer to arrays instead temporarily until we try to read them.
         items = [Item.from_stream(bytes_stream, endianness) for _ in range(num_items)]
         arrays = [
             Array.from_stream(bytes_stream, endianness) for _ in range(num_arrays)
@@ -963,30 +913,30 @@ def from_bytes(cls, bytes: bytes) -&gt; Endianness:
 
     def pretty_print(self, indent=0, indent_str=&#34;  &#34;) -&gt; str:
         ret = (
-            f&#34;{indent_str*indent}Item(\n&#34;
-            f&#34;{indent_str*(indent+1)}item_size = {self._item_size},\n&#34;
-            f&#34;{indent_str*(indent+1)}name = {self._name},\n&#34;
-            f&#34;{indent_str*(indent+1)}hide = {self._hide},\n&#34;
-            f&#34;{indent_str*(indent+1)}hide_values = {self._hide_values},\n&#34;
-            f&#34;{indent_str*(indent+1)}fmt_float = {self._fmt_float},\n&#34;
-            f&#34;{indent_str*(indent+1)}fmt_double = {self._fmt_double},\n&#34;
-            f&#34;{indent_str*(indent+1)}num_arrays = {self._num_arrays},\n&#34;
-            f&#34;{indent_str*(indent+1)}num_items = {self._num_items},\n&#34;
-            f&#34;{indent_str*(indent+1)}size_values = {self._size_values},\n&#34;
-            f&#34;{indent_str*(indent+1)}values = [\n&#34;
+            f&#34;{indent_str * indent}Item(\n&#34;
+            f&#34;{indent_str * (indent + 1)}item_size = {self._item_size},\n&#34;
+            f&#34;{indent_str * (indent + 1)}name = {self._name},\n&#34;
+            f&#34;{indent_str * (indent + 1)}hide = {self._hide},\n&#34;
+            f&#34;{indent_str * (indent + 1)}hide_values = {self._hide_values},\n&#34;
+            f&#34;{indent_str * (indent + 1)}fmt_float = {self._fmt_float},\n&#34;
+            f&#34;{indent_str * (indent + 1)}fmt_double = {self._fmt_double},\n&#34;
+            f&#34;{indent_str * (indent + 1)}num_arrays = {self._num_arrays},\n&#34;
+            f&#34;{indent_str * (indent + 1)}num_items = {self._num_items},\n&#34;
+            f&#34;{indent_str * (indent + 1)}size_values = {self._size_values},\n&#34;
+            f&#34;{indent_str * (indent + 1)}values = [\n&#34;
         )
         for value in self._values:
-            ret += f&#34;{value.pretty_print(indent=indent+2)}\n&#34;
-        ret += f&#34;{indent_str*(indent+1)}]\n&#34;
+            ret += f&#34;{value.pretty_print(indent=indent + 2)}\n&#34;
+        ret += f&#34;{indent_str * (indent + 1)}]\n&#34;
 
         if self._num_items:
-            ret += f&#34;{indent_str*(indent+1)}items = [\n&#34;
+            ret += f&#34;{indent_str * (indent + 1)}items = [\n&#34;
             for item in self._items:
-                ret += f&#34;{indent_str*indent}{item.pretty_print(indent+2)}&#34;
-            ret += f&#34;{indent_str*(indent+1)}]\n&#34;
+                ret += f&#34;{indent_str * indent}{item.pretty_print(indent + 2)}&#34;
+            ret += f&#34;{indent_str * (indent + 1)}]\n&#34;
         else:
-            ret += f&#34;{indent_str*(indent+1)}items = []\n&#34;
-        ret += f&#34;{indent_str*indent})\n&#34;
+            ret += f&#34;{indent_str * (indent + 1)}items = []\n&#34;
+        ret += f&#34;{indent_str * indent})\n&#34;
         return ret
 
     def get_value_by_name(self, name: str) -&gt; Value | None:
@@ -1004,11 +954,11 @@ def from_bytes(cls, bytes: bytes) -&gt; Endianness:
     def _pretty_print_dict(self, d: dict, indent=0, indent_str=&#34;  &#34;) -&gt; str:
         ret = &#34;&#34;
         for key, value in d.items():
-            ret += f&#34;{indent_str*(indent+1)}{key}: &#34;
+            ret += f&#34;{indent_str * (indent + 1)}{key}: &#34;
             if isinstance(value, dict):
                 ret += &#34;{\n&#34;
-                ret += f&#34;{self._pretty_print_dict(value, indent+1)}&#34;
-                ret += f&#34;{indent_str*(indent+1)}}}\n&#34;
+                ret += f&#34;{self._pretty_print_dict(value, indent + 1)}&#34;
+                ret += f&#34;{indent_str * (indent + 1)}}}\n&#34;
             else:
                 ret += f&#34;{value}\n&#34;
         return ret</code></pre>
@@ -1020,89 +970,17 @@ def from_bytes(cls, bytes: bytes) -&gt; Endianness:
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def from_bytes(cls: Item, bytes: bytes, endianness: Endianness) -&gt; Item:
-    return cls.from_stream(io.BytesIO(bytes), endianness)</code></pre>
-</details>
 </dd>
 <dt id="pydsphtools.io.Item.from_stream"><code class="name flex">
 <span>def <span class="ident">from_stream</span></span>(<span>bytes_stream: io.BytesIO, endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.Item</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def from_stream(
-    cls: Item, bytes_stream: io.BytesIO, endianness: Endianness
-) -&gt; Item:
-    item_size = int.from_bytes(bytes_stream.read(4), endianness.name)
-    buff = bytes_stream.read(item_size)
-    stream = io.BytesIO(buff)
-    item_str_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-    assert item_str_size == 6, f&#34;Expected 6 but found {item_str_size}&#34;
-    item_str = stream.read(item_str_size).decode(&#34;utf-8&#34;)
-    assert item_str == &#34;\nITEM\n&#34;, f&#34;Expected &#39;\\nITEM\\n&#39; but found &#39;{item_str}&#39;&#34;
-    name_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-    name = stream.read(name_size).decode(&#34;utf-8&#34;)
-    hide = bool.from_bytes(stream.read(UINT_SIZE), endianness.name)
-    hide_values = bool.from_bytes(stream.read(UINT_SIZE), endianness.name)
-    fmt_float_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-    fmt_float = stream.read(fmt_float_size).decode(&#34;utf-8&#34;)
-    fmt_double_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-    fmt_double = stream.read(fmt_double_size).decode(&#34;utf-8&#34;)
-    num_arrays = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-    num_items = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-    size_values = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-    assert stream.read() == b&#34;&#34;, &#34;Item buffer is not empty.&#34;
-    stream.close()
-
-    # Update buffer since we the items definition is finished
-    buff = bytes_stream.read(size_values)
-    stream = io.BytesIO(buff)
-    values_str_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-    assert values_str_size == 7, f&#34;Expected 7 but found {values_str_size}&#34;
-    values_str = stream.read(values_str_size).decode(&#34;utf-8&#34;)
-    assert (
-        values_str == &#34;\nVALUES&#34;
-    ), f&#34;Expected &#39;\\nVALUES&#39; but found &#39;{values_str}&#39;&#34;
-    num_values = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-    values = [Value.from_stream(stream, endianness) for _ in range(num_values)]
-    assert stream.read() == b&#34;&#34;, &#34;Values buffer is not empty.&#34;
-    stream.close()
-
-    # Update buffer since we reached the end of values
-    items = [Item.from_stream(bytes_stream, endianness) for _ in range(num_items)]
-    arrays = [
-        Array.from_stream(bytes_stream, endianness) for _ in range(num_arrays)
-    ]
-
-    return cls(
-        item_size,
-        name,
-        hide,
-        hide_values,
-        fmt_float,
-        fmt_double,
-        num_arrays,
-        num_items,
-        size_values,
-        values,
-        items,
-        arrays,
-    )</code></pre>
-</details>
 </dd>
 </dl>
 <h3>Instance variables</h3>
 <dl>
-<dt id="pydsphtools.io.Item.arrays"><code class="name">var <span class="ident">arrays</span> : list[pydsphtools._io.Array]</code></dt>
+<dt id="pydsphtools.io.Item.arrays"><code class="name">prop <span class="ident">arrays</span> : list[pydsphtools._io.Array]</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1114,7 +992,7 @@ def arrays(self) -&gt; list[Array]:
     return self._arrays</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Item.fmt_double"><code class="name">var <span class="ident">fmt_double</span> : str</code></dt>
+<dt id="pydsphtools.io.Item.fmt_double"><code class="name">prop <span class="ident">fmt_double</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1126,7 +1004,7 @@ def fmt_double(self) -&gt; str:
     return self._fmt_double</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Item.fmt_float"><code class="name">var <span class="ident">fmt_float</span> : str</code></dt>
+<dt id="pydsphtools.io.Item.fmt_float"><code class="name">prop <span class="ident">fmt_float</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1138,7 +1016,7 @@ def fmt_float(self) -&gt; str:
     return self._fmt_float</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Item.hide"><code class="name">var <span class="ident">hide</span> : bool</code></dt>
+<dt id="pydsphtools.io.Item.hide"><code class="name">prop <span class="ident">hide</span> : bool</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1150,7 +1028,7 @@ def hide(self) -&gt; bool:
     return self._hide</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Item.hide_values"><code class="name">var <span class="ident">hide_values</span> : bool</code></dt>
+<dt id="pydsphtools.io.Item.hide_values"><code class="name">prop <span class="ident">hide_values</span> : bool</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1162,7 +1040,7 @@ def hide_values(self) -&gt; bool:
     return self._hide_values</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Item.item_size"><code class="name">var <span class="ident">item_size</span> : int</code></dt>
+<dt id="pydsphtools.io.Item.item_size"><code class="name">prop <span class="ident">item_size</span> : int</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1174,7 +1052,7 @@ def item_size(self) -&gt; int:
     return self._item_size</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Item.items"><code class="name">var <span class="ident">items</span> : list[pydsphtools._io.Item]</code></dt>
+<dt id="pydsphtools.io.Item.items"><code class="name">prop <span class="ident">items</span> : list[pydsphtools._io.Item]</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1186,7 +1064,7 @@ def items(self) -&gt; list[Item]:
     return self._items</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Item.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dt id="pydsphtools.io.Item.name"><code class="name">prop <span class="ident">name</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1198,7 +1076,7 @@ def name(self) -&gt; str:
     return self._name</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Item.num_arrays"><code class="name">var <span class="ident">num_arrays</span> : int</code></dt>
+<dt id="pydsphtools.io.Item.num_arrays"><code class="name">prop <span class="ident">num_arrays</span> : int</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1210,7 +1088,7 @@ def num_arrays(self) -&gt; int:
     return self.num_arrays</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Item.num_items"><code class="name">var <span class="ident">num_items</span> : int</code></dt>
+<dt id="pydsphtools.io.Item.num_items"><code class="name">prop <span class="ident">num_items</span> : int</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1222,7 +1100,7 @@ def num_items(self) -&gt; int:
     return self._num_items</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Item.size_values"><code class="name">var <span class="ident">size_values</span> : int</code></dt>
+<dt id="pydsphtools.io.Item.size_values"><code class="name">prop <span class="ident">size_values</span> : int</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1234,7 +1112,7 @@ def size_values(self) -&gt; int:
     return self._size_values</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Item.values"><code class="name">var <span class="ident">values</span> : list[pydsphtools._io.Value]</code></dt>
+<dt id="pydsphtools.io.Item.values"><code class="name">prop <span class="ident">values</span> : list[pydsphtools._io.Value]</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1254,22 +1132,6 @@ def values(self) -&gt; list[Value]:
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_value_by_name(self, name: str) -&gt; Value | None:
-    for value in self.values:
-        if value.name == name:
-            return value
-
-    for item in self.items:
-        value = item.get_value_by_name(name)
-        if value is not None:
-            return value
-
-    return None</code></pre>
-</details>
 </dd>
 <dt id="pydsphtools.io.Item.pretty_print"><code class="name flex">
 <span>def <span class="ident">pretty_print</span></span>(<span>self, indent=0, indent_str='
@@ -1277,38 +1139,6 @@ def values(self) -&gt; list[Value]:
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def pretty_print(self, indent=0, indent_str=&#34;  &#34;) -&gt; str:
-    ret = (
-        f&#34;{indent_str*indent}Item(\n&#34;
-        f&#34;{indent_str*(indent+1)}item_size = {self._item_size},\n&#34;
-        f&#34;{indent_str*(indent+1)}name = {self._name},\n&#34;
-        f&#34;{indent_str*(indent+1)}hide = {self._hide},\n&#34;
-        f&#34;{indent_str*(indent+1)}hide_values = {self._hide_values},\n&#34;
-        f&#34;{indent_str*(indent+1)}fmt_float = {self._fmt_float},\n&#34;
-        f&#34;{indent_str*(indent+1)}fmt_double = {self._fmt_double},\n&#34;
-        f&#34;{indent_str*(indent+1)}num_arrays = {self._num_arrays},\n&#34;
-        f&#34;{indent_str*(indent+1)}num_items = {self._num_items},\n&#34;
-        f&#34;{indent_str*(indent+1)}size_values = {self._size_values},\n&#34;
-        f&#34;{indent_str*(indent+1)}values = [\n&#34;
-    )
-    for value in self._values:
-        ret += f&#34;{value.pretty_print(indent=indent+2)}\n&#34;
-    ret += f&#34;{indent_str*(indent+1)}]\n&#34;
-
-    if self._num_items:
-        ret += f&#34;{indent_str*(indent+1)}items = [\n&#34;
-        for item in self._items:
-            ret += f&#34;{indent_str*indent}{item.pretty_print(indent+2)}&#34;
-        ret += f&#34;{indent_str*(indent+1)}]\n&#34;
-    else:
-        ret += f&#34;{indent_str*(indent+1)}items = []\n&#34;
-    ret += f&#34;{indent_str*indent})\n&#34;
-    return ret</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -1432,7 +1262,7 @@ def values(self) -&gt; list[Value]:
         return f&#34;{indent_str * indent}{self}&#34;
 
     def __str__(self) -&gt; str:
-        return f&#34;{self.name}: {self. value}&#34;</code></pre>
+        return f&#34;{self.name}: {self.value}&#34;</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -1441,76 +1271,17 @@ def values(self) -&gt; list[Value]:
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def from_bytes(cls: Value, bytes: bytes, endianness: Endianness) -&gt; Value:
-    return cls.from_stream(io.BytesIO(bytes), endianness)</code></pre>
-</details>
 </dd>
 <dt id="pydsphtools.io.Value.from_stream"><code class="name flex">
 <span>def <span class="ident">from_stream</span></span>(<span>stream: io.BytesIO, endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> tuple[str, None | bool | str | int | float | tuple[float, float, float]]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def from_stream(
-    cls: Value,
-    stream: io.BytesIO,
-    endianness: Endianness,
-) -&gt; tuple[str, None | bool | str | int | float | tuple[float, float, float]]:
-    name_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-    name = stream.read(name_size).decode(&#34;utf-8&#34;)
-    data_type = DataType(int.from_bytes(stream.read(INT_SIZE), endianness.name))
-    edn_fmt = &#34;&lt;&#34; if endianness == Endianness.little else &#34;&gt;&#34;
-
-    match data_type:
-        case DataType.null:
-            data = None
-        case DataType.char | DataType.uchar:
-            data = stream.read(CHAR_SIZE).decode(&#34;utf-8&#34;)
-        case DataType.text:
-            str_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
-            data = stream.read(str_size).decode(&#34;utf-8&#34;)
-        case DataType.short | DataType.ushort:
-            data = int.from_bytes(stream.read(SHORT_SIZE), endianness.name)
-        case DataType.int | DataType.uint | DataType.bool:
-            data = int.from_bytes(stream.read(INT_SIZE), endianness.name)
-        case DataType.llong | DataType.ullong:
-            data = int.from_bytes(stream.read(LONG_SIZE), endianness.name)
-        case DataType.float:
-            data = struct.unpack(f&#34;{edn_fmt}f&#34;, stream.read(FLOAT_SIZE))[0]
-        case DataType.double:
-            data = struct.unpack(f&#34;{edn_fmt}d&#34;, stream.read(DOUBLE_SIZE))[0]
-        case DataType.int3 | DataType.uint3:
-            data = (
-                int.from_bytes(stream.read(INT_SIZE), endianness.name),
-                int.from_bytes(stream.read(INT_SIZE), endianness.name),
-                int.from_bytes(stream.read(INT_SIZE), endianness.name),
-            )
-        case DataType.float3:
-            data = struct.unpack(f&#34;{edn_fmt}3f&#34;, stream.read(FLOAT3_SIZE))
-        case DataType.double3:
-            data = struct.unpack(f&#34;{edn_fmt}3d&#34;, stream.read(DOUBLE3_SIZE))
-        case _:
-            raise NotImplementedError(
-                f&#34;Can&#39;t parse value of data type {data_type}&#34;
-                &#34; because it is not implemented&#34;
-            )
-
-    return cls(name, data_type, data)</code></pre>
-</details>
 </dd>
 </dl>
 <h3>Instance variables</h3>
 <dl>
-<dt id="pydsphtools.io.Value.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dt id="pydsphtools.io.Value.name"><code class="name">prop <span class="ident">name</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1522,7 +1293,7 @@ def name(self) -&gt; str:
     return self._name</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Value.value"><code class="name">var <span class="ident">value</span> : None | bool | str | int | float | tuple[float, float, float] | tuple[int, int, int]</code></dt>
+<dt id="pydsphtools.io.Value.value"><code class="name">prop <span class="ident">value</span> : None | bool | str | int | float | tuple[float, float, float] | tuple[int, int, int]</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1544,7 +1315,7 @@ def value(
     return self._value</code></pre>
 </details>
 </dd>
-<dt id="pydsphtools.io.Value.value_type"><code class="name">var <span class="ident">value_type</span> : pydsphtools._io.DataType</code></dt>
+<dt id="pydsphtools.io.Value.value_type"><code class="name">prop <span class="ident">value_type</span> : pydsphtools._io.DataType</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1565,13 +1336,6 @@ def value_type(self) -&gt; DataType:
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def pretty_print(self, indent=0, indent_str=&#34;  &#34;) -&gt; str:
-    return f&#34;{indent_str * indent}{self}&#34;</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -1579,7 +1343,6 @@ def value_type(self) -&gt; DataType:
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -1686,7 +1449,7 @@ def value_type(self) -&gt; DataType:
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
 </footer>
 </body>
 </html>

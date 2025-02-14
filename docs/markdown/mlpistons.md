@@ -6,8 +6,7 @@ simulations using the Multi-Layer Pistons approach of DualSPHysics.
 Functions
 ---------
 
-    
-`mlpistons1d_from_dsph(xmlfile: str, dirin: str, xloc: float, yloc: float, zrange: Tuple[float, float], layers: int, mkbound: int, *, smooth: int = 0, file_prefix: str = 'MLPiston1D_SPH_velx', dirout: str = 'MLPiston1D', binpath: str = None, overwrite: bool = False, cleanup: bool = False, dt: float = 0.01, tmin: float = 0.0, tmax: float = 0.0) ‑> NoneType`
+`mlpistons1d_from_dsph(xmlfile: str, dirin: str, xloc: float, yloc: float, zrange: Tuple[float, float], layers: int, mkbound: int, *, smooth: int = 0, file_prefix: str = 'MLPiston1D_SPH_velx', dirout: str = 'MLPiston1D', binpath: str = None, overwrite: bool = False, cleanup: bool = False, dt: float = 0.01, tmin: float = 0.0, tmax: float = 0.0) ‑> None`
 :   Create the nessesary csv file to run a DualSPHysics Multi-Layer 1D Piston
     simulation using data from a previous DualSPHysics simulation. The function
     uses "measuretool" to find the surface elevation at a specific x-location
@@ -64,8 +63,7 @@ Functions
     InvalidTimeInterval
         If `tmax` is less than or equal to `tmin`.
 
-    
-`mlpistons2d_from_dsph(xmlfile: str, dirin: str, xloc: float, yrange: Tuple[float, float], zrange: Tuple[float, float], ylayers: int, zlayers: int, mkbound: int, *, smoothz: int = 0, smoothy: int = 0, file_prefix: str = 'MLPiston2D_SPH_velx', dirout: str = 'MLPiston2D', binpath: str = None) ‑> NoneType`
+`mlpistons2d_from_dsph(xmlfile: str, dirin: str, xloc: float, yrange: Tuple[float, float], zrange: Tuple[float, float], ylayers: int, zlayers: int, mkbound: int, *, smoothz: int = 0, smoothy: int = 0, file_prefix: str = 'MLPiston2D_SPH_velx', dirout: str = 'MLPiston2D', binpath: str = None) ‑> None`
 :   Create the nessesary csv file to run a DualSPHysics Multi-Layer 2D Piston
     simulation using data from a previous DualSPHysics simulation. The function
     uses "measuretool" to find the surface elevation at a specific x-location
@@ -110,8 +108,7 @@ Functions
         If the xml file could not be found. The rest of the code will still
         run but modification will not be made no valid xml is provided.
 
-    
-`write_mlpiston1d_xml(xmlfile: str, mkbound: int, velfile: str, *, smooth: int = 0) ‑> NoneType`
+`write_mlpiston1d_xml(xmlfile: str, mkbound: int, velfile: str, *, smooth: int = 0) ‑> None`
 :   Modifies the xml file to add the nessesary fields (in "motion" and "special") for
     a 1D multilayer piston simulation.
     
@@ -131,8 +128,7 @@ Functions
     FileNotFoundError
         If the xml file is not found
 
-    
-`write_mlpiston2d_xml(xmlfile: str, mkbound: int, velfiles: Iterable[str], yvals: Iterable[float], *, smoothz: int = 0, smoothy: int = 0) ‑> NoneType`
+`write_mlpiston2d_xml(xmlfile: str, mkbound: int, velfiles: Iterable[str], yvals: Iterable[float], *, smoothz: int = 0, smoothy: int = 0) ‑> None`
 :   Modifies the xml file to add the nessesary fields (in "motion" and "special") for
     a 2D multilayer piston simulation.
     

@@ -5,7 +5,6 @@ Module containing functions useful when working with oceaning waves.
 Functions
 ---------
 
-    
 `find_celerity(wavenumber: Union[float, Sequence[float]], depth: float) ‑> Union[float, numpy.ndarray]`
 :   Calculates the celerity for a given wavenumber.
     
@@ -31,7 +30,6 @@ Functions
     
     where \( k \) is the wavenumber and \( h \) is the depth.
 
-    
 `find_wavenumber(omega: Union[float, Sequence[float]], depth: float) ‑> Union[float, numpy.ndarray]`
 :   Solves the dispersion relation for a given angular frequency and depth
     and finds the wavenumber.
@@ -61,7 +59,6 @@ Functions
     where \( k \) is the wavenumber, \( h \) is the depth and \( \omega \)
     is the angular frequency.
 
-    
 `generate_ricker_signal(focus_loc: float, depth: float, amplitude: float, peak_frequency: float, wv_type: str, *, filepath: str = None, hinge: Optional[float] = None, angle_units: str = 'rad', nwaves: int = 5000) ‑> Tuple[numpy.ndarray, numpy.ndarray]`
 :   Generates the wavemaker signal from a ricker spectrum to be used in
     a DualSPHysics simulation. The signal (numpy array) is returned and
@@ -106,10 +103,9 @@ Functions
         - The hinge is less than or equal to zero.
     
         - Unknown angle units are passed to `angle_units`.
-        
+    
         - An unknown wavemaker type is passed to `wv_type`.
 
-    
 `ricker_spectrum(omega: Union[float, numpy.ndarray], Ar: float, T: float, a: float, m: float) ‑> Union[float, numpy.ndarray]`
 :   A more general ricker spectrum implementation based on O.Kimmoun and L.Brosset
     (2010).
@@ -144,7 +140,6 @@ Functions
     .. math::
       \omega_p = \left( \frac{1 + 2\alpha}{\alpha T} \right)^\frac{1}{m}
 
-    
 `ricker_spectrum_simple(omega: Union[float, numpy.ndarray], omegap: float) ‑> Union[float, numpy.ndarray]`
 :   A simple ricker spectrum implementation. The spectrum is the same as
     the generalized ricker, `ricker_spectrum`, spectrum with the parameters equal to:
@@ -177,7 +172,6 @@ Functions
       \frac{2}{\sqrt{\pi}} \frac{\omega^2}{\omega_p^3}
       e^\frac{-\omega^2}{\omega_p^2}
 
-    
 `ricker_wavelet_simple(t: Union[float, numpy.ndarray], omegap: float) ‑> Union[float, numpy.ndarray]`
 :   The theoretical wavelet from ricker spectrum.
     
@@ -193,7 +187,6 @@ Functions
     float or numpy array
         The shape of the wavelet.
 
-    
 `wavemaker_transfer_func(wavenumber: Union[float, numpy.ndarray], depth: float, wv_type: str = 'flap', hinge: Optional[float] = None) ‑> Union[float, numpy.ndarray]`
 :   For a given wavenumber and depth calculates the stroke to wave height
     ratio for either a piston or flap type wavemaker.

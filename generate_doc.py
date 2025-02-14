@@ -3,7 +3,6 @@ import pdoc
 from pathlib import Path
 
 
-
 # Configuration
 MODULE_NAME = "pydsphtools"  # Replace with your module name
 DOCS_DIR = Path("docs")
@@ -43,7 +42,7 @@ for mod_name, html, text in recursive_htmls_mds(module):
         )
         + ".md"
     )
-       
+
     with open(filepath_html, "w") as file:
         file.write(html)
     with open(filepath_md, "w") as file:

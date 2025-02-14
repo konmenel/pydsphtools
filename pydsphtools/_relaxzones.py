@@ -1,6 +1,7 @@
 """The implementation of functions that enable coupling of different DualSPHysics
 simulations using the Relaxation Zone technic of DualSPHysics.
 """
+
 # This file is part of PyDSPHtools. It is subject to the license terms in the
 # LICENSE file found in the top-level directory of this distribution and at
 # https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
@@ -582,7 +583,7 @@ def _run_vel_raw(
     def rawdata_fname(p):
         return f"RZ_data_raw_Part{p}"
 
-    rawdata_fpath = (
+    rawdata_fpath = (  # noqa: E731
         lambda p: dirin / f"measuretool/rawveldata/{rawdata_fname(p)}_Vel.csv"
     )
 
@@ -724,7 +725,7 @@ def _clean_raw_vel_data(dirin: Union[str, Path]) -> None:
     def rawdata_fname(p):
         return f"RZ_data_raw_Part{p}"
 
-    rawdata_fpath = (
+    rawdata_fpath = (  # noqa: E731
         lambda p: dirin / f"measuretool/rawveldata/{rawdata_fname(p)}_Vel.csv"
     )
 

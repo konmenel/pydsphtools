@@ -8,7 +8,6 @@
 from typing import Union, Tuple, Optional, Sequence
 
 import numpy as np
-from numpy.typing import ArrayLike
 from scipy import optimize
 from ._main import RAD2DEG
 
@@ -324,7 +323,7 @@ def generate_ricker_signal(
         - The hinge is less than or equal to zero.
 
         - Unknown angle units are passed to `angle_units`.
-        
+
         - An unknown wavemaker type is passed to `wv_type`.
     """
     wv_type = wv_type.lower()

@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
+<title>pydsphtools.jobs API documentation</title>
+<meta name="description" content="Module that handles DualSPHysics jobs. Jobs are sequential runs of the DualSPHysics solver, pre-proccessing
+tools or post-proccessing tools.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });</script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pydsphtools.jobs</code></h1>
+</header>
+<section id="section-intro">
+<p>Module that handles DualSPHysics jobs. Jobs are sequential runs of the DualSPHysics solver, pre-proccessing
+tools or post-proccessing tools.</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="pydsphtools.jobs.Binary"><code class="flex name class">
+<span>class <span class="ident">Binary</span></span>
+<span>(</span><span>name: str, *args: *tuple[str])</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Binary:
+    name: str
+    path: Path
+    args: list[str]
+
+    def __init__(self, name: str, *args: *tuple[str]):
+        self.name = name
+        self.args = list(args)
+        self.path = get_binary_path(name)
+
+    def __str__(self) -&gt; str:
+        return f&#34;{self.path} {&#39; &#39;.join(self.args)}&#34;
+
+    def add_args(self, *args: *tuple[str]) -&gt; Self:
+        self.args.extend(args)
+        return self
+
+    def get_command_list(self) -&gt; list[str]:
+        return [self.path] + self.args
+
+    def run(self, *args, **kwargs) -&gt; Self:
+        subprocess.run(self.get_command_list(), *args, **kwargs)</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li>pydsphtools._jobs.Dualsphysics</li>
+<li>pydsphtools._jobs.Gencase</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pydsphtools.jobs.Binary.args"><code class="name">var <span class="ident">args</span> : list[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pydsphtools.jobs.Binary.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pydsphtools.jobs.Binary.path"><code class="name">var <span class="ident">path</span> : pathlib.Path</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="pydsphtools.jobs.Binary.add_args"><code class="name flex">
+<span>def <span class="ident">add_args</span></span>(<span>self, *args: *tuple[str]) ‑> Self</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pydsphtools.jobs.Binary.get_command_list"><code class="name flex">
+<span>def <span class="ident">get_command_list</span></span>(<span>self) ‑> list[str]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pydsphtools.jobs.Binary.run"><code class="name flex">
+<span>def <span class="ident">run</span></span>(<span>self, *args, **kwargs) ‑> Self</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pydsphtools.jobs.Dualsphysics"><code class="flex name class">
+<span>class <span class="ident">Dualsphysics</span></span>
+<span>(</span><span>*args: *tuple[str], gpu: bool = True, version: str = '5.2')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Dualsphysics(Binary):
+    def __init__(self, *args: *tuple[str], gpu: bool = True, version: str = &#34;5.2&#34;):
+        name = f&#34;dualsphysics{version}&#34; + &#34;&#34; if gpu else &#34;cpu&#34;
+        super().__init__(name, *args)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydsphtools._jobs.Binary</li>
+</ul>
+</dd>
+<dt id="pydsphtools.jobs.Gencase"><code class="flex name class">
+<span>class <span class="ident">Gencase</span></span>
+<span>(</span><span>*args: *tuple[str])</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Gencase(Binary):
+    def __init__(self, *args: *tuple[str]):
+        super().__init__(&#34;gencase&#34;, *args)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydsphtools._jobs.Binary</li>
+</ul>
+</dd>
+<dt id="pydsphtools.jobs.Job"><code class="flex name class">
+<span>class <span class="ident">Job</span></span>
+<span>(</span><span>*binaries: *tuple[<a title="pydsphtools.jobs.Binary" href="#pydsphtools.jobs.Binary">Binary</a>], verbose: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Class that that create a dualsphysics job.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>binaries</code></strong> :&ensp;<code>list[<a title="pydsphtools.jobs.Binary" href="#pydsphtools.jobs.Binary">Binary</a>]</code></dt>
+<dd>The binary objects that will be run. Each binary will be run sequentially
+in the order that they have been passed.</dd>
+<dt><strong><code>verbose</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Prints information the job when <code>run()</code> is called. Default, <code>True</code>.</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python">from pydsphtools import Job
+
+job = Job()
+job.add_binaries(Dualsphysics(&quot;-h&quot;), verbose=True)
+job.run()
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Job:
+    &#34;&#34;&#34;Class that that create a dualsphysics job.
+
+    Attributes
+    ----------
+    binaries: list[Binary]
+        The binary objects that will be run. Each binary will be run sequentially
+        in the order that they have been passed.
+    verbose : bool
+        Prints information the job when `run()` is called. Default, `True`.
+
+    Examples
+    --------
+    ```python
+    from pydsphtools import Job
+
+    job = Job()
+    job.add_binaries(Dualsphysics(&#34;-h&#34;), verbose=True)
+    job.run()
+    ```
+    &#34;&#34;&#34;
+
+    binaries: list[Binary]
+    verbose: bool
+
+    # Private attributes
+    _env: dict[str, str]  # Environment variables
+
+    def __init__(self, *binaries: *tuple[Binary], verbose: bool = True):
+        self.verbose = verbose
+        self.binaries = list(binaries)
+        self._env = dict(**os.environ)
+        dirbin = Path(get_dualsphysics_root()) / &#34;bin&#34; / &#34;linux&#34;
+        self._env.update(
+            {
+                &#34;LD_LIBRARY_PATH&#34;: f&#34;{dirbin}&#34;
+                + (
+                    f&#34;:{self._env[&#39;LD_LIBRARY_PATH&#39;]}&#34;
+                    if self._env[&#34;LD_LIBRARY_PATH&#34;]
+                    else &#34;&#34;
+                )
+            }
+        )
+
+    @property
+    def env(self) -&gt; dict[str, str]:
+        return self._env
+
+    def __str__(self) -&gt; str:
+        return &#34;\n&#34;.join(str(bin) for bin in self.binaries)
+
+    def print_env(self):
+        for k, v in self.env:
+            print(f&#34;{k}: {v}&#34;)
+
+    def add_binaries(self, *binaries: *tuple[Binary]) -&gt; Self:
+        self.binaries.extend(binaries)
+        return self
+
+    def run(self):
+        if self.verbose:
+            print(&#34;Job commands:&#34;)
+            print(self)
+            print()
+
+        for bin in self.binaries:
+            if self.verbose:
+                print(f&#34;[INFO] Running command {bin}&#34;)
+            bin.run(check=True, env=self._env)</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="pydsphtools.jobs.Job.binaries"><code class="name">var <span class="ident">binaries</span> : list[pydsphtools._jobs.Binary]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pydsphtools.jobs.Job.verbose"><code class="name">var <span class="ident">verbose</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="pydsphtools.jobs.Job.env"><code class="name">prop <span class="ident">env</span> : dict[str, str]</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def env(self) -&gt; dict[str, str]:
+    return self._env</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="pydsphtools.jobs.Job.add_binaries"><code class="name flex">
+<span>def <span class="ident">add_binaries</span></span>(<span>self, *binaries: *tuple[<a title="pydsphtools.jobs.Binary" href="#pydsphtools.jobs.Binary">Binary</a>]) ‑> Self</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pydsphtools.jobs.Job.print_env"><code class="name flex">
+<span>def <span class="ident">print_env</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pydsphtools.jobs.Job.run"><code class="name flex">
+<span>def <span class="ident">run</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pydsphtools" href="index.html">pydsphtools</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pydsphtools.jobs.Binary" href="#pydsphtools.jobs.Binary">Binary</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pydsphtools.jobs.Binary.add_args" href="#pydsphtools.jobs.Binary.add_args">add_args</a></code></li>
+<li><code><a title="pydsphtools.jobs.Binary.args" href="#pydsphtools.jobs.Binary.args">args</a></code></li>
+<li><code><a title="pydsphtools.jobs.Binary.get_command_list" href="#pydsphtools.jobs.Binary.get_command_list">get_command_list</a></code></li>
+<li><code><a title="pydsphtools.jobs.Binary.name" href="#pydsphtools.jobs.Binary.name">name</a></code></li>
+<li><code><a title="pydsphtools.jobs.Binary.path" href="#pydsphtools.jobs.Binary.path">path</a></code></li>
+<li><code><a title="pydsphtools.jobs.Binary.run" href="#pydsphtools.jobs.Binary.run">run</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pydsphtools.jobs.Dualsphysics" href="#pydsphtools.jobs.Dualsphysics">Dualsphysics</a></code></h4>
+</li>
+<li>
+<h4><code><a title="pydsphtools.jobs.Gencase" href="#pydsphtools.jobs.Gencase">Gencase</a></code></h4>
+</li>
+<li>
+<h4><code><a title="pydsphtools.jobs.Job" href="#pydsphtools.jobs.Job">Job</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pydsphtools.jobs.Job.add_binaries" href="#pydsphtools.jobs.Job.add_binaries">add_binaries</a></code></li>
+<li><code><a title="pydsphtools.jobs.Job.binaries" href="#pydsphtools.jobs.Job.binaries">binaries</a></code></li>
+<li><code><a title="pydsphtools.jobs.Job.env" href="#pydsphtools.jobs.Job.env">env</a></code></li>
+<li><code><a title="pydsphtools.jobs.Job.print_env" href="#pydsphtools.jobs.Job.print_env">print_env</a></code></li>
+<li><code><a title="pydsphtools.jobs.Job.run" href="#pydsphtools.jobs.Job.run">run</a></code></li>
+<li><code><a title="pydsphtools.jobs.Job.verbose" href="#pydsphtools.jobs.Job.verbose">verbose</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
+</footer>
+</body>
+</html>

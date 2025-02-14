@@ -1,6 +1,7 @@
 """The imlpementation of the functions that allows for couple between two DualSPHysics
 simulations using the Multi-Layer Pistons approach of DualSPHysics.
 """
+
 # This file is part of PyDSPHtools. It is subject to the license terms in the
 # LICENSE file found in the top-level directory of this distribution and at
 # https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
@@ -433,7 +434,7 @@ def mlpistons1d_from_dsph(
     def rawdata_fname(p):
         return f"MLPiston1D_data_raw_Part{p}"
 
-    rawdata_fpath = (
+    rawdata_fpath = (  # noqa: E731
         lambda p: f"{dirin}/measuretool/rawveldata/{rawdata_fname(p)}_Vel.csv"
     )
 

@@ -1,3 +1,5 @@
+"""Implementation of io module"""
+
 from __future__ import annotations
 import os
 import io
@@ -5,7 +7,7 @@ import struct
 from enum import Enum
 import numpy as np
 
-# TODO: Add docstring
+# TODO: Add docstrings
 # TODO: Implement creating and writing of Bi4File
 # TODO: Add methods for modifying Item, Value, Array attributes safely
 # TODO: Arrays should not be loaded by default as they can be too big. Only load them
@@ -74,6 +76,8 @@ DOUBLE3_SIZE: int = DOUBLE_SIZE * 3
 
 
 class DataType(Enum):
+    """Enum that handles the data type"""
+
     # bytes
     null = 0
     text = 1
@@ -101,9 +105,36 @@ class DataType(Enum):
 
     @classmethod
     def from_bytes(cls: DataType, bytes: bytes, endianness: Endianness) -> DataType:
+        """Constructor from bytes.
+
+        Parameters
+        ----------
+        bytes : bytes
+            The byte array.
+        endianness : Endianness
+            The endianness of the bytes.
+
+        Returns
+        -------
+        DataType
+            The new object.
+        """
         return cls(int.from_bytes(bytes, endianness.name))
 
     def to_python_type(self) -> type:
+        """Converts the enum value to a python type
+
+        Returns
+        -------
+        type
+            The follow mapping is used:\\
+            - "null" => `None`\\
+            - "text", "char", "uchar" => `str`\\
+            - "bool" => `bool`\\
+            - "short", "ushort", "int", "uint", "long" "ulong" => `int`\\
+            - "float", "double" => `float`\\
+            - "int3", "uint3", "float3", "double3" => tuple\\
+        """
         if self == DataType.null:
             return type(None)
         elif self == DataType.bool:
@@ -125,15 +156,47 @@ class DataType(Enum):
 
 
 class Endianness(Enum):
+    """Enum that represents the endianness."""
+
     little = 0
     big = 1
 
     @classmethod
     def from_bytes(cls, bytes: bytes) -> Endianness:
+        """Constructor from bytes arrays
+
+        Parameters
+        ----------
+        bytes : bytes
+            The byte array
+
+        Returns
+        -------
+        Endianness
+            The new object
+        """
         return cls(int.from_bytes(bytes))
 
 
 class Array:
+    """Class that represents the a bi4 array.
+
+    Attributes
+    ----------
+    name : str
+        Name of the array.
+    hide : bool
+        Wheither or not the array is hidden.
+    array_type : DataType
+        The type of the array data.
+    count : int
+        The number of elements in the array.
+    array_size : int
+        The size of the array in bytes.
+    data : np.ndarray
+        The data of the array.
+    """
+
     name: str
     hide: bool
     array_type: DataType
@@ -170,6 +233,20 @@ class Array:
     def from_stream(
         cls: Array, byte_stream: io.BytesIO, endianness: Endianness
     ) -> Array:
+        """Constructor from bytes.
+
+        Parameters
+        ----------
+        bytes : bytes
+            The byte stream.
+        endianness : Endianness
+            The endianness of the bytes.
+
+        Returns
+        -------
+        DataType
+            The new object.
+        """
         array_def_size: int = int.from_bytes(
             byte_stream.read(UINT_SIZE), endianness.name
         )
@@ -202,6 +279,20 @@ class Array:
 
     @classmethod
     def from_bytes(cls: Array, bytes: bytes, endianness: Endianness) -> Array:
+        """Constructor from bytes.
+
+        Parameters
+        ----------
+        bytes : bytes
+            The byte array.
+        endianness : Endianness
+            The endianness of the bytes.
+
+        Returns
+        -------
+        DataType
+            The new object.
+        """
         return cls.from_stream(io.BytesIO(bytes), endianness)
 
     @property
@@ -365,7 +456,7 @@ class Value:
         return f"{indent_str * indent}{self}"
 
     def __str__(self) -> str:
-        return f"{self.name}: {self. value}"
+        return f"{self.name}: {self.value}"
 
 
 class Item:
@@ -456,15 +547,15 @@ class Item:
         values_str_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
         assert values_str_size == 7, f"Expected 7 but found {values_str_size}"
         values_str = stream.read(values_str_size).decode("utf-8")
-        assert (
-            values_str == "\nVALUES"
-        ), f"Expected '\\nVALUES' but found '{values_str}'"
+        assert values_str == "\nVALUES", (
+            f"Expected '\\nVALUES' but found '{values_str}'"
+        )
         num_values = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
         values = [Value.from_stream(stream, endianness) for _ in range(num_values)]
         assert stream.read() == b"", "Values buffer is not empty."
         stream.close()
 
-        # Update buffer since we reached the end of values
+        # TODO: Can save file pointer to arrays instead temporarily until we try to read them.
         items = [Item.from_stream(bytes_stream, endianness) for _ in range(num_items)]
         arrays = [
             Array.from_stream(bytes_stream, endianness) for _ in range(num_arrays)
@@ -545,30 +636,30 @@ class Item:
 
     def pretty_print(self, indent=0, indent_str="  ") -> str:
         ret = (
-            f"{indent_str*indent}Item(\n"
-            f"{indent_str*(indent+1)}item_size = {self._item_size},\n"
-            f"{indent_str*(indent+1)}name = {self._name},\n"
-            f"{indent_str*(indent+1)}hide = {self._hide},\n"
-            f"{indent_str*(indent+1)}hide_values = {self._hide_values},\n"
-            f"{indent_str*(indent+1)}fmt_float = {self._fmt_float},\n"
-            f"{indent_str*(indent+1)}fmt_double = {self._fmt_double},\n"
-            f"{indent_str*(indent+1)}num_arrays = {self._num_arrays},\n"
-            f"{indent_str*(indent+1)}num_items = {self._num_items},\n"
-            f"{indent_str*(indent+1)}size_values = {self._size_values},\n"
-            f"{indent_str*(indent+1)}values = [\n"
+            f"{indent_str * indent}Item(\n"
+            f"{indent_str * (indent + 1)}item_size = {self._item_size},\n"
+            f"{indent_str * (indent + 1)}name = {self._name},\n"
+            f"{indent_str * (indent + 1)}hide = {self._hide},\n"
+            f"{indent_str * (indent + 1)}hide_values = {self._hide_values},\n"
+            f"{indent_str * (indent + 1)}fmt_float = {self._fmt_float},\n"
+            f"{indent_str * (indent + 1)}fmt_double = {self._fmt_double},\n"
+            f"{indent_str * (indent + 1)}num_arrays = {self._num_arrays},\n"
+            f"{indent_str * (indent + 1)}num_items = {self._num_items},\n"
+            f"{indent_str * (indent + 1)}size_values = {self._size_values},\n"
+            f"{indent_str * (indent + 1)}values = [\n"
         )
         for value in self._values:
-            ret += f"{value.pretty_print(indent=indent+2)}\n"
-        ret += f"{indent_str*(indent+1)}]\n"
+            ret += f"{value.pretty_print(indent=indent + 2)}\n"
+        ret += f"{indent_str * (indent + 1)}]\n"
 
         if self._num_items:
-            ret += f"{indent_str*(indent+1)}items = [\n"
+            ret += f"{indent_str * (indent + 1)}items = [\n"
             for item in self._items:
-                ret += f"{indent_str*indent}{item.pretty_print(indent+2)}"
-            ret += f"{indent_str*(indent+1)}]\n"
+                ret += f"{indent_str * indent}{item.pretty_print(indent + 2)}"
+            ret += f"{indent_str * (indent + 1)}]\n"
         else:
-            ret += f"{indent_str*(indent+1)}items = []\n"
-        ret += f"{indent_str*indent})\n"
+            ret += f"{indent_str * (indent + 1)}items = []\n"
+        ret += f"{indent_str * indent})\n"
         return ret
 
     def get_value_by_name(self, name: str) -> Value | None:
@@ -586,11 +677,11 @@ class Item:
     def _pretty_print_dict(self, d: dict, indent=0, indent_str="  ") -> str:
         ret = ""
         for key, value in d.items():
-            ret += f"{indent_str*(indent+1)}{key}: "
+            ret += f"{indent_str * (indent + 1)}{key}: "
             if isinstance(value, dict):
                 ret += "{\n"
-                ret += f"{self._pretty_print_dict(value, indent+1)}"
-                ret += f"{indent_str*(indent+1)}}}\n"
+                ret += f"{self._pretty_print_dict(value, indent + 1)}"
+                ret += f"{indent_str * (indent + 1)}}}\n"
             else:
                 ret += f"{value}\n"
         return ret

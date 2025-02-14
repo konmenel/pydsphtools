@@ -58,6 +58,7 @@ class MissingEnvironmentVariable(Exception):
         var_name : str
             The name of the environment variable.
     """
+
     var_name: str
 
     def __init__(self, var_name: str, *args) -> None:
@@ -73,6 +74,7 @@ class UnsupportedPlatform(Exception):
     platform : str
         Name of the platform
     """
+
     platform: str
 
     def __init__(self, platform: str, *args: object) -> None:
@@ -90,6 +92,7 @@ class DSPHBinaryNotFound(Exception):
     path : str
         The path that was searched.
     """
+
     binary_name: str
     path: str
 

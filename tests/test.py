@@ -18,6 +18,7 @@ Author: Constantinos Menelaou
 Github: https://github.com/konmenel  
 Year: 2023  
 """
+
 import os
 import numpy as np
 import pandas as pd
@@ -37,7 +38,9 @@ def testing() -> int:
     assert get_chrono_mass(test_dir, "boulder") == 0.02646
     assert get_chrono_property(test_dir, "boulder", "MkBound") == 50
     assert get_chrono_property(test_dir, "boulder", "Mass") == 0.02646
-    assert get_chrono_property(test_dir, "boulder", "ModelFile") == "boulder_mkb0050.obj"
+    assert (
+        get_chrono_property(test_dir, "boulder", "ModelFile") == "boulder_mkb0050.obj"
+    )
 
     # Test numpy arrays
     assert np.array_equal(

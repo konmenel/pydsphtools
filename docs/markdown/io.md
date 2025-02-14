@@ -6,15 +6,54 @@ Classes
 -------
 
 `Array(name: str, hide: bool, array_type: DataType, count: int, array_size: int, data: np.ndarray)`
-:   
+:   Class that represents the a bi4 array.
+    
+    Attributes
+    ----------
+    name : str
+        Name of the array.
+    hide : bool
+        Wheither or not the array is hidden.
+    array_type : DataType
+        The type of the array data.
+    count : int
+        The number of elements in the array.
+    array_size : int
+        The size of the array in bytes.
+    data : np.ndarray
+        The data of the array.
 
     ### Static methods
 
     `from_bytes(bytes: bytes, endianness: Endianness) ‑> pydsphtools._io.Array`
-    :
+    :   Constructor from bytes.
+        
+        Parameters
+        ----------
+        bytes : bytes
+            The byte array.
+        endianness : Endianness
+            The endianness of the bytes.
+        
+        Returns
+        -------
+        DataType
+            The new object.
 
     `from_stream(byte_stream: io.BytesIO, endianness: Endianness) ‑> pydsphtools._io.Array`
-    :
+    :   Constructor from bytes.
+        
+        Parameters
+        ----------
+        bytes : bytes
+            The byte stream.
+        endianness : Endianness
+            The endianness of the bytes.
+        
+        Returns
+        -------
+        DataType
+            The new object.
 
     ### Instance variables
 
@@ -61,42 +100,7 @@ Classes
     :
 
 `DataType(*args, **kwds)`
-:   Create a collection of name/value pairs.
-    
-    Example enumeration:
-    
-    >>> class Color(Enum):
-    ...     RED = 1
-    ...     BLUE = 2
-    ...     GREEN = 3
-    
-    Access them by:
-    
-    - attribute access:
-    
-      >>> Color.RED
-      <Color.RED: 1>
-    
-    - value lookup:
-    
-      >>> Color(1)
-      <Color.RED: 1>
-    
-    - name lookup:
-    
-      >>> Color['RED']
-      <Color.RED: 1>
-    
-    Enumerations can be iterated over, and know how many members they have:
-    
-    >>> len(Color)
-    3
-    
-    >>> list(Color)
-    [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-    
-    Methods can be added to enumerations, and members can have their own
-    attributes -- see the documentation for details.
+:   Enum that handles the data type
 
     ### Ancestors (in MRO)
 
@@ -158,7 +162,19 @@ Classes
     ### Static methods
 
     `from_bytes(bytes: bytes, endianness: Endianness) ‑> pydsphtools._io.DataType`
-    :
+    :   Constructor from bytes.
+        
+        Parameters
+        ----------
+        bytes : bytes
+            The byte array.
+        endianness : Endianness
+            The endianness of the bytes.
+        
+        Returns
+        -------
+        DataType
+            The new object.
 
     ### Methods
 
@@ -169,45 +185,21 @@ Classes
     :
 
     `to_python_type(self) ‑> type`
-    :
+    :   Converts the enum value to a python type
+        
+        Returns
+        -------
+        type
+            The follow mapping is used:\
+            - "null" => `None`\
+            - "text", "char", "uchar" => `str`\
+            - "bool" => `bool`\
+            - "short", "ushort", "int", "uint", "long" "ulong" => `int`\
+            - "float", "double" => `float`\
+            - "int3", "uint3", "float3", "double3" => tuple\
 
 `Endianness(*args, **kwds)`
-:   Create a collection of name/value pairs.
-    
-    Example enumeration:
-    
-    >>> class Color(Enum):
-    ...     RED = 1
-    ...     BLUE = 2
-    ...     GREEN = 3
-    
-    Access them by:
-    
-    - attribute access:
-    
-      >>> Color.RED
-      <Color.RED: 1>
-    
-    - value lookup:
-    
-      >>> Color(1)
-      <Color.RED: 1>
-    
-    - name lookup:
-    
-      >>> Color['RED']
-      <Color.RED: 1>
-    
-    Enumerations can be iterated over, and know how many members they have:
-    
-    >>> len(Color)
-    3
-    
-    >>> list(Color)
-    [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
-    
-    Methods can be added to enumerations, and members can have their own
-    attributes -- see the documentation for details.
+:   Enum that represents the endianness.
 
     ### Ancestors (in MRO)
 
@@ -224,7 +216,17 @@ Classes
     ### Static methods
 
     `from_bytes(bytes: bytes) ‑> pydsphtools._io.Endianness`
-    :
+    :   Constructor from bytes arrays
+        
+        Parameters
+        ----------
+        bytes : bytes
+            The byte array
+        
+        Returns
+        -------
+        Endianness
+            The new object
 
 `Item(item_size: int, name: str, hide: bool, hide_values: bool, fmt_float: str, fmt_double: str, num_arrays: int, num_items: int, size_values: int, values: list[Value], items: list[Item], arrays: list[Array])`
 :   
