@@ -305,15 +305,16 @@ def get_var(
     try:
         stream = read_and_fix_csv(dirout)
         df = pd.read_csv(stream, sep=";")
-        return dtype(df[var][0])
+        return dtype(df[var])
 
     except (FileNotFoundError, KeyError):
         with open(f"{dirout}/Run.out") as file:
             for line in file:
-                pattern = r"{0}=\[({1})\]".format(var, RE_PATTERNS.NUMBER)
-                number = re.match(pattern, line)
-                if number:
-                    return dtype(number.groups()[0])
+                pattern = r'{0}="([^"]*)"|{0}=({1})'.format(var, RE_PATTERNS.NUMBER)
+                match = re.search(pattern, line)
+                if match:
+                    value = match.group(1) or match.group(2)
+                    return dtype(value)
 
 
 def get_usr_def_var(
@@ -342,19 +343,21 @@ def get_usr_def_var(
     Raises
     ------
     NotFoundInOutput
-        If the user defined variable is not pressent in `Run.out`.
+        If the user defined variable is not pressent in `<CaseName>.out`.
     """
-    with open(f"{dirout}/Run.out") as file:
+    casename = get_var(dirout, "CaseName")
+    casename = re.sub(r"_vres\d+$", "", casename)
+    with open(f"{dirout}/{casename}.out") as file:
         for line in file:
-            if not line.startswith("XML-Vars (uservars + ctes)"):
+            if not line.startswith("List of available variables:"):
                 continue
 
-            pattern = r"{0}=\[({1})\]".format(var, RE_PATTERNS.NUMBER)
-            mass = re.search(pattern, line)
-            if mass:
-                return dtype(mass.groups()[0])
+            pattern = r"{0}=({1})".format(var, RE_PATTERNS.NUMBER)
+            match = re.search(pattern, line)
+            if match:
+                return dtype(match.group(1))
 
-    raise NotFoundInOutput(f"User defined variable `{var}`")
+    raise NotFoundInOutput(f"User defined variable `{var}`", f"{casename}.out")
 
 
 def get_chrono_mass(dirout: Union[str, pathlib.Path], bname: str) -> float:
