@@ -233,7 +233,7 @@ def get_times_of_partfiles(dirout: Union[str, pathlib.Path]) -> list[tuple[int, 
                 break
 
         for line in file:
-            pattern = r"Part_(\d*)[ ]+({0})".format(RE_PATTERNS.NUMBER)
+            pattern = r"Part_(\d*)[ ]+({0})|(\d*)[ ]+({0})".format(RE_PATTERNS.NUMBER)
             part_and_time = re.match(pattern, line)
             if part_and_time:
                 ret.append((int(part_and_time.group(1)), float(part_and_time.group(2))))
