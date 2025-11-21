@@ -59,7 +59,8 @@ class RE_PATTERNS:
     """
 
     # pattern to capture any number (eg 1.23, -1523, -12.3e-45)
-    NUMBER = r"[\-\+]?\d+\.?\d*[Ee]?[\+\-]?\d*"
+    # NUMBER = r"[\-\+]?\d+\.?\d*[Ee]?[\+\-]?\d*"
+    NUMBER = r"[-+]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d*)?(?:[Ee][+-]?\d*)?"
     # Pattern to captures the chrono floating section of the output. Returns the
     # "ID" and "name" of the chorno object floating
     FLOATING = r"Body_(?P<ID>\d+) \"(?P<name>\w*)\" -  type: Floating"
@@ -233,10 +234,13 @@ def get_times_of_partfiles(dirout: Union[str, pathlib.Path]) -> list[tuple[int, 
                 break
 
         for line in file:
-            pattern = r"Part_(\d*)[ ]+({0})|(\d*)[ ]+({0})".format(RE_PATTERNS.NUMBER)
-            part_and_time = re.match(pattern, line)
+            pattern = r"(?:Part_(\d+)|(\d+))\s+({0})".format(RE_PATTERNS.NUMBER)
+            pattern = re.compile(pattern)
+            part_and_time = pattern.match(line)
             if part_and_time:
-                ret.append((int(part_and_time.group(1)), float(part_and_time.group(2))))
+                id_str = part_and_time.group(1) or part_and_time.group(2)
+                number_str = part_and_time.group(3)
+                ret.append((int(id_str), float(number_str.replace(',', ''))))
     ret[0] = (ret[1][0] - 1, 0.0)
     return ret
 
