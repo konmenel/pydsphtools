@@ -361,7 +361,7 @@ def get_usr_def_var(
             if match:
                 return dtype(match.group(1))
 
-    raise NotFoundInOutput(f"User defined variable `{var}`", f"{casename}.out")
+    raise NotFoundInOutput(f"User defined variable `{var}`", f"{dirout}/{casename}.out")
 
 
 def get_chrono_mass(dirout: Union[str, pathlib.Path], bname: str) -> float:
