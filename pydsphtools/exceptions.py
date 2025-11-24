@@ -15,17 +15,21 @@ class NotFoundInOutput(Exception):
     missing : str
         What was not found.
     filename : str, optional
-        The name of the output file (either `Run.out` or `Run.csv`). By default,
-         `Run.out`.
+        The name of the output file.
     """
 
     missing: str
-    filename: str
+    filenames: list[str]
 
-    def __init__(self, missing: str, filename: str = "Run.out") -> None:
+    def __init__(self, missing: str, *filenames: str) -> None:
         self.missing = missing
-        self.filename = filename
-        self.message = f"{missing} not found in `{self.filename}`"
+        self.filenames = list(filenames)
+        self.message = f"{missing} not found"
+
+        if filenames:
+            self.message += " in " + " or ".join(map(lambda x: f"'{x}'", self.filenames))
+
+        
         super().__init__(self.message)
 
 

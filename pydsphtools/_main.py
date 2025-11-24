@@ -240,7 +240,7 @@ def get_times_of_partfiles(dirout: Union[str, pathlib.Path]) -> list[tuple[int, 
             if part_and_time:
                 id_str = part_and_time.group(1) or part_and_time.group(2)
                 number_str = part_and_time.group(3)
-                ret.append((int(id_str), float(number_str.replace(',', ''))))
+                ret.append((int(id_str), float(number_str.replace(",", ""))))
     ret[0] = (ret[1][0] - 1, 0.0)
     return ret
 
@@ -349,6 +349,7 @@ def get_usr_def_var(
     NotFoundInOutput
         If the user defined variable is not pressent in `<CaseName>.out`.
     """
+    # TODO: implement str vars.
     casename = get_var(dirout, "CaseName")
     casename = re.sub(r"_vres\d+$", "", casename)
     with open(f"{dirout}/{casename}.out") as file:
@@ -361,7 +362,35 @@ def get_usr_def_var(
             if match:
                 return dtype(match.group(1))
 
-    raise NotFoundInOutput(f"User defined variable `{var}`", f"{dirout}/{casename}.out")
+    with open(f"{dirout}/Run.out") as file:
+        for line in file:
+            if not line.startswith("XML-Vars (uservars + ctes):"):
+                continue
+
+            pattern = r"{0}=\[({1})\]".format(var, RE_PATTERNS.NUMBER)
+            match = re.search(pattern, line)
+            if match:
+                return dtype(match.group(1))
+
+    tree = ET.parse(f"{dirout}/{casename}.xml")
+
+    root = tree.getroot()
+
+    # XPath to find: case/execution/uservars/varnum[@name="var"]
+    xpath_expr = f".//execution/uservars/varnum[@name='{var}']"
+
+    elem = root.find(xpath_expr)
+    if elem is not None:
+        val = elem.get("value")
+        if val is not None:
+            return dtype(val)
+
+    raise NotFoundInOutput(
+        f"User defined variable `{var}`",
+        f"{dirout}/{casename}.out",
+        f"{dirout}/Run.out",
+        f"{dirout}/{casename}.xml",
+    )
 
 
 def get_chrono_mass(dirout: Union[str, pathlib.Path], bname: str) -> float:
