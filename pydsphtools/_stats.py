@@ -96,7 +96,7 @@ def rmse(
     Returns
     -------
     float
-        The RMSE of the two signals.
+        The RMSE between the two signals.
 
     Notes
     -----
@@ -109,3 +109,42 @@ def rmse(
     s1 = np.asarray(y, dtype=np.float64)
     s2 = np.asarray(obs, dtype=np.float64)
     return np.sqrt(np.sum((s1 - s2) ** 2) / len(s1))
+
+def bias(
+    y: Sequence[float],
+    obs: Sequence[float],
+    normalize: bool = False,
+) -> float:
+    """Calculates Root Mean Square Error between two signals.
+
+    Parameters
+    ----------
+    y : array-like
+        The prediction signal.
+    obs : array-like
+        The observation signal.
+
+    normalize: bool
+        If `True` the output will be the bias is normilized using the `obs` array.
+        By default, `False`.
+
+    Returns
+    -------
+    float
+        The bias between the two signals.
+
+    Notes
+    -----
+    The bias is calculated using the following formula:
+
+    .. math::
+      BIAS = \\frac{1}{N} \\sum^N_{i=1} (y_i - y_{obs})
+    """
+    assert len(y) == len(obs), "The two signals must have the same length."
+    p = np.asarray(y, dtype=np.float64)
+    o = np.asarray(obs, dtype=np.float64)
+
+    diff = np.sum(p - o)
+    if normalize:
+        diff /= np.abs(o)
+    return diff / len(p)

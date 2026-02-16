@@ -5,6 +5,6 @@
 # https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
 # including this file, may be copied, modified, propagated, or distributed except
 # according to the terms contained in the LICENSE file.
-from ._stats import agreement_idx, l1_norm, rmse
+from ._stats import agreement_idx, l1_norm, rmse, bias
 
-__all__ = ["agreement_idx", "l1_norm", "rmse"]
+__all__ = ["agreement_idx", "l1_norm", "rmse", "bias"]
