@@ -144,7 +144,7 @@ def bias(
     p = np.asarray(y, dtype=np.float64)
     o = np.asarray(obs, dtype=np.float64)
 
-    diff = np.sum(p - o)
+    diff = p - o
     if normalize:
         diff /= np.abs(o)
-    return diff / len(p)
+    return np.sum(diff) / len(p)
