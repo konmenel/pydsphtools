@@ -226,8 +226,8 @@ def get_times_of_partfiles(dirout: Union[str, pathlib.Path]) -> list[tuple[int, 
     list[tuple[int, float]]
         A list of the part number and the corresponding time.
     """
-    part = set()
-    time = {0.0}
+    parts = []
+    times = []
     with open(f"{dirout}/Run.out", "r") as file:
         # Skip useless header and `Part_0000 section`.
         for line in file:
@@ -241,11 +241,12 @@ def get_times_of_partfiles(dirout: Union[str, pathlib.Path]) -> list[tuple[int, 
             if part_and_time:
                 id_str = part_and_time.group(1) or part_and_time.group(2)
                 number_str = part_and_time.group(3)
-                # ret.append((int(id_str), float(number_str.replace(",", ""))))
-                part.add(int(id_str))
-                time.add(float(number_str.replace(",", "")))
-    part.add(min(part) - 1)
-    return list(zip(part, time))
+                part = int(id_str)
+                time = float(number_str.replace(",", ""))
+                if part not in parts:
+                    parts.append(part)
+                    times.append(time)
+    return [(parts[0], 0.0), *list(zip(parts, times))]
 
 
 def get_dp(dirout: Union[str, pathlib.Path]) -> float:
