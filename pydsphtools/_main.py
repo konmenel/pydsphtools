@@ -246,7 +246,7 @@ def get_times_of_partfiles(dirout: Union[str, pathlib.Path]) -> list[tuple[int, 
                 if part not in parts:
                     parts.append(part)
                     times.append(time)
-    return [(parts[0], 0.0), *list(zip(parts, times))]
+    return [(parts[0]-1, 0.0), *list(zip(parts, times))]
 
 
 def get_dp(dirout: Union[str, pathlib.Path]) -> float:
