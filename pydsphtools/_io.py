@@ -5,7 +5,8 @@ import os
 import io
 import struct
 from enum import Enum
-from typing import Any, Union, Sequence, SupportsIndex
+from types import EllipsisType
+from typing import Any, Union, Sequence, SupportsIndex, TypeAlias
 import numpy as np
 
 # TODO: Add docstrings
@@ -59,7 +60,9 @@ import numpy as np
 # ...
 # [array_n]
 
-NDIndex = Union[SupportsIndex, slice, Ellipsis, None, Sequence[Any], np.ndarray]
+NDIndex: TypeAlias = Union[
+    SupportsIndex, slice, EllipsisType, None, Sequence[Any], np.ndarray
+]
 
 BOOL_SIZE: int = 1
 CHAR_SIZE: int = 1
