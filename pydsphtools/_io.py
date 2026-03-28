@@ -147,6 +147,8 @@ class DataType(Enum):
             return float
         elif self.value in range(20, 24):
             return tuple
+        else:
+            raise ValueError(f"Unsupported DataType: {self}")
 
     def is_scalar(self) -> bool:
         return self.value in range(5, 13)
@@ -244,7 +246,7 @@ class Array:
 
         Returns
         -------
-        DataType
+        Array
             The new object.
         """
         array_def_size: int = int.from_bytes(
@@ -290,7 +292,7 @@ class Array:
 
         Returns
         -------
-        DataType
+        Array
             The new object.
         """
         return cls.from_stream(io.BytesIO(bytes), endianness)
@@ -318,6 +320,39 @@ class Array:
     @property
     def data(self) -> np.ndarray:
         return self._data
+
+    def __str__(self) -> str:
+        return self.pretty_print()
+
+    def __repr__(self) -> str:
+        return self.pretty_print()
+
+    def pretty_print(self, indent=0, indent_str="  ") -> str:
+        ret = (
+            f"{indent_str * indent}Array(\n"
+            f"{indent_str * (indent + 1)}name = {self._name},\n"
+            f"{indent_str * (indent + 1)}hide = {self._hide},\n"
+            f"{indent_str * (indent + 1)}array_type = {self._array_type},\n"
+            f"{indent_str * (indent + 1)}count = {self._count},\n"
+            f"{indent_str * (indent + 1)}array_size = {self._array_size},\n"
+            f"{indent_str * (indent + 1)}data = [\n"
+        )
+
+        if self._count <= 10:
+            for el in self._data:
+                ret += f"{indent_str * (indent + 2)}{el},\n"
+            ret += f"{indent_str * (indent + 1)}]\n"
+        else:
+            for el in self._data[:5]:
+                ret += f"{indent_str * (indent + 2)}{el},\n"
+
+            ret += f"{indent_str * (indent + 2)}...\n"
+
+            for el in self._data[-5:]:
+                ret += f"{indent_str * (indent + 2)}{el},\n"
+            ret += f"{indent_str * (indent + 1)}]\n"
+        ret += f"{indent_str * indent})"
+        return ret
 
     @staticmethod
     def _get_numpy_fmt(data_type: DataType, endianness: Endianness) -> str:
@@ -379,34 +414,12 @@ class Value:
         self._value_type = value_type
         self._value = value
 
-    @property
-    def name(self) -> str:
-        return self._name
-
-    @property
-    def value_type(self) -> DataType:
-        return self._value_type
-
-    @property
-    def value(
-        self,
-    ) -> (
-        None
-        | bool
-        | str
-        | int
-        | float
-        | tuple[float, float, float]
-        | tuple[int, int, int]
-    ):
-        return self._value
-
     @classmethod
     def from_stream(
         cls: Value,
         stream: io.BytesIO,
         endianness: Endianness,
-    ) -> tuple[str, None | bool | str | int | float | tuple[float, float, float]]:
+    ) -> Value:
         name_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
         name = stream.read(name_size).decode("utf-8")
         data_type = DataType(int.from_bytes(stream.read(INT_SIZE), endianness.name))
@@ -451,6 +464,28 @@ class Value:
     @classmethod
     def from_bytes(cls: Value, bytes: bytes, endianness: Endianness) -> Value:
         return cls.from_stream(io.BytesIO(bytes), endianness)
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def value_type(self) -> DataType:
+        return self._value_type
+
+    @property
+    def value(
+        self,
+    ) -> (
+        None
+        | bool
+        | str
+        | int
+        | float
+        | tuple[float, float, float]
+        | tuple[int, int, int]
+    ):
+        return self._value
 
     def pretty_print(self, indent=0, indent_str="  ") -> str:
         return f"{indent_str * indent}{self}"
@@ -606,7 +641,7 @@ class Item:
 
     @property
     def num_arrays(self) -> int:
-        return self.num_arrays
+        return self._num_arrays
 
     @property
     def num_items(self) -> int:
@@ -655,11 +690,19 @@ class Item:
         if self._num_items:
             ret += f"{indent_str * (indent + 1)}items = [\n"
             for item in self._items:
-                ret += f"{indent_str * indent}{item.pretty_print(indent + 2)}"
+                ret += f"{item.pretty_print(indent + 2)},\n"
             ret += f"{indent_str * (indent + 1)}]\n"
         else:
             ret += f"{indent_str * (indent + 1)}items = []\n"
-        ret += f"{indent_str * indent})\n"
+
+        if self._num_arrays:
+            ret += f"{indent_str * (indent + 1)}arrays = [\n"
+            for array in self._arrays:
+                ret += f"{array.pretty_print(indent + 2)},\n"
+            ret += f"{indent_str * (indent + 1)}]\n"
+        else:
+            ret += f"{indent_str * (indent + 1)}arrays = []\n"
+        ret += f"{indent_str * indent})"
         return ret
 
     def get_value_by_name(self, name: str) -> Value | None:
@@ -687,23 +730,36 @@ class Item:
         return ret
 
 
-class Bi4File:
+class Bi4File(Item):
     filepath: str | os.PathLike
     title: str
-    main_item: Item
 
     def __init__(self, filepath: str | os.PathLike, load_arrays: bool = False) -> None:
         with open(filepath, "rb") as file:
-            title = file.read(60).decode("utf-8")
+            title = file.read(60).strip(b"\0").strip().decode("utf-8")
             byteorder = Endianness.from_bytes(file.read(1))
             _ = file.read(3)  # ignore extra header bytes
             main_item = Item.from_stream(file, byteorder)
         self._filepath = filepath
         self._title = title
-        self._main_item = main_item
+
+        super().__init__(
+                item_size=main_item.item_size,
+                name=main_item.name,
+                hide=main_item.hide,
+                hide_values=main_item.hide_values,
+                fmt_float=main_item.fmt_float,
+                fmt_double=main_item.fmt_double,
+                num_arrays=main_item.num_arrays,
+                num_items=main_item.num_items,
+                size_values=main_item.size_values,
+                values=main_item.values,
+                items=main_item.items,
+                arrays=main_item.arrays
+            )
 
     @property
-    def filepeth(self) -> str | os.PathLike:
+    def filepath(self) -> str | os.PathLike:
         return self._filepath
 
     @property
@@ -714,10 +770,15 @@ class Bi4File:
     def main_item(self) -> Item:
         return self._main_item
 
-    def get_value_by_name(self, name: str) -> Value | None:
-        return self.main_item.get_value_by_name(name)
+    def __str__(self) -> str:
+        header = f"File: {self.filepath}\nTitle: {self.title}\n"
+        return header + super().pretty_print().replace("Item", "Bi4File", count=1)
+
+    def __repr__(self) -> str:
+        return str(self)
 
 
 if __name__ == "__main__":
-    bi4file = Bi4File("Part_0001.bi4")
+    bi4file = Bi4File("Part_0000.bi4")
     print(f"Timestep={bi4file.get_value_by_name('TimeStep')}")
+    print(bi4file)
