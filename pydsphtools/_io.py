@@ -5,6 +5,7 @@ import os
 import io
 import struct
 from enum import Enum
+from typing import Any, Union, Sequence, SupportsIndex
 import numpy as np
 
 # TODO: Add docstrings
@@ -58,6 +59,7 @@ import numpy as np
 # ...
 # [array_n]
 
+NDIndex = Union[SupportsIndex, slice, Ellipsis, None, Sequence[Any], np.ndarray]
 
 BOOL_SIZE: int = 1
 CHAR_SIZE: int = 1
@@ -326,6 +328,14 @@ class Array:
 
     def __repr__(self) -> str:
         return self.pretty_print()
+
+    def __getitem__(self, key: NDIndex):
+        """Allows indexing/slicing directly on the Array object."""
+        return self._data[key]
+
+    def __len__(self) -> int:
+        """Returns the number of elements (count)."""
+        return self._count
 
     def pretty_print(self, indent=0, indent_str="  ") -> str:
         ret = (
@@ -744,19 +754,19 @@ class Bi4File(Item):
         self._title = title
 
         super().__init__(
-                item_size=main_item.item_size,
-                name=main_item.name,
-                hide=main_item.hide,
-                hide_values=main_item.hide_values,
-                fmt_float=main_item.fmt_float,
-                fmt_double=main_item.fmt_double,
-                num_arrays=main_item.num_arrays,
-                num_items=main_item.num_items,
-                size_values=main_item.size_values,
-                values=main_item.values,
-                items=main_item.items,
-                arrays=main_item.arrays
-            )
+            item_size=main_item.item_size,
+            name=main_item.name,
+            hide=main_item.hide,
+            hide_values=main_item.hide_values,
+            fmt_float=main_item.fmt_float,
+            fmt_double=main_item.fmt_double,
+            num_arrays=main_item.num_arrays,
+            num_items=main_item.num_items,
+            size_values=main_item.size_values,
+            values=main_item.values,
+            items=main_item.items,
+            arrays=main_item.arrays,
+        )
 
     @property
     def filepath(self) -> str | os.PathLike:
