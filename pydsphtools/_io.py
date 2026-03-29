@@ -729,6 +729,31 @@ class Item:
                 return value
 
         return None
+    
+    def get_array_by_name(self, name: str) -> Array | None:
+        for array in self.arrays:
+            if array.name == name:
+                return array
+
+        for item in self.items:
+            array = item.get_array_by_name(name)
+            if array is not None:
+                return array
+
+        return None
+    
+    def get_item_by_name(self, name: str) -> Item | None:
+        for item in self.items:
+            if item.name == name:
+                return item
+
+        for item in self.items:
+            array = item.get_item_by_name(name)
+            if array is not None:
+                return array
+
+        return None
+
 
     def _pretty_print_dict(self, d: dict, indent=0, indent_str="  ") -> str:
         ret = ""
