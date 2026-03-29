@@ -16,7 +16,8 @@ from typing import Tuple, Iterable
 import numpy as np
 from scipy import interpolate
 import pandas as pd
-import lxml.etree as ET
+# import lxml.etree as ET
+import xml.etree.ElementTree as ET
 
 from pydsphtools._main import (
     get_dp,
@@ -279,7 +280,8 @@ def write_mlpiston2d_xml(
             raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), xmlfile)
 
     xmldir, _ = os.path.split(xmlfile)
-    tree = ET.parse(xmlfile)
+    parser = ET.XMLParser(target=ET.TreeBuilder(insert_comments=True))
+    tree = ET.parse(xmlfile, parser)
 
     # Add to `motion` section
     elem_casedef = xml_get_or_create_subelement(tree, "casedef")
@@ -651,7 +653,8 @@ def write_mlpiston1d_xml(
 
     xmldir, _ = os.path.split(xmlfile)
     fpath_rel = os.path.relpath(velfile, xmldir)
-    tree = ET.parse(xmlfile)
+    parser = ET.XMLParser(target=ET.TreeBuilder(insert_comments=True))
+    tree = ET.parse(xmlfile, parser)
 
     # Add to `motion` section
     elem_casedef = xml_get_or_create_subelement(tree, "casedef")
