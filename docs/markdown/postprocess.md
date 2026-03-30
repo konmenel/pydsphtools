@@ -1,6 +1,6 @@
 Module pydsphtools.postprocess
 ==============================
-A module post-processing tools.
+A module for post-processing DualSPHysics simulations.
 
 Functions
 ---------

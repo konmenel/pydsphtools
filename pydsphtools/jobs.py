@@ -7,7 +7,6 @@ tools or post-proccessing tools.
 # https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
 # including this file, may be copied, modified, propagated, or distributed except
 # according to the terms contained in the LICENSE file.
-
 from ._jobs import Binary, Dualsphysics, Gencase, Job
 
 __all__ = ["Binary", "Dualsphysics", "Gencase", "Job"]

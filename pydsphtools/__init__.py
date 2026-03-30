@@ -18,6 +18,11 @@ Github: https://github.com/konmenel <br>
 Year: 2023<br>
 """
 
+# This file is part of PyDSPHtools. It is subject to the license terms in the
+# LICENSE file found in the top-level directory of this distribution and at
+# https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
+# including this file, may be copied, modified, propagated, or distributed except
+# according to the terms contained in the LICENSE file.
 from ._version import __version__
 from . import waves, exceptions, stats, mlpistons, relaxzones, io, jobs, postprocess
 from ._main import __all__ as _all_in_main

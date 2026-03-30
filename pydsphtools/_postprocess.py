@@ -1,3 +1,10 @@
+"""Implementation of module for post-processing DualSPHysics simulations."""
+
+# This file is part of PyDSPHtools. It is subject to the license terms in the
+# LICENSE file found in the top-level directory of this distribution and at
+# https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
+# including this file, may be copied, modified, propagated, or distributed except
+# according to the terms contained in the LICENSE file.
 import re
 from pathlib import Path
 from packaging.version import Version
@@ -112,7 +119,9 @@ def compute_floating_motion(
                 "pitch [deg]",
                 "yaw [deg]",
             ]
-            header = f"# MkBound={mkbound}. Euler angles sequence = '{angle_seq}' (SciPy)\n"
+            header = (
+                f"# MkBound={mkbound}. Euler angles sequence = '{angle_seq}' (SciPy)\n"
+            )
 
         print(sim2d, columns)
         header += ";".join(columns)

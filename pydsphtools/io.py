@@ -5,7 +5,6 @@
 # https://github.com/konmenel/pydsphtools/blob/main/LICENSE. No part of PyDSPHtools,
 # including this file, may be copied, modified, propagated, or distributed except
 # according to the terms contained in the LICENSE file.
-
 from ._io import Bi4File, Item, Value, Array, Endianness, DataType
 
 __all__ = ["Bi4File", "Item", "Value", "Array", "Endianness", "DataType"]

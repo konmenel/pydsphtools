@@ -1,4 +1,4 @@
-"""A module post-processing tools."""
+"""A module for post-processing DualSPHysics simulations."""
 
 # This file is part of PyDSPHtools. It is subject to the license terms in the
 # LICENSE file found in the top-level directory of this distribution and at
