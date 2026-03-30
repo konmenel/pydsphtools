@@ -17,7 +17,7 @@ def compute_floating_motion(
     float_fmt: str = "%.12e",
     verbose: bool = True,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    f"""Compute rigid-body motion of a floating object from DualSPHysics
+    """Compute rigid-body motion of a floating object from DualSPHysics
     ``Part_*.bi4`` files.
 
     The motion is reconstructed by tracking floating particles belonging to a
@@ -45,19 +45,19 @@ def compute_floating_motion(
         Identifier of the floating body (MkBound) to track.
     savefile : str, optional
         If provided, results are saved to this file in text format
-        (semicolon-separated). Default, `{savefile}`.
+        (semicolon-separated). Default, `None`.
     angle_seq : str, optional
         Euler angle sequence used for 3D rotations (e.g. `"xyz"`, `"zyx"`,
         `"XYZ"`, ...). Passed directly to SciPy. Ignored for 2D simulations.
-        Default, `"{angle_seq}"`.
+        Default, `"xyz"`.
     max_part : int, optional
         Maximum Part index to process (e.g. 100 → up to Part_0100). If negative,
-        all available files are processed. Default, `{max_part}`.
+        all available files are processed. Default, `-1`.
     float_fmt : str, optional
         Floating-point format used when saving to file (e.g. `"%.8f"`). Defualt,
-        `"{float_fmt}"`.
+        `"%.12e"`.
     verbose : bool, optional
-        If True, prints progress and diagnostic information. Defualt, `{verbose}`.
+        If True, prints progress and diagnostic information. Defualt, `True`.
 
     Returns
     -------

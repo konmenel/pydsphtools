@@ -39,7 +39,7 @@ pip install -e ".[dev]"
 ```
 
 # Documentation
-The documentation generated with [pdoc](https://pdoc3.github.io/pdoc/) of the package can be found in the `doc/` directory. Open the file `doc/pydsphtools/index.html` in the browser to read it.
+The documentation generated with [pdoc](https://pdoc3.github.io/pdoc/) of the package can be found in the `doc/` directory or at https://konmenel.github.io/pydsphtools/
 
 To generate the documenation run
 ```bash

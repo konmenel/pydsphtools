@@ -64,7 +64,7 @@ el.replaceWith(d);
     float_fmt: str = &#34;%.12e&#34;,
     verbose: bool = True,
 ) -&gt; tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    f&#34;&#34;&#34;Compute rigid-body motion of a floating object from DualSPHysics
+    &#34;&#34;&#34;Compute rigid-body motion of a floating object from DualSPHysics
     ``Part_*.bi4`` files.
 
     The motion is reconstructed by tracking floating particles belonging to a
@@ -92,19 +92,19 @@ el.replaceWith(d);
         Identifier of the floating body (MkBound) to track.
     savefile : str, optional
         If provided, results are saved to this file in text format
-        (semicolon-separated). Default, `{savefile}`.
+        (semicolon-separated). Default, `None`.
     angle_seq : str, optional
         Euler angle sequence used for 3D rotations (e.g. `&#34;xyz&#34;`, `&#34;zyx&#34;`,
         `&#34;XYZ&#34;`, ...). Passed directly to SciPy. Ignored for 2D simulations.
-        Default, `&#34;{angle_seq}&#34;`.
+        Default, `&#34;xyz&#34;`.
     max_part : int, optional
         Maximum Part index to process (e.g. 100 → up to Part_0100). If negative,
-        all available files are processed. Default, `{max_part}`.
+        all available files are processed. Default, `-1`.
     float_fmt : str, optional
         Floating-point format used when saving to file (e.g. `&#34;%.8f&#34;`). Defualt,
-        `&#34;{float_fmt}&#34;`.
+        `&#34;%.12e&#34;`.
     verbose : bool, optional
-        If True, prints progress and diagnostic information. Defualt, `{verbose}`.
+        If True, prints progress and diagnostic information. Defualt, `True`.
 
     Returns
     -------
@@ -183,7 +183,67 @@ el.replaceWith(d);
 
     return parts, times, coms, angles</code></pre>
 </details>
-<div class="desc"></div>
+<div class="desc"><p>Compute rigid-body motion of a floating object from DualSPHysics
+<code>Part_*.bi4</code> files.</p>
+<p>The motion is reconstructed by tracking floating particles belonging to a
+given <code>mkbound</code> and computing, at each timestep:</p>
+<ul>
+<li>the center of mass (COM)</li>
+<li>the rotation relative to the initial configuration</li>
+</ul>
+<p>The rotation is obtained using a least-squares rigid transformation
+(Kabsch algorithm) based on Singular Value Decomposition (SVD), which
+provides a robust estimate even if particle ordering changes during the
+simulation.</p>
+<p>For 3D simulations, the rotation is returned as Euler angles using the
+specified sequence (via <code>scipy.spatial.transform.Rotation</code>).
+For 2D simulations, only the in-plane rotation (about the y-axis) is
+computed and returned as a single angle (pitch).</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>diroutdata</code></strong> :&ensp;<code>str | Path</code></dt>
+<dd>Path to the directory containing <code>Part_*.bi4</code> and associated files
+(e.g. <code>PartInfo.ibi4</code>, <code>PartFloatInfo.ibi4</code>).</dd>
+<dt><strong><code>mkbound</code></strong> :&ensp;<code>int</code></dt>
+<dd>Identifier of the floating body (MkBound) to track.</dd>
+<dt><strong><code>savefile</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>If provided, results are saved to this file in text format
+(semicolon-separated). Default, <code>None</code>.</dd>
+<dt><strong><code>angle_seq</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Euler angle sequence used for 3D rotations (e.g. <code>"xyz"</code>, <code>"zyx"</code>,
+<code>"XYZ"</code>, &hellip;). Passed directly to SciPy. Ignored for 2D simulations.
+Default, <code>"xyz"</code>.</dd>
+<dt><strong><code>max_part</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Maximum Part index to process (e.g. 100 → up to Part_0100). If negative,
+all available files are processed. Default, <code>-1</code>.</dd>
+<dt><strong><code>float_fmt</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Floating-point format used when saving to file (e.g. <code>"%.8f"</code>). Defualt,
+<code>"%.12e"</code>.</dd>
+<dt><strong><code>verbose</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>If True, prints progress and diagnostic information. Defualt, <code>True</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>parts</code></strong> :&ensp;<code>np.ndarray</code> of <code>shape (N,)</code></dt>
+<dd>Part indices (Cpart values) corresponding to each timestep.</dd>
+<dt><strong><code>times</code></strong> :&ensp;<code>np.ndarray</code> of <code>shape (N,)</code></dt>
+<dd>Simulation time [s] for each timestep.</dd>
+<dt><strong><code>coms</code></strong> :&ensp;<code>np.ndarray</code> of <code>shape (N, 3)</code> or <code>(N, 2)</code></dt>
+<dd>Center of mass coordinates:
+- (x, y, z) in 3D
+- (x, z) in 2D</dd>
+<dt><strong><code>angles</code></strong> :&ensp;<code>np.ndarray</code> of <code>shape (N, 3)</code> or <code>(N, 1)</code></dt>
+<dd>Rotation angles in degrees:
+- (roll, pitch, yaw) in 3D
+- (pitch,) in 2D (rotation about y-axis)</dd>
+</dl>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>Particle correspondence between timesteps is ensured using particle IDs.</li>
+<li>The rotation is computed relative to the initial configuration
+(Part_0000).</li>
+<li>In 2D mode, only the (x, z) plane is considered.</li>
+</ul></div>
 </dd>
 </dl>
 </section>
