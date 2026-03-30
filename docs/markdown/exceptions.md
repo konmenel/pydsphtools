@@ -23,10 +23,10 @@ Classes
     ### Class variables
 
     `binary_name: str`
-    :
+    :   The type of the None singleton.
 
     `path: str`
-    :
+    :   The type of the None singleton.
 
 `InvalidTimeInterval(tmin: float, tmax: float)`
 :   Raised when a variable is not found in the output file.
@@ -46,10 +46,10 @@ Classes
     ### Class variables
 
     `tmax: float`
-    :
+    :   The type of the None singleton.
 
     `tmin: float`
-    :
+    :   The type of the None singleton.
 
 `MissingEnvironmentVariable(var_name: str, *args)`
 :   Raised if an enviroment variable is undefined.
@@ -67,9 +67,9 @@ Classes
     ### Class variables
 
     `var_name: str`
-    :
+    :   The type of the None singleton.
 
-`NotFoundInOutput(missing: str, filename: str = 'Run.out')`
+`NotFoundInOutput(missing: str, *filenames: str)`
 :   Raised when a variable is not found in the output file.
     
     Attributes
@@ -77,8 +77,7 @@ Classes
     missing : str
         What was not found.
     filename : str, optional
-        The name of the output file (either `Run.out` or `Run.csv`). By default,
-         `Run.out`.
+        The name of the output file.
 
     ### Ancestors (in MRO)
 
@@ -87,11 +86,11 @@ Classes
 
     ### Class variables
 
-    `filename: str`
-    :
+    `filenames: list[str]`
+    :   The type of the None singleton.
 
     `missing: str`
-    :
+    :   The type of the None singleton.
 
 `UnsupportedPlatform(platform: str, *args: object)`
 :   Raised if the platform is not supperted by DualSPHysics/
@@ -109,4 +108,4 @@ Classes
     ### Class variables
 
     `platform: str`
-    :
+    :   The type of the None singleton.

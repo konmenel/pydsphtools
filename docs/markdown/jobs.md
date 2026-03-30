@@ -17,13 +17,13 @@ Classes
     ### Class variables
 
     `args: list[str]`
-    :
+    :   The type of the None singleton.
 
     `name: str`
-    :
+    :   The type of the None singleton.
 
     `path: pathlib.Path`
-    :
+    :   The type of the None singleton.
 
     ### Methods
 
@@ -74,10 +74,10 @@ Classes
     ### Class variables
 
     `binaries: list[pydsphtools._jobs.Binary]`
-    :
+    :   The type of the None singleton.
 
     `verbose: bool`
-    :
+    :   The type of the None singleton.
 
     ### Instance variables
 

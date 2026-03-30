@@ -17,7 +17,7 @@ from typing import Union, Tuple, List
 import numpy as np
 from scipy import interpolate
 import pandas as pd
-import lxml.etree as ET
+import xml.etree.ElementTree as ET
 
 from ._main import get_dp, get_var, xml_get_or_create_subelement, run_measuretool
 from .exceptions import InvalidTimeInterval

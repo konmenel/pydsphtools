@@ -13,7 +13,7 @@ from typing import Callable, TypeVar, Union, Tuple, List, Dict, Generator
 
 import numpy as np
 import pandas as pd
-import lxml.etree as ET
+import xml.etree.ElementTree as ET
 
 from .exceptions import (
     NotFoundInOutput,
@@ -921,18 +921,18 @@ def _run_and_capture_measuretool(cmd) -> None:
 
 
 def xml_get_or_create_subelement(parent_elem: ET.Element, child: str):
-    """Get or created a subelement of an "lxml" element.
+    """Get or created a subelement of an "xml" element.
 
     Parameters
     ----------
-    parent_elem : lxml.ET.Element
+    parent_elem : xml.etree.ET.Element
         The parent element
     child : str
         The name of the child element
 
     Returns
     -------
-    lxml.ET.SubElement
+    xml.etree.ET.SubElement
         The child element if it exist or a new child element.
     """
     child_elem = parent_elem.find(child)

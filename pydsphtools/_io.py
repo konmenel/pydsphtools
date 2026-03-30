@@ -448,7 +448,9 @@ class Value:
                 data = stream.read(str_size).decode("utf-8")
             case DataType.short | DataType.ushort:
                 data = int.from_bytes(stream.read(SHORT_SIZE), endianness.name)
-            case DataType.int | DataType.uint | DataType.bool:
+            case DataType.bool:
+                data = bool.from_bytes(stream.read(INT_SIZE), endianness.name)
+            case DataType.int | DataType.uint:
                 data = int.from_bytes(stream.read(INT_SIZE), endianness.name)
             case DataType.llong | DataType.ullong:
                 data = int.from_bytes(stream.read(LONG_SIZE), endianness.name)

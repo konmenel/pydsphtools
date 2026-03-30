@@ -9,3 +9,4 @@ dependencies:
   - pdoc3
   - ruff
   - black
+  - packaging

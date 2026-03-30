@@ -92,7 +92,7 @@ Functions
     InvalidTimeInterval
         If `tmax` is less than or equal to `tmin`.
 
-`write_rzexternal_xml(xmlfile: Union[str, pathlib.Path], velfile_prefix: str, files_init: int, files_count: int, center: Tuple[float, float, float], width: float, *, depth: float = 0, swl: float = 0, smooth: int = 0, movedata: Tuple[float, float, float] = (0, 0, 0), usevelz: bool = False, psi: float = 0.9, beta: float = 1, drift_corr: float = 0, overwrite: bool = False) ‑> None`
+`write_rzexternal_xml(xmlfile: str | pathlib.Path, velfile_prefix: str, files_init: int, files_count: int, center: Tuple[float, float, float], width: float, *, depth: float = 0, swl: float = 0, smooth: int = 0, movedata: Tuple[float, float, float] = (0, 0, 0), usevelz: bool = False, psi: float = 0.9, beta: float = 1, drift_corr: float = 0, overwrite: bool = False) ‑> None`
 :   Modifies the xml file to add the nessesary fields (in "special") for
     a relaxation zone simulation.
     

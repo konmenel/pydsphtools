@@ -16,7 +16,6 @@ from typing import Tuple, Iterable
 import numpy as np
 from scipy import interpolate
 import pandas as pd
-# import lxml.etree as ET
 import xml.etree.ElementTree as ET
 
 from pydsphtools._main import (

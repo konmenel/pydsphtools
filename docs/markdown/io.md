@@ -37,7 +37,7 @@ Classes
         
         Returns
         -------
-        DataType
+        Array
             The new object.
 
     `from_stream(byte_stream: io.BytesIO, endianness: Endianness) ‑> pydsphtools._io.Array`
@@ -52,7 +52,7 @@ Classes
         
         Returns
         -------
-        DataType
+        Array
             The new object.
 
     ### Instance variables
@@ -75,31 +75,30 @@ Classes
     `name: str`
     :
 
+    ### Methods
+
+    `pretty_print(self, indent=0, indent_str='  ') ‑> str`
+    :
+
 `Bi4File(filepath: str | os.PathLike, load_arrays: bool = False)`
 :   
 
-    ### Class variables
+    ### Ancestors (in MRO)
+
+    * pydsphtools._io.Item
+
+    ### Instance variables
 
     `filepath: str | os.PathLike`
     :
 
-    ### Instance variables
-
-    `filepeth: str | os.PathLike`
-    :
-
-    `main_item: pydsphtools._io.Item`
+    `main_item: Item`
     :
 
     `title: str`
     :
 
-    ### Methods
-
-    `get_value_by_name(self, name: str) ‑> pydsphtools._io.Value | None`
-    :
-
-`DataType(*args, **kwds)`
+`DataType(*values)`
 :   Enum that handles the data type
 
     ### Ancestors (in MRO)
@@ -109,55 +108,55 @@ Classes
     ### Class variables
 
     `bool`
-    :
+    :   The type of the None singleton.
 
     `char`
-    :
+    :   The type of the None singleton.
 
     `double`
-    :
+    :   The type of the None singleton.
 
     `double3`
-    :
+    :   The type of the None singleton.
 
     `float`
-    :
+    :   The type of the None singleton.
 
     `float3`
-    :
+    :   The type of the None singleton.
 
     `int`
-    :
+    :   The type of the None singleton.
 
     `int3`
-    :
+    :   The type of the None singleton.
 
     `llong`
-    :
+    :   The type of the None singleton.
 
     `null`
-    :
+    :   The type of the None singleton.
 
     `short`
-    :
+    :   The type of the None singleton.
 
     `text`
-    :
+    :   The type of the None singleton.
 
     `uchar`
-    :
+    :   The type of the None singleton.
 
     `uint`
-    :
+    :   The type of the None singleton.
 
     `uint3`
-    :
+    :   The type of the None singleton.
 
     `ullong`
-    :
+    :   The type of the None singleton.
 
     `ushort`
-    :
+    :   The type of the None singleton.
 
     ### Static methods
 
@@ -198,7 +197,7 @@ Classes
             - "float", "double" => `float`\
             - "int3", "uint3", "float3", "double3" => tuple\
 
-`Endianness(*args, **kwds)`
+`Endianness(*values)`
 :   Enum that represents the endianness.
 
     ### Ancestors (in MRO)
@@ -208,10 +207,10 @@ Classes
     ### Class variables
 
     `big`
-    :
+    :   The type of the None singleton.
 
     `little`
-    :
+    :   The type of the None singleton.
 
     ### Static methods
 
@@ -230,6 +229,10 @@ Classes
 
 `Item(item_size: int, name: str, hide: bool, hide_values: bool, fmt_float: str, fmt_double: str, num_arrays: int, num_items: int, size_values: int, values: list[Value], items: list[Item], arrays: list[Array])`
 :   
+
+    ### Descendants
+
+    * pydsphtools._io.Bi4File
 
     ### Static methods
 
@@ -279,6 +282,12 @@ Classes
 
     ### Methods
 
+    `get_array_by_name(self, name: str) ‑> pydsphtools._io.Array | None`
+    :
+
+    `get_item_by_name(self, name: str) ‑> pydsphtools._io.Item | None`
+    :
+
     `get_value_by_name(self, name: str) ‑> pydsphtools._io.Value | None`
     :
 
@@ -293,7 +302,7 @@ Classes
     `from_bytes(bytes: bytes, endianness: Endianness) ‑> pydsphtools._io.Value`
     :
 
-    `from_stream(stream: io.BytesIO, endianness: Endianness) ‑> tuple[str, None | bool | str | int | float | tuple[float, float, float]]`
+    `from_stream(stream: io.BytesIO, endianness: Endianness) ‑> pydsphtools._io.Value`
     :
 
     ### Instance variables
@@ -301,7 +310,7 @@ Classes
     `name: str`
     :
 
-    `value: None | bool | str | int | float | tuple[float, float, float] | tuple[int, int, int]`
+    `value: bool | str | int | float | tuple[float, float, float] | tuple[int, int, int] | None`
     :
 
     `value_type: pydsphtools._io.DataType`

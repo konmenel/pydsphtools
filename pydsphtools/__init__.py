@@ -19,7 +19,7 @@ Year: 2023<br>
 """
 
 from ._version import __version__
-from . import waves, exceptions, stats, mlpistons, relaxzones, io, jobs
+from . import waves, exceptions, stats, mlpistons, relaxzones, io, jobs, postprocess
 from ._main import __all__ as _all_in_main
 
 # flake8: noqa: F403
@@ -35,4 +35,5 @@ __all__ = [
     "relaxzones",
     "io",
     "jobs",
+    "postprocess",
 ]

@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
+<title>pydsphtools.postprocess API documentation</title>
+<meta name="description" content="A module post-processing tools.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });</script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pydsphtools.postprocess</code></h1>
+</header>
+<section id="section-intro">
+<p>A module post-processing tools.</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="pydsphtools.postprocess.compute_floating_motion"><code class="name flex">
+<span>def <span class="ident">compute_floating_motion</span></span>(<span>diroutdata: str | pathlib.Path,<br>mkbound: int,<br>savefile: str = None,<br>angle_seq: str = 'xyz',<br>max_part: int = -1,<br>float_fmt: str = '%.12e',<br>verbose: bool = True) ‑> tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compute_floating_motion(
+    diroutdata: str | Path,
+    mkbound: int,
+    savefile: str = None,
+    angle_seq: str = &#34;xyz&#34;,
+    max_part: int = -1,
+    float_fmt: str = &#34;%.12e&#34;,
+    verbose: bool = True,
+) -&gt; tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    f&#34;&#34;&#34;Compute rigid-body motion of a floating object from DualSPHysics
+    ``Part_*.bi4`` files.
+
+    The motion is reconstructed by tracking floating particles belonging to a
+    given ``mkbound`` and computing, at each timestep:
+
+    - the center of mass (COM)
+    - the rotation relative to the initial configuration
+
+    The rotation is obtained using a least-squares rigid transformation
+    (Kabsch algorithm) based on Singular Value Decomposition (SVD), which
+    provides a robust estimate even if particle ordering changes during the
+    simulation.
+
+    For 3D simulations, the rotation is returned as Euler angles using the
+    specified sequence (via `scipy.spatial.transform.Rotation`).
+    For 2D simulations, only the in-plane rotation (about the y-axis) is
+    computed and returned as a single angle (pitch).
+
+    Parameters
+    ----------
+    diroutdata : str | Path
+        Path to the directory containing `Part_*.bi4` and associated files
+        (e.g. `PartInfo.ibi4`, `PartFloatInfo.ibi4`).
+    mkbound : int
+        Identifier of the floating body (MkBound) to track.
+    savefile : str, optional
+        If provided, results are saved to this file in text format
+        (semicolon-separated). Default, `{savefile}`.
+    angle_seq : str, optional
+        Euler angle sequence used for 3D rotations (e.g. `&#34;xyz&#34;`, `&#34;zyx&#34;`,
+        `&#34;XYZ&#34;`, ...). Passed directly to SciPy. Ignored for 2D simulations.
+        Default, `&#34;{angle_seq}&#34;`.
+    max_part : int, optional
+        Maximum Part index to process (e.g. 100 → up to Part_0100). If negative,
+        all available files are processed. Default, `{max_part}`.
+    float_fmt : str, optional
+        Floating-point format used when saving to file (e.g. `&#34;%.8f&#34;`). Defualt,
+        `&#34;{float_fmt}&#34;`.
+    verbose : bool, optional
+        If True, prints progress and diagnostic information. Defualt, `{verbose}`.
+
+    Returns
+    -------
+    parts : np.ndarray of shape (N,)
+        Part indices (Cpart values) corresponding to each timestep.
+    times : np.ndarray of shape (N,)
+        Simulation time [s] for each timestep.
+    coms : np.ndarray of shape (N, 3) or (N, 2)
+        Center of mass coordinates:
+        - (x, y, z) in 3D
+        - (x, z) in 2D
+    angles : np.ndarray of shape (N, 3) or (N, 1)
+        Rotation angles in degrees:
+        - (roll, pitch, yaw) in 3D
+        - (pitch,) in 2D (rotation about y-axis)
+
+    Notes
+    -----
+    - Particle correspondence between timesteps is ensured using particle IDs.
+    - The rotation is computed relative to the initial configuration
+      (Part_0000).
+    - In 2D mode, only the (x, z) plane is considered.
+    &#34;&#34;&#34;
+    diroutdata = Path(diroutdata)
+    sim2d = _is_sim2d(diroutdata)
+    parts, times, coms, angles = _compute_float_motion(
+        diroutdata, mkbound, sim2d, angle_seq, max_part, verbose
+    )
+
+    if sim2d:
+        coms = coms[:, [0, 2]]
+        angles = angles[:, [1]]
+
+    if savefile:
+        if sim2d:
+            columns = [
+                &#34;part&#34;,
+                &#34;time [s]&#34;,
+                &#34;center.x [m]&#34;,
+                &#34;center.z [m]&#34;,
+                &#34;pitch [deg]&#34;,
+            ]
+            header = f&#34;# MkBound={mkbound}.&#34;
+        else:
+            columns = [
+                &#34;part&#34;,
+                &#34;time [s]&#34;,
+                &#34;center.x [m]&#34;,
+                &#34;center.y [m]&#34;,
+                &#34;center.z [m]&#34;,
+                &#34;roll [deg]&#34;,
+                &#34;pitch [deg]&#34;,
+                &#34;yaw [deg]&#34;,
+            ]
+            header = f&#34;# MkBound={mkbound}. Euler angles sequence = &#39;{angle_seq}&#39; (SciPy)\n&#34;
+
+        print(sim2d, columns)
+        header += &#34;;&#34;.join(columns)
+        out = np.concatenate(
+            (
+                parts.reshape((1, len(parts))).T,
+                times.reshape((1, len(times))).T,
+                coms,
+                angles,
+            ),
+            axis=1,
+        )
+        np.savetxt(
+            savefile,
+            out,
+            fmt=[&#34;%d&#34;] + [float_fmt] * (len(columns) - 1),
+            delimiter=&#34;;&#34;,
+            header=header,
+            comments=&#34;&#34;,
+        )
+
+    return parts, times, coms, angles</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pydsphtools" href="index.html">pydsphtools</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="pydsphtools.postprocess.compute_floating_motion" href="#pydsphtools.postprocess.compute_floating_motion">compute_floating_motion</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+</footer>
+</body>
+</html>
