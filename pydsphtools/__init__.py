@@ -20,6 +20,7 @@ SOFTWARE.
 
 Author: Constantinos Menelaou<br>
 Github: https://github.com/konmenel <br>
+Repository: https://github.com/konmenel/pydsphtools <br>
 Year: 2023<br>
 """
 
