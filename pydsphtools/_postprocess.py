@@ -123,7 +123,6 @@ def compute_floating_motion(
                 f"# MkBound={mkbound}. Euler angles sequence = '{angle_seq}' (SciPy)\n"
             )
 
-        print(sim2d, columns)
         header += ";".join(columns)
         out = np.concatenate(
             (
