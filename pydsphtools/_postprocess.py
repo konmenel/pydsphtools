@@ -171,7 +171,6 @@ def _compute_float_motion(
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     legacy = _is_legacy_version(diroutdata)
     beginp, npfloat = _load_float_info(diroutdata, mkbound, legacy, verbose)
-
     partfiles = get_partfiles(diroutdata)
     nparts = len(partfiles)
 
@@ -192,9 +191,18 @@ def _compute_float_motion(
     part_number = part0.get_value_by_name("Cpart").value
     timestep = part0.get_value_by_name("TimeStep").value
 
-    # Need to sort idp
     idp0 = part0.get_array_by_name("Idp")
-    pos0 = part0.get_array_by_name("Pos")
+    if not idp0:
+        raise Exception(f"Array 'Idp' for found in '{part0.filepath}'.")
+
+    pos_array_name = "Pos"
+    pos0 = part0.get_array_by_name(pos_array_name)
+    if not pos0:
+        pos_array_name = "Posd"
+        pos0 = part0.get_array_by_name(pos_array_name)
+    
+    if not pos0:
+        raise Exception(f"Array 'Pos' or 'Posd' for found in '{part0.filepath}'.")
 
     idx_sort = np.argsort(idp0.data)
     idx_start = beginp
@@ -225,7 +233,7 @@ def _compute_float_motion(
         timestep = partn.get_value_by_name("TimeStep").value
 
         idpn = partn.get_array_by_name("Idp")
-        posn = partn.get_array_by_name("Pos")
+        posn = partn.get_array_by_name(pos_array_name)
 
         sort_idx = np.argsort(idpn)
         idpn_sorted = idpn[sort_idx]
