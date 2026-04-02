@@ -59,7 +59,7 @@ Functions
     where \( k \) is the wavenumber, \( h \) is the depth and \( \omega \)
     is the angular frequency.
 
-`generate_ricker_signal(focus_loc: float, depth: float, amplitude: float, peak_frequency: float, wv_type: str, *, filepath: str = None, hinge: float | None = None, angle_units: str = 'rad', nwaves: int = 5000) ‑> Tuple[numpy.ndarray, numpy.ndarray]`
+`generate_ricker_signal(focus_loc: float, depth: float, amplitude: float, peak_frequency: float, wv_type: str, *, filepath: str = None, hinge: Optional[float] = None, angle_units: str = 'rad', nwaves: int = 5000) ‑> Tuple[numpy.ndarray, numpy.ndarray]`
 :   Generates the wavemaker signal from a ricker spectrum to be used in
     a DualSPHysics simulation. The signal (numpy array) is returned and
     saved to a file.
@@ -187,7 +187,7 @@ Functions
     float or numpy array
         The shape of the wavelet.
 
-`wavemaker_transfer_func(wavenumber: float | numpy.ndarray, depth: float, wv_type: str = 'flap', hinge: float | None = None) ‑> float | numpy.ndarray`
+`wavemaker_transfer_func(wavenumber: float | numpy.ndarray, depth: float, wv_type: str = 'flap', hinge: Optional[float] = None) ‑> float | numpy.ndarray`
 :   For a given wavenumber and depth calculates the stroke to wave height
     ratio for either a piston or flap type wavemaker.
     

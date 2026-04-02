@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-<meta name="generator" content="pdoc3 0.11.6">
+<meta name="generator" content="pdoc3 0.11.1">
 <title>pydsphtools.io API documentation</title>
 <meta name="description" content="A module which handles input and output operation for DualSPHysics files.">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
 <style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
 <script type="text/x-mathjax-config">MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });</script>
@@ -18,17 +18,6 @@
 <script>window.addEventListener('DOMContentLoaded', () => {
 hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
 hljs.highlightAll();
-/* Collapse source docstrings */
-setTimeout(() => {
-[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
-.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
-.forEach(el => {
-let d = document.createElement('details');
-d.classList.add('hljs-string');
-d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
-el.replaceWith(d);
-});
-}, 100);
 })</script>
 </head>
 <body>
@@ -51,9 +40,25 @@ el.replaceWith(d);
 <dl>
 <dt id="pydsphtools.io.Array"><code class="flex name class">
 <span>class <span class="ident">Array</span></span>
-<span>(</span><span>name: str,<br>hide: bool,<br>array_type: <a title="pydsphtools.io.DataType" href="#pydsphtools.io.DataType">DataType</a>,<br>count: int,<br>array_size: int,<br>data: np.ndarray)</span>
+<span>(</span><span>name: str, hide: bool, array_type: <a title="pydsphtools.io.DataType" href="#pydsphtools.io.DataType">DataType</a>, count: int, array_size: int, data: np.ndarray)</span>
 </code></dt>
 <dd>
+<div class="desc"><p>Class that represents the a bi4 array.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>Name of the array.</dd>
+<dt><strong><code>hide</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Wheither or not the array is hidden.</dd>
+<dt><strong><code>array_type</code></strong> :&ensp;<code><a title="pydsphtools.io.DataType" href="#pydsphtools.io.DataType">DataType</a></code></dt>
+<dd>The type of the array data.</dd>
+<dt><strong><code>count</code></strong> :&ensp;<code>int</code></dt>
+<dd>The number of elements in the array.</dd>
+<dt><strong><code>array_size</code></strong> :&ensp;<code>int</code></dt>
+<dd>The size of the array in bytes.</dd>
+<dt><strong><code>data</code></strong> :&ensp;<code>np.ndarray</code></dt>
+<dd>The data of the array.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -266,26 +271,10 @@ el.replaceWith(d);
                     &#34; because it is not implemented.&#34;
                 )</code></pre>
 </details>
-<div class="desc"><p>Class that represents the a bi4 array.</p>
-<h2 id="attributes">Attributes</h2>
-<dl>
-<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
-<dd>Name of the array.</dd>
-<dt><strong><code>hide</code></strong> :&ensp;<code>bool</code></dt>
-<dd>Wheither or not the array is hidden.</dd>
-<dt><strong><code>array_type</code></strong> :&ensp;<code><a title="pydsphtools.io.DataType" href="#pydsphtools.io.DataType">DataType</a></code></dt>
-<dd>The type of the array data.</dd>
-<dt><strong><code>count</code></strong> :&ensp;<code>int</code></dt>
-<dd>The number of elements in the array.</dd>
-<dt><strong><code>array_size</code></strong> :&ensp;<code>int</code></dt>
-<dd>The size of the array in bytes.</dd>
-<dt><strong><code>data</code></strong> :&ensp;<code>np.ndarray</code></dt>
-<dd>The data of the array.</dd>
-</dl></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="pydsphtools.io.Array.from_bytes"><code class="name flex">
-<span>def <span class="ident">from_bytes</span></span>(<span>bytes: bytes,<br>endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.Array</span>
+<span>def <span class="ident">from_bytes</span></span>(<span>bytes: bytes, endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.Array</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Constructor from bytes.</p>
@@ -303,7 +292,7 @@ el.replaceWith(d);
 </dl></div>
 </dd>
 <dt id="pydsphtools.io.Array.from_stream"><code class="name flex">
-<span>def <span class="ident">from_stream</span></span>(<span>byte_stream: io.BytesIO,<br>endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.Array</span>
+<span>def <span class="ident">from_stream</span></span>(<span>byte_stream: io.BytesIO, endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.Array</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Constructor from bytes.</p>
@@ -325,6 +314,7 @@ el.replaceWith(d);
 <dl>
 <dt id="pydsphtools.io.Array.array_size"><code class="name">prop <span class="ident">array_size</span> : int</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -333,10 +323,10 @@ el.replaceWith(d);
 def array_size(self) -&gt; int:
     return self._array_size</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Array.array_type"><code class="name">prop <span class="ident">array_type</span> : pydsphtools._io.DataType</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -345,10 +335,10 @@ def array_size(self) -&gt; int:
 def array_type(self) -&gt; DataType:
     return self._array_type</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Array.count"><code class="name">prop <span class="ident">count</span> : int</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -357,10 +347,10 @@ def array_type(self) -&gt; DataType:
 def count(self) -&gt; int:
     return self._count</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Array.data"><code class="name">prop <span class="ident">data</span> : numpy.ndarray</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -369,10 +359,10 @@ def count(self) -&gt; int:
 def data(self) -&gt; np.ndarray:
     return self._data</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Array.hide"><code class="name">prop <span class="ident">hide</span> : bool</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -381,10 +371,10 @@ def data(self) -&gt; np.ndarray:
 def hide(self) -&gt; bool:
     return self._hide</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Array.name"><code class="name">prop <span class="ident">name</span> : str</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -393,7 +383,6 @@ def hide(self) -&gt; bool:
 def name(self) -&gt; str:
     return self._name</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -403,37 +392,6 @@ def name(self) -&gt; str:
 ') ‑> str</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def pretty_print(self, indent=0, indent_str=&#34;  &#34;) -&gt; str:
-    ret = (
-        f&#34;{indent_str * indent}Array(\n&#34;
-        f&#34;{indent_str * (indent + 1)}name = {self._name},\n&#34;
-        f&#34;{indent_str * (indent + 1)}hide = {self._hide},\n&#34;
-        f&#34;{indent_str * (indent + 1)}array_type = {self._array_type},\n&#34;
-        f&#34;{indent_str * (indent + 1)}count = {self._count},\n&#34;
-        f&#34;{indent_str * (indent + 1)}array_size = {self._array_size},\n&#34;
-        f&#34;{indent_str * (indent + 1)}data = [\n&#34;
-    )
-
-    if self._count &lt;= 10:
-        for el in self._data:
-            ret += f&#34;{indent_str * (indent + 2)}{el},\n&#34;
-        ret += f&#34;{indent_str * (indent + 1)}]\n&#34;
-    else:
-        for el in self._data[:5]:
-            ret += f&#34;{indent_str * (indent + 2)}{el},\n&#34;
-
-        ret += f&#34;{indent_str * (indent + 2)}...\n&#34;
-
-        for el in self._data[-5:]:
-            ret += f&#34;{indent_str * (indent + 2)}{el},\n&#34;
-        ret += f&#34;{indent_str * (indent + 1)}]\n&#34;
-    ret += f&#34;{indent_str * indent})&#34;
-    return ret</code></pre>
-</details>
 <div class="desc"></div>
 </dd>
 </dl>
@@ -443,6 +401,7 @@ def name(self) -&gt; str:
 <span>(</span><span>filepath: str | os.PathLike, load_arrays: bool = False)</span>
 </code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -494,7 +453,6 @@ def name(self) -&gt; str:
     def __repr__(self) -&gt; str:
         return str(self)</code></pre>
 </details>
-<div class="desc"></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>pydsphtools._io.Item</li>
@@ -503,6 +461,7 @@ def name(self) -&gt; str:
 <dl>
 <dt id="pydsphtools.io.Bi4File.filepath"><code class="name">prop <span class="ident">filepath</span> : str | os.PathLike</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -511,10 +470,10 @@ def name(self) -&gt; str:
 def filepath(self) -&gt; str | os.PathLike:
     return self._filepath</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Bi4File.main_item"><code class="name">prop <span class="ident">main_item</span> : <a title="pydsphtools.io.Item" href="#pydsphtools.io.Item">Item</a></code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -523,10 +482,10 @@ def filepath(self) -&gt; str | os.PathLike:
 def main_item(self) -&gt; Item:
     return self._main_item</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Bi4File.title"><code class="name">prop <span class="ident">title</span> : str</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -535,7 +494,6 @@ def main_item(self) -&gt; Item:
 def title(self) -&gt; str:
     return self._title</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 </dl>
 </dd>
@@ -544,6 +502,7 @@ def title(self) -&gt; str:
 <span>(</span><span>*values)</span>
 </code></dt>
 <dd>
+<div class="desc"><p>Enum that handles the data type</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -629,7 +588,6 @@ def title(self) -&gt; str:
     def is_vector(self) -&gt; bool:
         return self.value in range(20, 24)</code></pre>
 </details>
-<div class="desc"><p>Enum that handles the data type</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>enum.Enum</li>
@@ -708,7 +666,7 @@ def title(self) -&gt; str:
 <h3>Static methods</h3>
 <dl>
 <dt id="pydsphtools.io.DataType.from_bytes"><code class="name flex">
-<span>def <span class="ident">from_bytes</span></span>(<span>bytes: bytes,<br>endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.DataType</span>
+<span>def <span class="ident">from_bytes</span></span>(<span>bytes: bytes, endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.DataType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Constructor from bytes.</p>
@@ -732,65 +690,18 @@ def title(self) -&gt; str:
 <span>def <span class="ident">is_scalar</span></span>(<span>self) ‑> bool</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def is_scalar(self) -&gt; bool:
-    return self.value in range(5, 13)</code></pre>
-</details>
 <div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.DataType.is_vector"><code class="name flex">
 <span>def <span class="ident">is_vector</span></span>(<span>self) ‑> bool</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def is_vector(self) -&gt; bool:
-    return self.value in range(20, 24)</code></pre>
-</details>
 <div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.DataType.to_python_type"><code class="name flex">
 <span>def <span class="ident">to_python_type</span></span>(<span>self) ‑> type</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_python_type(self) -&gt; type:
-    &#34;&#34;&#34;Converts the enum value to a python type
-
-    Returns
-    -------
-    type
-        The follow mapping is used:\\
-        - &#34;null&#34; =&gt; `None`\\
-        - &#34;text&#34;, &#34;char&#34;, &#34;uchar&#34; =&gt; `str`\\
-        - &#34;bool&#34; =&gt; `bool`\\
-        - &#34;short&#34;, &#34;ushort&#34;, &#34;int&#34;, &#34;uint&#34;, &#34;long&#34; &#34;ulong&#34; =&gt; `int`\\
-        - &#34;float&#34;, &#34;double&#34; =&gt; `float`\\
-        - &#34;int3&#34;, &#34;uint3&#34;, &#34;float3&#34;, &#34;double3&#34; =&gt; tuple\\
-    &#34;&#34;&#34;
-    if self == DataType.null:
-        return type(None)
-    elif self == DataType.bool:
-        return bool
-    elif self.value in (1, 3, 4):
-        return str
-    elif self.value in range(5, 11):
-        return int
-    elif self.value in (11, 12):
-        return float
-    elif self.value in range(20, 24):
-        return tuple
-    else:
-        raise ValueError(f&#34;Unsupported DataType: {self}&#34;)</code></pre>
-</details>
 <div class="desc"><p>Converts the enum value to a python type</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -811,6 +722,7 @@ def title(self) -&gt; str:
 <span>(</span><span>*values)</span>
 </code></dt>
 <dd>
+<div class="desc"><p>Enum that represents the endianness.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -837,7 +749,6 @@ def title(self) -&gt; str:
         &#34;&#34;&#34;
         return cls(int.from_bytes(bytes))</code></pre>
 </details>
-<div class="desc"><p>Enum that represents the endianness.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>enum.Enum</li>
@@ -875,9 +786,10 @@ def title(self) -&gt; str:
 </dd>
 <dt id="pydsphtools.io.Item"><code class="flex name class">
 <span>class <span class="ident">Item</span></span>
-<span>(</span><span>item_size: int,<br>name: str,<br>hide: bool,<br>hide_values: bool,<br>fmt_float: str,<br>fmt_double: str,<br>num_arrays: int,<br>num_items: int,<br>size_values: int,<br>values: list[<a title="pydsphtools.io.Value" href="#pydsphtools.io.Value">Value</a>],<br>items: list[<a title="pydsphtools.io.Item" href="#pydsphtools.io.Item">Item</a>],<br>arrays: list[<a title="pydsphtools.io.Array" href="#pydsphtools.io.Array">Array</a>])</span>
+<span>(</span><span>item_size: int, name: str, hide: bool, hide_values: bool, fmt_float: str, fmt_double: str, num_arrays: int, num_items: int, size_values: int, values: list[<a title="pydsphtools.io.Value" href="#pydsphtools.io.Value">Value</a>], items: list[<a title="pydsphtools.io.Item" href="#pydsphtools.io.Item">Item</a>], arrays: list[<a title="pydsphtools.io.Array" href="#pydsphtools.io.Array">Array</a>])</span>
 </code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1141,7 +1053,6 @@ def title(self) -&gt; str:
                 ret += f&#34;{value}\n&#34;
         return ret</code></pre>
 </details>
-<div class="desc"></div>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li>pydsphtools._io.Bi4File</li>
@@ -1149,13 +1060,13 @@ def title(self) -&gt; str:
 <h3>Static methods</h3>
 <dl>
 <dt id="pydsphtools.io.Item.from_bytes"><code class="name flex">
-<span>def <span class="ident">from_bytes</span></span>(<span>bytes: bytes,<br>endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.Item</span>
+<span>def <span class="ident">from_bytes</span></span>(<span>bytes: bytes, endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.Item</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Item.from_stream"><code class="name flex">
-<span>def <span class="ident">from_stream</span></span>(<span>bytes_stream: io.BytesIO,<br>endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.Item</span>
+<span>def <span class="ident">from_stream</span></span>(<span>bytes_stream: io.BytesIO, endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.Item</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1165,6 +1076,7 @@ def title(self) -&gt; str:
 <dl>
 <dt id="pydsphtools.io.Item.arrays"><code class="name">prop <span class="ident">arrays</span> : list[pydsphtools._io.Array]</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1173,10 +1085,10 @@ def title(self) -&gt; str:
 def arrays(self) -&gt; list[Array]:
     return self._arrays</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Item.fmt_double"><code class="name">prop <span class="ident">fmt_double</span> : str</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1185,10 +1097,10 @@ def arrays(self) -&gt; list[Array]:
 def fmt_double(self) -&gt; str:
     return self._fmt_double</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Item.fmt_float"><code class="name">prop <span class="ident">fmt_float</span> : str</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1197,10 +1109,10 @@ def fmt_double(self) -&gt; str:
 def fmt_float(self) -&gt; str:
     return self._fmt_float</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Item.hide"><code class="name">prop <span class="ident">hide</span> : bool</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1209,10 +1121,10 @@ def fmt_float(self) -&gt; str:
 def hide(self) -&gt; bool:
     return self._hide</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Item.hide_values"><code class="name">prop <span class="ident">hide_values</span> : bool</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1221,10 +1133,10 @@ def hide(self) -&gt; bool:
 def hide_values(self) -&gt; bool:
     return self._hide_values</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Item.item_size"><code class="name">prop <span class="ident">item_size</span> : int</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1233,10 +1145,10 @@ def hide_values(self) -&gt; bool:
 def item_size(self) -&gt; int:
     return self._item_size</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Item.items"><code class="name">prop <span class="ident">items</span> : list[pydsphtools._io.Item]</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1245,10 +1157,10 @@ def item_size(self) -&gt; int:
 def items(self) -&gt; list[Item]:
     return self._items</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Item.name"><code class="name">prop <span class="ident">name</span> : str</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1257,10 +1169,10 @@ def items(self) -&gt; list[Item]:
 def name(self) -&gt; str:
     return self._name</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Item.num_arrays"><code class="name">prop <span class="ident">num_arrays</span> : int</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1269,10 +1181,10 @@ def name(self) -&gt; str:
 def num_arrays(self) -&gt; int:
     return self._num_arrays</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Item.num_items"><code class="name">prop <span class="ident">num_items</span> : int</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1281,10 +1193,10 @@ def num_arrays(self) -&gt; int:
 def num_items(self) -&gt; int:
     return self._num_items</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Item.size_values"><code class="name">prop <span class="ident">size_values</span> : int</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1293,10 +1205,10 @@ def num_items(self) -&gt; int:
 def size_values(self) -&gt; int:
     return self._size_values</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Item.values"><code class="name">prop <span class="ident">values</span> : list[pydsphtools._io.Value]</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1305,75 +1217,26 @@ def size_values(self) -&gt; int:
 def values(self) -&gt; list[Value]:
     return self._values</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 </dl>
 <h3>Methods</h3>
 <dl>
 <dt id="pydsphtools.io.Item.get_array_by_name"><code class="name flex">
-<span>def <span class="ident">get_array_by_name</span></span>(<span>self, name: str) ‑> pydsphtools._io.Array | None</span>
+<span>def <span class="ident">get_array_by_name</span></span>(<span>self, name: str) ‑> Optional[pydsphtools._io.Array]</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_array_by_name(self, name: str) -&gt; Array | None:
-    for array in self.arrays:
-        if array.name == name:
-            return array
-
-    for item in self.items:
-        array = item.get_array_by_name(name)
-        if array is not None:
-            return array
-
-    return None</code></pre>
-</details>
 <div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Item.get_item_by_name"><code class="name flex">
-<span>def <span class="ident">get_item_by_name</span></span>(<span>self, name: str) ‑> pydsphtools._io.Item | None</span>
+<span>def <span class="ident">get_item_by_name</span></span>(<span>self, name: str) ‑> Optional[pydsphtools._io.Item]</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_item_by_name(self, name: str) -&gt; Item | None:
-    for item in self.items:
-        if item.name == name:
-            return item
-
-    for item in self.items:
-        array = item.get_item_by_name(name)
-        if array is not None:
-            return array
-
-    return None</code></pre>
-</details>
 <div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Item.get_value_by_name"><code class="name flex">
-<span>def <span class="ident">get_value_by_name</span></span>(<span>self, name: str) ‑> pydsphtools._io.Value | None</span>
+<span>def <span class="ident">get_value_by_name</span></span>(<span>self, name: str) ‑> Optional[pydsphtools._io.Value]</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_value_by_name(self, name: str) -&gt; Value | None:
-    for value in self.values:
-        if value.name == name:
-            return value
-
-    for item in self.items:
-        value = item.get_value_by_name(name)
-        if value is not None:
-            return value
-
-    return None</code></pre>
-</details>
 <div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Item.pretty_print"><code class="name flex">
@@ -1381,55 +1244,16 @@ def values(self) -&gt; list[Value]:
 ') ‑> str</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def pretty_print(self, indent=0, indent_str=&#34;  &#34;) -&gt; str:
-    ret = (
-        f&#34;{indent_str * indent}Item(\n&#34;
-        f&#34;{indent_str * (indent + 1)}item_size = {self._item_size},\n&#34;
-        f&#34;{indent_str * (indent + 1)}name = {self._name},\n&#34;
-        f&#34;{indent_str * (indent + 1)}hide = {self._hide},\n&#34;
-        f&#34;{indent_str * (indent + 1)}hide_values = {self._hide_values},\n&#34;
-        f&#34;{indent_str * (indent + 1)}fmt_float = {self._fmt_float},\n&#34;
-        f&#34;{indent_str * (indent + 1)}fmt_double = {self._fmt_double},\n&#34;
-        f&#34;{indent_str * (indent + 1)}num_arrays = {self._num_arrays},\n&#34;
-        f&#34;{indent_str * (indent + 1)}num_items = {self._num_items},\n&#34;
-        f&#34;{indent_str * (indent + 1)}size_values = {self._size_values},\n&#34;
-        f&#34;{indent_str * (indent + 1)}values = [\n&#34;
-    )
-    for value in self._values:
-        ret += f&#34;{value.pretty_print(indent=indent + 2)}\n&#34;
-    ret += f&#34;{indent_str * (indent + 1)}]\n&#34;
-
-    if self._num_items:
-        ret += f&#34;{indent_str * (indent + 1)}items = [\n&#34;
-        for item in self._items:
-            ret += f&#34;{item.pretty_print(indent + 2)},\n&#34;
-        ret += f&#34;{indent_str * (indent + 1)}]\n&#34;
-    else:
-        ret += f&#34;{indent_str * (indent + 1)}items = []\n&#34;
-
-    if self._num_arrays:
-        ret += f&#34;{indent_str * (indent + 1)}arrays = [\n&#34;
-        for array in self._arrays:
-            ret += f&#34;{array.pretty_print(indent + 2)},\n&#34;
-        ret += f&#34;{indent_str * (indent + 1)}]\n&#34;
-    else:
-        ret += f&#34;{indent_str * (indent + 1)}arrays = []\n&#34;
-    ret += f&#34;{indent_str * indent})&#34;
-    return ret</code></pre>
-</details>
 <div class="desc"></div>
 </dd>
 </dl>
 </dd>
 <dt id="pydsphtools.io.Value"><code class="flex name class">
 <span>class <span class="ident">Value</span></span>
-<span>(</span><span>name: str,<br>value_type: <a title="pydsphtools.io.DataType" href="#pydsphtools.io.DataType">DataType</a>,<br>value: None | bool | str | int | float | tuple[float, float, float] | tuple[int, int, int])</span>
+<span>(</span><span>name: str, value_type: <a title="pydsphtools.io.DataType" href="#pydsphtools.io.DataType">DataType</a>, value: None | bool | str | int | float | tuple[float, float, float] | tuple[int, int, int])</span>
 </code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1548,17 +1372,16 @@ def values(self) -&gt; list[Value]:
     def __str__(self) -&gt; str:
         return f&#34;{self.name}: {self.value}&#34;</code></pre>
 </details>
-<div class="desc"></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="pydsphtools.io.Value.from_bytes"><code class="name flex">
-<span>def <span class="ident">from_bytes</span></span>(<span>bytes: bytes,<br>endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.Value</span>
+<span>def <span class="ident">from_bytes</span></span>(<span>bytes: bytes, endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.Value</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Value.from_stream"><code class="name flex">
-<span>def <span class="ident">from_stream</span></span>(<span>stream: io.BytesIO,<br>endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.Value</span>
+<span>def <span class="ident">from_stream</span></span>(<span>stream: io.BytesIO, endianness: <a title="pydsphtools.io.Endianness" href="#pydsphtools.io.Endianness">Endianness</a>) ‑> pydsphtools._io.Value</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1568,6 +1391,7 @@ def values(self) -&gt; list[Value]:
 <dl>
 <dt id="pydsphtools.io.Value.name"><code class="name">prop <span class="ident">name</span> : str</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1576,10 +1400,10 @@ def values(self) -&gt; list[Value]:
 def name(self) -&gt; str:
     return self._name</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
-<dt id="pydsphtools.io.Value.value"><code class="name">prop <span class="ident">value</span> : bool | str | int | float | tuple[float, float, float] | tuple[int, int, int] | None</code></dt>
+<dt id="pydsphtools.io.Value.value"><code class="name">prop <span class="ident">value</span> : None | bool | str | int | float | tuple[float, float, float] | tuple[int, int, int]</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1598,10 +1422,10 @@ def value(
 ):
     return self._value</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 <dt id="pydsphtools.io.Value.value_type"><code class="name">prop <span class="ident">value_type</span> : pydsphtools._io.DataType</code></dt>
 <dd>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1610,7 +1434,6 @@ def value(
 def value_type(self) -&gt; DataType:
     return self._value_type</code></pre>
 </details>
-<div class="desc"></div>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -1620,13 +1443,6 @@ def value_type(self) -&gt; DataType:
 ') ‑> str</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def pretty_print(self, indent=0, indent_str=&#34;  &#34;) -&gt; str:
-    return f&#34;{indent_str * indent}{self}&#34;</code></pre>
-</details>
 <div class="desc"></div>
 </dd>
 </dl>
@@ -1742,7 +1558,7 @@ def value_type(self) -&gt; DataType:
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
 </footer>
 </body>
 </html>

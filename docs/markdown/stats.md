@@ -55,7 +55,7 @@ Functions
     .. math::
       BIAS = \frac{1}{N} \sum^N_{i=1} (y_i - y_{obs})
 
-`l1_norm(signal1: Sequence[float], signal2: Sequence[float], x: Sequence[float] | None = None, dx: float = 1.0) ‑> float`
+`l1_norm(signal1: Sequence[float], signal2: Sequence[float], x: Optional[Sequence[float]] = None, dx: float = 1.0) ‑> float`
 :   Calculates the L¹-norm between signal. See Notes for more details.
     
     Parameters

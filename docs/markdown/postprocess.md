@@ -5,7 +5,7 @@ A module for post-processing DualSPHysics simulations.
 Functions
 ---------
 
-`compute_floating_motion(diroutdata: str | pathlib.Path, mkbound: int, savefile: str = None, angle_seq: str = 'xyz', max_part: int = -1, float_fmt: str = '%.12e', verbose: bool = True) ‑> tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray]`
+`compute_floating_motion(diroutdata: str | pathlib.Path, mkbound: int, savefile: str = None, create_dirs: bool = True, angle_seq: str = 'xyz', max_part: int = -1, float_fmt: str = '%.12e', verbose: bool = True) ‑> tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray]`
 :   Compute rigid-body motion of a floating object from DualSPHysics
     ``Part_*.bi4`` files.
     
@@ -35,6 +35,9 @@ Functions
     savefile : str, optional
         If provided, results are saved to this file in text format
         (semicolon-separated). Default, `None`.
+    create_dirs : bool, optional
+        If provided, creates directories (if necessary) before saving results
+        to a file. Ingored if `savefile` is `None`, Default, `True`.
     angle_seq : str, optional
         Euler angle sequence used for 3D rotations (e.g. `"xyz"`, `"zyx"`,
         `"XYZ"`, ...). Passed directly to SciPy. Ignored for 2D simulations.

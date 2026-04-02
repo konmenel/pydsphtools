@@ -282,13 +282,13 @@ Classes
 
     ### Methods
 
-    `get_array_by_name(self, name: str) ‑> pydsphtools._io.Array | None`
+    `get_array_by_name(self, name: str) ‑> Optional[pydsphtools._io.Array]`
     :
 
-    `get_item_by_name(self, name: str) ‑> pydsphtools._io.Item | None`
+    `get_item_by_name(self, name: str) ‑> Optional[pydsphtools._io.Item]`
     :
 
-    `get_value_by_name(self, name: str) ‑> pydsphtools._io.Value | None`
+    `get_value_by_name(self, name: str) ‑> Optional[pydsphtools._io.Value]`
     :
 
     `pretty_print(self, indent=0, indent_str='  ') ‑> str`
@@ -310,7 +310,7 @@ Classes
     `name: str`
     :
 
-    `value: bool | str | int | float | tuple[float, float, float] | tuple[int, int, int] | None`
+    `value: None | bool | str | int | float | tuple[float, float, float] | tuple[int, int, int]`
     :
 
     `value_type: pydsphtools._io.DataType`
