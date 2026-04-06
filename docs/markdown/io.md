@@ -80,7 +80,7 @@ Classes
     `pretty_print(self, indent=0, indent_str='  ') ‑> str`
     :
 
-`Bi4File(filepath: str | os.PathLike, load_arrays: bool = False)`
+`Bi4File(filepath: str | os.PathLike)`
 :   
 
     ### Ancestors (in MRO)

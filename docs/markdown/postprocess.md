@@ -5,12 +5,12 @@ A module for post-processing DualSPHysics simulations.
 Functions
 ---------
 
-`compute_floating_motion(diroutdata: str | pathlib.Path, mkbound: int, savefile: str = None, create_dirs: bool = True, angle_seq: str = 'xyz', max_part: int = -1, float_fmt: str = '%.12e', verbose: bool = True) ‑> tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray]`
+`compute_floating_motion(dirout: str | pathlib.Path, mkbound: int, *, vreszone: int = -1, savefile: str = None, create_dirs: bool = True, angle_seq: str = 'xyz', max_part: int = -1, float_fmt: str = '%.12e', verbose: bool = True, vtk_filenames: str = None, vtk_dir: str | pathlib.Path = None) ‑> tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray]`
 :   Compute rigid-body motion of a floating object from DualSPHysics
-    ``Part_*.bi4`` files.
+    `Part_*.bi4` or `*.vtk` files.
     
-    The motion is reconstructed by tracking floating particles belonging to a
-    given ``mkbound`` and computing, at each timestep:
+    The motion is reconstructed by tracking floating particles and computing,
+    at each timestep:
     
     - the center of mass (COM)
     - the rotation relative to the initial configuration
@@ -27,11 +27,14 @@ Functions
     
     Parameters
     ----------
-    diroutdata : str | Path
-        Path to the directory containing `Part_*.bi4` and associated files
-        (e.g. `PartInfo.ibi4`, `PartFloatInfo.ibi4`).
+    dirout : str | Path
+        Path to the output directory of the simulation and associated files
+        (e.g. `CaseDamBreak_out`).
     mkbound : int
         Identifier of the floating body (MkBound) to track.
+    vreszone : int, optional
+        The ID if the variable resolution zone if is used. If negative it is
+        ignored. Default, `-1`.
     savefile : str, optional
         If provided, results are saved to this file in text format
         (semicolon-separated). Default, `None`.
@@ -50,6 +53,13 @@ Functions
         `"%.12e"`.
     verbose : bool, optional
         If True, prints progress and diagnostic information. Defualt, `True`.
+    vtk_filenames : str, optional
+        The pattern of the VTK files of the floating (e.g. `"PartBoulder"` if
+        `PartBoulder_*.vtk` are to be used). If provided VTK file will be used
+        instead of BI4. Default, `None`.
+    vtk_dir : str | Path, optional
+        The directory of the VTK files relative to `dirout`. Only used if
+        `vtk_filenames` is not `None`. Default, `None`.
     
     Returns
     -------
@@ -68,7 +78,8 @@ Functions
     
     Notes
     -----
-    - Particle correspondence between timesteps is ensured using particle IDs.
+    - Particle correspondence between timesteps is ensured using particle IDs
+      unless boundaryvtk file is used.
     - The rotation is computed relative to the initial configuration
-      (Part_0000).
+      (`Part_0000` or first file in directory).
     - In 2D mode, only the (x, z) plane is considered.

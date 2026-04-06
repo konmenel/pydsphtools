@@ -37,13 +37,13 @@ hljs.highlightAll();
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pydsphtools.postprocess.compute_floating_motion"><code class="name flex">
-<span>def <span class="ident">compute_floating_motion</span></span>(<span>diroutdata: str | pathlib.Path, mkbound: int, savefile: str = None, create_dirs: bool = True, angle_seq: str = 'xyz', max_part: int = -1, float_fmt: str = '%.12e', verbose: bool = True) ‑> tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray]</span>
+<span>def <span class="ident">compute_floating_motion</span></span>(<span>dirout: str | pathlib.Path, mkbound: int, *, vreszone: int = -1, savefile: str = None, create_dirs: bool = True, angle_seq: str = 'xyz', max_part: int = -1, float_fmt: str = '%.12e', verbose: bool = True, vtk_filenames: str = None, vtk_dir: str | pathlib.Path = None) ‑> tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Compute rigid-body motion of a floating object from DualSPHysics
-<code>Part_*.bi4</code> files.</p>
-<p>The motion is reconstructed by tracking floating particles belonging to a
-given <code>mkbound</code> and computing, at each timestep:</p>
+<code>Part_*.bi4</code> or <code>*.vtk</code> files.</p>
+<p>The motion is reconstructed by tracking floating particles and computing,
+at each timestep:</p>
 <ul>
 <li>the center of mass (COM)</li>
 <li>the rotation relative to the initial configuration</li>
@@ -58,11 +58,14 @@ For 2D simulations, only the in-plane rotation (about the y-axis) is
 computed and returned as a single angle (pitch).</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>diroutdata</code></strong> :&ensp;<code>str | Path</code></dt>
-<dd>Path to the directory containing <code>Part_*.bi4</code> and associated files
-(e.g. <code>PartInfo.ibi4</code>, <code>PartFloatInfo.ibi4</code>).</dd>
+<dt><strong><code>dirout</code></strong> :&ensp;<code>str | Path</code></dt>
+<dd>Path to the output directory of the simulation and associated files
+(e.g. <code>CaseDamBreak_out</code>).</dd>
 <dt><strong><code>mkbound</code></strong> :&ensp;<code>int</code></dt>
 <dd>Identifier of the floating body (MkBound) to track.</dd>
+<dt><strong><code>vreszone</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The ID if the variable resolution zone if is used. If negative it is
+ignored. Default, <code>-1</code>.</dd>
 <dt><strong><code>savefile</code></strong> :&ensp;<code>str</code>, optional</dt>
 <dd>If provided, results are saved to this file in text format
 (semicolon-separated). Default, <code>None</code>.</dd>
@@ -81,6 +84,13 @@ all available files are processed. Default, <code>-1</code>.</dd>
 <code>"%.12e"</code>.</dd>
 <dt><strong><code>verbose</code></strong> :&ensp;<code>bool</code>, optional</dt>
 <dd>If True, prints progress and diagnostic information. Defualt, <code>True</code>.</dd>
+<dt><strong><code>vtk_filenames</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>The pattern of the VTK files of the floating (e.g. <code>"PartBoulder"</code> if
+<code>PartBoulder_*.vtk</code> are to be used). If provided VTK file will be used
+instead of BI4. Default, <code>None</code>.</dd>
+<dt><strong><code>vtk_dir</code></strong> :&ensp;<code>str | Path</code>, optional</dt>
+<dd>The directory of the VTK files relative to <code>dirout</code>. Only used if
+<code>vtk_filenames</code> is not <code>None</code>. Default, <code>None</code>.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -99,9 +109,10 @@ all available files are processed. Default, <code>-1</code>.</dd>
 </dl>
 <h2 id="notes">Notes</h2>
 <ul>
-<li>Particle correspondence between timesteps is ensured using particle IDs.</li>
+<li>Particle correspondence between timesteps is ensured using particle IDs
+unless boundaryvtk file is used.</li>
 <li>The rotation is computed relative to the initial configuration
-(Part_0000).</li>
+(<code>Part_0000</code> or first file in directory).</li>
 <li>In 2D mode, only the (x, z) plane is considered.</li>
 </ul></div>
 </dd>

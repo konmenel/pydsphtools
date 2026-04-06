@@ -398,7 +398,7 @@ def name(self) -&gt; str:
 </dd>
 <dt id="pydsphtools.io.Bi4File"><code class="flex name class">
 <span>class <span class="ident">Bi4File</span></span>
-<span>(</span><span>filepath: str | os.PathLike, load_arrays: bool = False)</span>
+<span>(</span><span>filepath: str | os.PathLike)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -410,7 +410,7 @@ def name(self) -&gt; str:
     filepath: str | os.PathLike
     title: str
 
-    def __init__(self, filepath: str | os.PathLike, load_arrays: bool = False) -&gt; None:
+    def __init__(self, filepath: str | os.PathLike) -&gt; None:
         with open(filepath, &#34;rb&#34;) as file:
             title = file.read(60).strip(b&#34;\0&#34;).strip().decode(&#34;utf-8&#34;)
             byteorder = Endianness.from_bytes(file.read(1))
