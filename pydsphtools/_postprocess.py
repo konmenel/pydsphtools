@@ -7,29 +7,34 @@
 # according to the terms contained in the LICENSE file.
 import re
 from pathlib import Path
-from packaging.version import Version
+import xml.etree.ElementTree as ET
 import numpy as np
 from scipy.spatial.transform import Rotation
+import pyvista as pv
 
 from ._main import get_partfiles
 from ._io import Bi4File
 
 
 def compute_floating_motion(
-    diroutdata: str | Path,
+    dirout: str | Path,
     mkbound: int,
+    *,
+    vreszone: int = -1,
     savefile: str = None,
     create_dirs: bool = True,
     angle_seq: str = "xyz",
     max_part: int = -1,
     float_fmt: str = "%.12e",
     verbose: bool = True,
+    vtk_filenames: str = None,
+    vtk_dir: str | Path = None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Compute rigid-body motion of a floating object from DualSPHysics
-    ``Part_*.bi4`` files.
+    `Part_*.bi4` or `*.vtk` files.
 
-    The motion is reconstructed by tracking floating particles belonging to a
-    given ``mkbound`` and computing, at each timestep:
+    The motion is reconstructed by tracking floating particles and computing,
+    at each timestep:
 
     - the center of mass (COM)
     - the rotation relative to the initial configuration
@@ -46,11 +51,14 @@ def compute_floating_motion(
 
     Parameters
     ----------
-    diroutdata : str | Path
-        Path to the directory containing `Part_*.bi4` and associated files
-        (e.g. `PartInfo.ibi4`, `PartFloatInfo.ibi4`).
+    dirout : str | Path
+        Path to the output directory of the simulation and associated files
+        (e.g. `CaseDamBreak_out`).
     mkbound : int
         Identifier of the floating body (MkBound) to track.
+    vreszone : int, optional
+        The ID if the variable resolution zone if is used. If negative it is
+        ignored. Default, `-1`.
     savefile : str, optional
         If provided, results are saved to this file in text format
         (semicolon-separated). Default, `None`.
@@ -69,6 +77,13 @@ def compute_floating_motion(
         `"%.12e"`.
     verbose : bool, optional
         If True, prints progress and diagnostic information. Defualt, `True`.
+    vtk_filenames : str, optional
+        The pattern of the VTK files of the floating (e.g. `"PartBoulder"` if
+        `PartBoulder_*.vtk` are to be used). If provided VTK file will be used
+        instead of BI4. Default, `None`.
+    vtk_dir : str | Path, optional
+        The directory of the VTK files relative to `dirout`. Only used if
+        `vtk_filenames` is not `None`. Default, `None`.
 
     Returns
     -------
@@ -87,15 +102,26 @@ def compute_floating_motion(
 
     Notes
     -----
-    - Particle correspondence between timesteps is ensured using particle IDs.
+    - Particle correspondence between timesteps is ensured using particle IDs
+      unless boundaryvtk file is used.
     - The rotation is computed relative to the initial configuration
-      (Part_0000).
+      (`Part_0000` or first file in directory).
     - In 2D mode, only the (x, z) plane is considered.
     """
-    diroutdata = Path(diroutdata)
-    sim2d = _is_sim2d(diroutdata)
+    dirout = Path(dirout)
+
+    sim2d = _is_sim2d(dirout)
+
     parts, times, coms, angles = _compute_float_motion(
-        diroutdata, mkbound, sim2d, angle_seq, max_part, verbose
+        dirout,
+        mkbound,
+        vreszone,
+        sim2d,
+        angle_seq,
+        max_part,
+        verbose,
+        vtk_filenames,
+        vtk_dir,
     )
 
     if sim2d:
@@ -154,61 +180,150 @@ def compute_floating_motion(
     return parts, times, coms, angles
 
 
-def _is_sim2d(diroutdata: Path) -> bool:
-    diroutdata = diroutdata
-    partinfofile = diroutdata / "PartInfo.ibi4"
-    partinfo = Bi4File(partinfofile)
-    return partinfo.get_value_by_name("Data2d").value
+def _read_vtk(filepath: Path, mk: int):
+    """Internal helper to extract positions and IDs from VTK files."""
+    mesh = pv.read(filepath)
+    if not mesh.point_data.keys():
+        if mesh.cell_data.keys():
+            mesh = mesh.cell_data_to_point_data()
+
+    pos = mesh.points
+    idp = mesh.point_data.get("Idp")
+    mk = mesh.point_data.get("Mk")
+
+    time_data = mesh.field_data.get("TimeStep")
+    if time_data is not None:
+        time = time_data[0]
+    else:
+        time = 0.0
+
+    match = re.search(r"_(\d+)", filepath.stem)
+    if match:
+        cpart = int(match.group(1))
+    else:
+        cpart = 0
+
+    # Not mk is not the same as mkbound
+    if mk is not None:
+        mask = mk == mk
+        pos = pos[mask]
+        if idp is not None:
+            idp = idp[mask]
+
+    return (cpart, time, idp, pos)
+
+
+def _calculate_angles(x0, xn, sim2d, angle_seq):
+    """Calculates rigid-body rotation using the Kabsch algorithm."""
+    if sim2d:
+        x0 = x0[:, [0, 2]]
+        xn = xn[:, [0, 2]]
+
+    h_mat = x0.T @ xn
+    svd_res = np.linalg.svd(h_mat)
+    u = svd_res[0]
+    vh = svd_res[2]
+
+    rmat = vh.T @ u.T
+
+    det = np.linalg.det(rmat)
+    if det < 0:
+        vh[-1, :] = vh[-1, :] * -1
+        rmat = vh.T @ u.T
+
+    if sim2d:
+        theta = np.arctan2(rmat[1, 0], rmat[0, 0])
+        theta_deg = np.degrees(theta)
+        euler_angles = np.array([0.0, theta_deg, 0.0])
+    else:
+        euler_angles = Rotation.from_matrix(rmat).as_euler(angle_seq, degrees=True)
+
+    return euler_angles
 
 
 def _compute_float_motion(
-    diroutdata: Path,
+    dirout: Path,
     mkbound: int,
+    vreszone: int,
     sim2d: bool,
     angle_seq: str,
     max_part: int,
     verbose: bool,
+    vtk_filenames: str,
+    vtk_dir: str | Path,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    legacy = _is_legacy_version(diroutdata)
-    beginp, npfloat = _load_float_info(diroutdata, mkbound, legacy, verbose)
-    partfiles = get_partfiles(diroutdata)
-    nparts = len(partfiles)
+    mk, beginp, npfloat = _load_float_info(dirout, mkbound, vreszone, verbose)
 
-    if max_part >= 0:
-        pattern = re.compile(r"Part_(\d+)")
-        for count, partfile in enumerate(partfiles, 1):
-            part = pattern.search(partfile)
-            part = int(part.group(1))
-            if part > max_part:
-                nparts = count - 1
-                break
+    use_vtk = bool(vtk_filenames)
+    if use_vtk:
+        search_dir = dirout
+        if vtk_dir:
+            search_dir /= vtk_dir
+
+        vtk_list = list(search_dir.glob(f"{vtk_filenames}_*.vtk"))
+        partfiles = sorted(vtk_list)
+        nparts = len(partfiles)
+        if max_part >= 0:
+            pattern = re.compile(r"_(\d+)")
+            filtered = []
+            for pf in partfiles:
+                match = pattern.search(Path(pf).stem)
+                if match:
+                    if int(match.group(1)) <= max_part:
+                        filtered.append(pf)
+            partfiles = filtered
+            nparts = len(partfiles)
+    else:
+        search_dir = dirout
+        if vreszone < 0:
+            search_dir /= "data"
+        else:
+            search_dir /= f"data_vres{vreszone:02d}"
+        partfiles = get_partfiles(search_dir)
+        nparts = len(partfiles)
+
+        if max_part >= 0:
+            pattern = re.compile(r"Part_(\d+)")
+            for count, partfile in enumerate(partfiles, 1):
+                part = pattern.search(partfile)
+                part = int(part.group(1))
+                if part > max_part:
+                    nparts = count - 1
+                    break
 
     if verbose:
-        print(f"Number of Part_*.bi4 files found: {nparts}")
+        print(f"Number of Part files found: {nparts}")
         print(f"Processing {Path(partfiles[0]).name} [{1 / nparts:4.0%}]")
 
-    part0 = Bi4File(partfiles[0])
-    part_number = part0.get_value_by_name("Cpart").value
-    timestep = part0.get_value_by_name("TimeStep").value
+    if use_vtk:
+        vtk_data0 = _read_vtk(Path(partfiles[0]), mk)
+        part_number = vtk_data0[0]
+        timestep = vtk_data0[1]
+        idp0 = vtk_data0[2]
+        pos0 = vtk_data0[3]
+    else:
+        part0 = Bi4File(partfiles[0])
+        part_number = part0.get_value_by_name("Cpart").value
+        timestep = part0.get_value_by_name("TimeStep").value
 
-    idp0 = part0.get_array_by_name("Idp")
-    if not idp0:
-        raise Exception(f"Array 'Idp' for found in '{part0.filepath}'.")
+        idp0 = part0.get_array_by_name("Idp")
+        if not idp0:
+            raise Exception(f"Array 'Idp' for found in '{part0.filepath}'.")
 
-    pos_array_name = "Pos"
-    pos0 = part0.get_array_by_name(pos_array_name)
-    if not pos0:
-        pos_array_name = "Posd"
+        pos_array_name = "Pos"
         pos0 = part0.get_array_by_name(pos_array_name)
-    
-    if not pos0:
-        raise Exception(f"Array 'Pos' or 'Posd' for found in '{part0.filepath}'.")
+        if not pos0:
+            pos_array_name = "Posd"
+            pos0 = part0.get_array_by_name(pos_array_name)
 
-    idx_sort = np.argsort(idp0.data)
-    idx_start = beginp
-    idx_end = idx_start + npfloat
-    idp0 = idp0[idx_sort][idx_start:idx_end]
-    pos0 = pos0[idx_sort][idx_start:idx_end]
+        if not pos0:
+            raise Exception(f"Array 'Pos' or 'Posd' for found in '{part0.filepath}'.")
+
+        idx_sort = np.argsort(idp0.data)
+        idx_start = beginp
+        idx_end = idx_start + npfloat
+        idp0 = idp0[idx_sort][idx_start:idx_end]
+        pos0 = pos0[idx_sort][idx_start:idx_end]
 
     com0 = np.mean(pos0, axis=0)
 
@@ -222,30 +337,41 @@ def _compute_float_motion(
     coms[0] = com0
     angles[0] = (0.0, 0.0, 0.0)
 
-    for i, partfile in enumerate(partfiles[1:nparts], 1):
-        partfile = Path(partfile)
+    for i in range(1, nparts):
+        partfile = Path(partfiles[i])
 
         if verbose:
             print(f"Processing {partfile.name} [{(i + 1) / nparts:4.0%}]")
 
-        partn = Bi4File(partfile)
-        part_number = partn.get_value_by_name("Cpart").value
-        timestep = partn.get_value_by_name("TimeStep").value
+        if use_vtk:
+            vtk_datan = _read_vtk(partfile, mkbound)
+            part_number = vtk_datan[0]
+            timestep = vtk_datan[1]
+            idpn = vtk_datan[2]
+            posn = vtk_datan[3]
+        else:
+            partn = Bi4File(partfile)
+            part_number = partn.get_value_by_name("Cpart").value
+            timestep = partn.get_value_by_name("TimeStep").value
 
-        idpn = partn.get_array_by_name("Idp")
-        posn = partn.get_array_by_name(pos_array_name)
+            idpn = partn.get_array_by_name("Idp")
+            posn = partn.get_array_by_name(pos_array_name)
 
-        sort_idx = np.argsort(idpn)
-        idpn_sorted = idpn[sort_idx]
-        indices = np.searchsorted(idpn_sorted, idp0)
+        if idpn is not None and idp0 is not None:
+            sort_idx = np.argsort(idpn)
+            idpn_sorted = idpn[sort_idx]
+            indices = np.searchsorted(idpn_sorted, idp0)
 
-        valid_mask = (indices < len(idpn_sorted)) & (idpn_sorted[indices] == idp0)
-        if not np.all(valid_mask):
-            missing = np.sum(~valid_mask)
-            print(f"Warning: {missing} particles missing at timestep {part_number}")
+            valid_mask = (indices < len(idpn_sorted)) & (idpn_sorted[indices] == idp0)
+            if not np.all(valid_mask):
+                missing = np.sum(~valid_mask)
+                print(f"Warning: {missing} particles missing at timestep {part_number}")
 
-        matched_pos0 = pos0[valid_mask]
-        matched_posn = posn[sort_idx[indices[valid_mask]]]
+            matched_pos0 = pos0[valid_mask]
+            matched_posn = posn[sort_idx[indices[valid_mask]]]
+        else:
+            matched_pos0 = pos0
+            matched_posn = posn
 
         com0 = np.mean(matched_pos0, axis=0)
         comn = np.mean(matched_posn, axis=0)
@@ -253,25 +379,8 @@ def _compute_float_motion(
         x0 = matched_pos0 - com0
         xn = matched_posn - comn
 
-        if sim2d:
-            x0 = x0[:, [0, 2]]
-            xn = xn[:, [0, 2]]
-
-        h_mat = x0.T @ xn
-        u, _, vh = np.linalg.svd(h_mat)
-
-        Rmat = vh.T @ u.T
-
-        if np.linalg.det(Rmat) < 0:
-            vh[-1, :] *= -1
-            Rmat = vh.T @ u.T
-
-        if sim2d:
-            theta = np.arctan2(Rmat[1, 0], Rmat[0, 0])
-            theta_deg = np.degrees(theta)
-            euler_angles = np.array([0.0, theta_deg, 0.0])
-        else:
-            euler_angles = Rotation.from_matrix(Rmat).as_euler(angle_seq, degrees=True)
+        # Encapsulated call to handle the angle calculations
+        euler_angles = _calculate_angles(x0, xn, sim2d, angle_seq)
 
         parts[i] = part_number
         times[i] = timestep
@@ -281,41 +390,78 @@ def _compute_float_motion(
     return parts, times, coms, angles
 
 
-def _is_legacy_version(diroutdata: Path):
-    diroutdata = diroutdata
-    partinfofile = diroutdata / "PartInfo.ibi4"
-    partinfo = Bi4File(partinfofile)
-    appname = partinfo.get_value_by_name("AppName").value
-    ver_str_match = re.search(r"v(\d+.\d+.\d+)", appname)
-    if not ver_str_match:
-        raise Exception(f"Could not find error in '{partinfofile}'")
+def _is_sim2d(dirout: Path) -> bool:
+    """Check if the simulation is 2D by parsing the execution constants
+    from the output XML file.
+    """
+    xml_files = list(dirout.glob("*.xml"))
 
-    version = Version(ver_str_match.group(1))
-    return version < Version("5.4")
+    for xml_file in xml_files:
+        tree = ET.parse(xml_file)
+        root = tree.getroot()
+        
+        case_node = root.find("case")
+        if case_node is None:
+            continue
+
+        app_attr = case_node.get("app")
+        if app_attr is None or not app_attr.startswith("GenCase"):
+            continue
+
+        execution_node = root.find("execution")
+        constants_node = execution_node.find("constants")
+        data2d_node = constants_node.find("data2d")
+
+        value_str = data2d_node.get("value")
+        value_lower = value_str.lower()
+
+        return value_lower == "true"
 
 
 def _load_float_info(
-    diroutdata: Path, mkbound: int, legacy: bool, verbose: bool
-) -> tuple[int, int]:
-    if legacy:
-        floatinfofile = diroutdata / "PartFloat.fbi4"
-        floatinginfo = Bi4File(floatinfofile)
-        mkbounds = floatinginfo.get_array_by_name("mkbound")
-        mkbounds_mask = mkbounds.data == mkbound
+    dirout: Path, mkbound: int, vreszone: int, verbose: bool
+) -> tuple[int, int, int]:
+    """Loads floating particle information (begin index and count) by parsing
+    the simulation's output XML file.
+    """
+    glob = "*.xml"
+    if vreszone >= 0:
+        glob = f"*_vres{vreszone:02d}{glob}"
+    xml_files = list(dirout.glob(glob))
+    if not xml_files:
+        raise FileNotFoundError(f"No XML files found in {dirout}")
 
-        beginp = floatinginfo.get_array_by_name("begin")[mkbounds_mask][0]
-        npfloat = floatinginfo.get_array_by_name("count")[mkbounds_mask][0]
+    xml_file = xml_files[0]
 
-    else:
-        floatinfofile = diroutdata / "PartFloatInfo.ibi4"
-        floatinginfo = Bi4File(floatinfofile)
-        mkbounds = floatinginfo.get_array_by_name("MkBound")
-        mkbounds_mask = mkbounds.data == mkbound
+    tree = ET.parse(xml_file)
+    root = tree.getroot()
 
-        beginp = floatinginfo.get_array_by_name("Beginp")[mkbounds_mask][0]
-        npfloat = floatinginfo.get_array_by_name("Countp")[mkbounds_mask][0]
+    execution_node = root.find("execution")
+    if execution_node is None:
+        raise ValueError(f"Could not find <execution> tag in {xml_file.name}")
 
-    if verbose:
-        print(f"Loaded Floating Configuration from {floatinfofile.name}")
+    particles_node = execution_node.find("particles")
+    if particles_node is None:
+        raise ValueError(
+            f"Could not find <particles> tag under <execution> in {xml_file.name}"
+        )
 
-    return beginp, npfloat
+    # Search all <floating> tags for the one with the matching mkbound
+    for floating in particles_node.findall("floating"):
+        mk_str = floating.get("mkbound")
+
+        if mk_str is not None and int(mk_str) == mkbound:
+            mk = int(floating.get("mk"))
+            beginp = int(floating.get("begin"))
+            npfloat = int(floating.get("count"))
+
+            if verbose:
+                print(
+                    f"Loaded float info for mkbound {mkbound}: begin={beginp}, count={npfloat}"
+                )
+
+            return mk, beginp, npfloat
+
+    raise ValueError(
+        f"Floating block with mkbound={mkbound} not found in {xml_file.name}"
+    )
