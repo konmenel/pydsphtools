@@ -778,7 +778,7 @@ class Bi4File(Item):
     filepath: str | os.PathLike
     title: str
 
-    def __init__(self, filepath: str | os.PathLike, load_arrays: bool = False) -> None:
+    def __init__(self, filepath: str | os.PathLike) -> None:
         with open(filepath, "rb") as file:
             title = file.read(60).strip(b"\0").strip().decode("utf-8")
             byteorder = Endianness.from_bytes(file.read(1))
@@ -820,9 +820,3 @@ class Bi4File(Item):
 
     def __repr__(self) -> str:
         return str(self)
-
-
-if __name__ == "__main__":
-    bi4file = Bi4File("Part_0000.bi4")
-    print(f"Timestep={bi4file.get_value_by_name('TimeStep')}")
-    print(bi4file)
