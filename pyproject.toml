@@ -5,7 +5,7 @@ dynamic = ["version"]
 description = "Useful functions for post processing DualSPHysics cases"
 license = { file = "LICENSE" }
 requires-python = ">=3.11"
-dependencies = ["pandas", "numpy", "scipy", "pyvista"]
+dependencies = ["pandas", "numpy", "scipy", "vtk"]
 
 [project.optional-dependencies]
 dev = ["black", "ruff", "pdoc3"]

@@ -10,7 +10,8 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 import numpy as np
 from scipy.spatial.transform import Rotation
-import pyvista as pv
+import vtk
+from vtkmodules.util.numpy_support import vtk_to_numpy
 
 from ._main import get_partfiles
 from ._io import Bi4File
@@ -182,30 +183,32 @@ def compute_floating_motion(
 
 def _read_vtk(filepath: Path, mk: int):
     """Internal helper to extract positions and IDs from VTK files."""
-    mesh = pv.read(filepath)
-    if not mesh.point_data.keys():
-        if mesh.cell_data.keys():
-            mesh = mesh.cell_data_to_point_data()
+    reader = vtk.vtkPolyDataReader()
+    reader.SetFileName(str(filepath))
+    reader.Update()
+    mesh = reader.GetOutput()
 
-    pos = mesh.points
-    idp = mesh.point_data.get("Idp")
-    mk = mesh.point_data.get("Mk")
+    point_data = mesh.GetPointData()
+    # n_points = mesh.GetNumberOfPoints()
 
-    time_data = mesh.field_data.get("TimeStep")
-    if time_data is not None:
-        time = time_data[0]
-    else:
-        time = 0.0
+    # Extract positions
+    pos = vtk_to_numpy(mesh.GetPoints().GetData()).copy()
+    idp_array = point_data.GetArray("Idp")
+    idp = vtk_to_numpy(idp_array).copy() if idp_array is not None else None
+    mk_array = point_data.GetArray("Mk")
+    mk_vals = vtk_to_numpy(mk_array).copy() if mk_array is not None else None
 
+    # Extract TimeStep from field data
+    field_data = mesh.GetFieldData()
+    time_array = field_data.GetArray("TimeStep")
+    time = float(vtk_to_numpy(time_array)[0]) if time_array is not None else 0.0
+
+    # Extract part number from filename
     match = re.search(r"_(\d+)", filepath.stem)
-    if match:
-        cpart = int(match.group(1))
-    else:
-        cpart = 0
+    cpart = int(match.group(1)) if match else 0
 
-    # Not mk is not the same as mkbound
-    if mk is not None:
-        mask = mk == mk
+    if mk_vals is not None:
+        mask = mk_vals == mk
         pos = pos[mask]
         if idp is not None:
             idp = idp[mask]
