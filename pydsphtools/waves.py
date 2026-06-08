@@ -6,6 +6,10 @@
 # including this file, may be copied, modified, propagated, or distributed except
 # according to the terms contained in the LICENSE file.
 from ._waves import (
+    period2omega,
+    omega2period,
+    wavelength2wavenumber,
+    wavenumber2wavelength,
     find_celerity,
     find_wavenumber,
     ricker_spectrum,
@@ -13,9 +17,17 @@ from ._waves import (
     ricker_wavelet_simple,
     wavemaker_transfer_func,
     generate_ricker_signal,
+    jonswap_spectrum_frequency,
+    jonswap_spectrum_period,
+    free_surface_elevation,
+    velocity_2d,
 )
 
 __all__ = [
+    "period2omega",
+    "omega2period",
+    "wavelength2wavenumber",
+    "wavenumber2wavelength",
     "find_celerity",
     "find_wavenumber",
     "ricker_spectrum",
@@ -23,4 +35,8 @@ __all__ = [
     "ricker_wavelet_simple",
     "wavemaker_transfer_func",
     "generate_ricker_signal",
+    "jonswap_spectrum_frequency",
+    "jonswap_spectrum_period",
+    "free_surface_elevation",
+    "velocity_2d",
 ]
