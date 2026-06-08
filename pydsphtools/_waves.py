@@ -665,13 +665,22 @@ def free_surface_elevation(
     # Second-order corrections (Stokes expansion)
     if second_order:
         for omega_i, k_i, amp_i, phase_i in zip(omega, wavenumbers, amplitudes, phases):
-            cosh_factor = np.cosh(2.0 * k_i * depth) / np.sinh(k_i * depth)
-            second_order_amp = (
-                (1.0 / 8.0)
-                * (k_i * amp_i) ** 2
-                * cosh_factor
-                / np.sinh(k_i * depth) ** 2
-            )
+            kh = k_i * depth
+            # Asymptotic stable form for deep water / short periods
+            if kh > 20.0:
+                second_order_amp = (
+                    0.5 * (k_i * amp_i) ** 2 
+                    * (np.exp(-kh) + np.exp(-5.0 * kh)) 
+                    / (1.0 - np.exp(-2.0 * kh)) ** 3
+                )
+            else:
+                cosh_factor = np.cosh(2.0 * k_i * depth) / np.sinh(k_i * depth)
+                second_order_amp = (
+                    (1.0 / 8.0)
+                    * (k_i * amp_i) ** 2
+                    * cosh_factor
+                    / np.sinh(k_i * depth) ** 2
+                )
 
             eta += second_order_amp * np.cos(
                 2.0 * (k_i * xv - omega_i * tv + phase_i)
@@ -767,30 +776,43 @@ def velocity_2d(
 
     # First-order velocities
     for omega_i, k_i, amp_i, phase_i in zip(omega, wavenumbers, amplitudes, phases):
-        sinh_kh = np.sinh(k_i * depth)
-        cosh_kh_plus_z = np.cosh(k_i * z_bottom)
-        sinh_kh_plus_z = np.sinh(k_i * z_bottom)
-
         arg = k_i * xv - omega_i * tv + phase_i
+        kh = k_i * depth
 
-        u += amp_i * omega_i * (cosh_kh_plus_z / sinh_kh) * np.cos(arg)
-        w += amp_i * omega_i * (sinh_kh_plus_z / sinh_kh) * np.sin(arg)
+        # Asymptotic stable form for deep water / short periods
+        if kh > 20.0:
+            u_ratio = (np.exp(k_i * zv) + np.exp(-k_i * (zv + 2.0 * depth))) / (1.0 - np.exp(-2.0 * kh))
+            w_ratio = (np.exp(k_i * zv) - np.exp(-k_i * (zv + 2.0 * depth))) / (1.0 - np.exp(-2.0 * kh))
+        else:
+            sinh_kh = np.sinh(kh)
+            u_ratio = np.cosh(k_i * z_bottom) / sinh_kh
+            w_ratio = np.sinh(k_i * z_bottom) / sinh_kh
+
+        u += amp_i * omega_i * u_ratio * np.cos(arg)
+        w += amp_i * omega_i * w_ratio * np.sin(arg)
 
     # Second-order corrections
     if second_order:
         for omega_i, k_i, amp_i, phase_i in zip(omega, wavenumbers, amplitudes, phases):
-            sinh_kh = np.sinh(k_i * depth)
-            cosh_2kh_plus_z = np.cosh(2.0 * k_i * z_bottom)
-            sinh_2kh_plus_z = np.sinh(2.0 * k_i * z_bottom)
-
-            u_2nd_factor = (
-                (3.0 / 8.0) * (k_i * amp_i) ** 2 * cosh_2kh_plus_z / sinh_kh**4
-            )
-            w_2nd_factor = (
-                (3.0 / 8.0) * (k_i * amp_i) ** 2 * sinh_2kh_plus_z / sinh_kh**4
-            )
-
             arg = 2.0 * (k_i * xv - omega_i * tv + phase_i)
+            kh = k_i * depth
+
+            # Asymptotic stable form for deep water / short periods
+            if kh > 20.0:
+                u_2nd_factor = (
+                    3.0 * (k_i * amp_i) ** 2 
+                    * (np.exp(2.0 * k_i * zv - 2.0 * kh) + np.exp(-2.0 * k_i * zv - 6.0 * kh)) 
+                    / (1.0 - np.exp(-2.0 * kh)) ** 4
+                )
+                w_2nd_factor = (
+                    3.0 * (k_i * amp_i) ** 2 
+                    * (np.exp(2.0 * k_i * zv - 2.0 * kh) - np.exp(-2.0 * k_i * zv - 6.0 * kh)) 
+                    / (1.0 - np.exp(-2.0 * kh)) ** 4
+                )
+            else:
+                sinh_kh = np.sinh(kh)
+                u_2nd_factor = (3.0 / 8.0) * (k_i * amp_i) ** 2 * np.cosh(2.0 * k_i * z_bottom) / sinh_kh**4
+                w_2nd_factor = (3.0 / 8.0) * (k_i * amp_i) ** 2 * np.sinh(2.0 * k_i * z_bottom) / sinh_kh**4
 
             u += u_2nd_factor * np.cos(arg)
             w += w_2nd_factor * np.sin(arg)
