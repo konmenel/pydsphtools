@@ -86,6 +86,41 @@ with the solution for each element of the angular frequency array.</dd>
 <p>where <span><span class="MathJax_Preview"> k </span><script type="math/tex"> k </script></span> is the wavenumber, <span><span class="MathJax_Preview"> h </span><script type="math/tex"> h </script></span> is the depth and <span><span class="MathJax_Preview"> \omega </span><script type="math/tex"> \omega </script></span>
 is the angular frequency.</p></div>
 </dd>
+<dt id="pydsphtools.waves.free_surface_elevation"><code class="name flex">
+<span>def <span class="ident">free_surface_elevation</span></span>(<span>periods: numpy.ndarray, spectrum: numpy.ndarray, x: float | numpy.ndarray, t: float | numpy.ndarray, depth: float, second_order: bool = False, random_seed: Optional[int] = None) ‑> float | numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the free surface elevation from a given spectrum.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>periods</code></strong> :&ensp;<code>numpy array</code></dt>
+<dd>The periods corresponding to the spectrum values [s].</dd>
+<dt><strong><code>spectrum</code></strong> :&ensp;<code>numpy array</code></dt>
+<dd>The amplitude spectrum values [m²·s].</dd>
+<dt><strong><code>x</code></strong> :&ensp;<code>float</code> or <code>numpy array-like</code></dt>
+<dd>The spatial position(s) [m].</dd>
+<dt><strong><code>t</code></strong> :&ensp;<code>float</code> or <code>numpy array-like</code></dt>
+<dd>The time(s) [s].</dd>
+<dt><strong><code>depth</code></strong> :&ensp;<code>float</code></dt>
+<dd>The water depth [m].</dd>
+<dt><strong><code>second_order</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>If True, includes second-order wave theory corrections. <em>NOTE</em>: Not tested! By default False.</dd>
+<dt><strong><code>random_seed</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Seed for reproducible random phase generation. By default None.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>float</code> or <code>numpy array</code></dt>
+<dd>The free surface elevation at given position(s) and time(s).</dd>
+</dl>
+<h2 id="notes">Notes</h2>
+<p>Uses first-order (Airy) wave theory by default:</p>
+<p><span><span class="MathJax_Preview"> \eta(x, t) = \sum_n A_n \cos(k_n x - \omega_n t + \phi_n) </span><script type="math/tex; mode=display"> \eta(x, t) = \sum_n A_n \cos(k_n x - \omega_n t + \phi_n) </script></span></p>
+<p>where <span><span class="MathJax_Preview"> A_n </span><script type="math/tex"> A_n </script></span> is derived from the input spectrum, <span><span class="MathJax_Preview"> k_n </span><script type="math/tex"> k_n </script></span> is the
+wavenumber, <span><span class="MathJax_Preview"> \omega_n </span><script type="math/tex"> \omega_n </script></span> is the angular frequency, and <span><span class="MathJax_Preview"> \phi_n </span><script type="math/tex"> \phi_n </script></span> is
+a random phase.</p>
+<p>Second-order theory includes corrections from the Stokes expansion.</p></div>
+</dd>
 <dt id="pydsphtools.waves.generate_ricker_signal"><code class="name flex">
 <span>def <span class="ident">generate_ricker_signal</span></span>(<span>focus_loc: float, depth: float, amplitude: float, peak_frequency: float, wv_type: str, *, filepath: str = None, hinge: Optional[float] = None, angle_units: str = 'rad', nwaves: int = 5000) ‑> Tuple[numpy.ndarray, numpy.ndarray]</span>
 </code></dt>
@@ -141,6 +176,98 @@ calculation. By default, 5000</dd>
 </li>
 </ul>
 </dd>
+</dl></div>
+</dd>
+<dt id="pydsphtools.waves.jonswap_spectrum_frequency"><code class="name flex">
+<span>def <span class="ident">jonswap_spectrum_frequency</span></span>(<span>Hs: float, fp: float, freqs: Optional[numpy.ndarray] = None, freq_range: Optional[Tuple[float, float]] = None, nfreqs: int = 100, gamma: float = 3.3) ‑> Tuple[numpy.ndarray, numpy.ndarray]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the JONSWAP spectrum in the frequency domain for a given
+significant wave height and peak frequency.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>Hs</code></strong> :&ensp;<code>float</code></dt>
+<dd>The significant wave height [m].</dd>
+<dt><strong><code>fp</code></strong> :&ensp;<code>float</code></dt>
+<dd>The peak frequency [Hz].</dd>
+<dt><strong><code>freqs</code></strong> :&ensp;<code>numpy array-like</code>, optional</dt>
+<dd>The frequencies at which to evaluate the spectrum. If None, <code>freq_range</code> and
+<code>nfreqs</code> are used to generate the frequency array.</dd>
+<dt><strong><code>freq_range</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>A tuple (f_min, f_max) defining the frequency range. If None, default is (0.2<em>fp, 5.0</em>fp).</dd>
+<dt><strong><code>nfreqs</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The number of frequency points to generate if <code>freqs</code> is None. Default is 100.</dd>
+<dt><strong><code>gamma</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>The peak enhancement factor. Default is 3.3.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>np.ndarray</code></dt>
+<dd>The array of frequencies.</dd>
+<dt><code>np.ndarray</code></dt>
+<dd>The spectral density values for each frequency (S(f)).</dd>
+</dl></div>
+</dd>
+<dt id="pydsphtools.waves.jonswap_spectrum_period"><code class="name flex">
+<span>def <span class="ident">jonswap_spectrum_period</span></span>(<span>Hs: float, Tp: float, periods: Optional[numpy.ndarray] = None, period_range: Optional[Tuple[float, float]] = None, nperiods: int = 100, gamma: float = 3.3) ‑> Tuple[numpy.ndarray, numpy.ndarray]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the JONSWAP spectrum in the period domain for a given
+significant wave height and peak period.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>Hs</code></strong> :&ensp;<code>float</code></dt>
+<dd>The significant wave height [m].</dd>
+<dt><strong><code>Tp</code></strong> :&ensp;<code>float</code></dt>
+<dd>The peak period [s].</dd>
+<dt><strong><code>periods</code></strong> :&ensp;<code>numpy array-like</code>, optional</dt>
+<dd>The periods at which to evaluate the spectrum. If None, <code>period_range</code> and
+<code>nperiods</code> are used to generate the periods.</dd>
+<dt><strong><code>period_range</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>A tuple (T_min, T_max) defining the period range. If None, default is (0.2<em>Tp, 25</em>Tp).</dd>
+<dt><strong><code>nperiods</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The number of period points to generate if <code>periods</code> is None. Default is 100.</dd>
+<dt><strong><code>gamma</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>The peak enhancement factor. Default is 3.3.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>np.ndarray</code></dt>
+<dd>The array of periods.</dd>
+<dt><code>np.ndarray</code></dt>
+<dd>The spectral density values for each period (S(T)).</dd>
+</dl></div>
+</dd>
+<dt id="pydsphtools.waves.omega2period"><code class="name flex">
+<span>def <span class="ident">omega2period</span></span>(<span>omega: float | Sequence[float]) ‑> float | Sequence[float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Transforms omega to period (Τ = 2π / ω).</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>omega</code></strong> :&ensp;<code>float</code> or <code>array-like</code></dt>
+<dd>The omega or array of omegas.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>float</code> or <code>array-like</code></dt>
+<dd>The period or array of periods for each omega.</dd>
+</dl></div>
+</dd>
+<dt id="pydsphtools.waves.period2omega"><code class="name flex">
+<span>def <span class="ident">period2omega</span></span>(<span>period: float | Sequence[float]) ‑> float | Sequence[float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Transforms period to omega (ω = 2π / T).</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>period</code></strong> :&ensp;<code>float</code> or <code>array-like</code></dt>
+<dd>The period or array of periods.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>float</code> or <code>array-like</code></dt>
+<dd>The omega or array of omegas for each period.</dd>
 </dl></div>
 </dd>
 <dt id="pydsphtools.waves.ricker_spectrum"><code class="name flex">
@@ -229,6 +356,67 @@ e^\frac{-\omega^2}{\omega_p^2} </script></span></p></div>
 <dd>The shape of the wavelet.</dd>
 </dl></div>
 </dd>
+<dt id="pydsphtools.waves.velocity_2d"><code class="name flex">
+<span>def <span class="ident">velocity_2d</span></span>(<span>periods: numpy.ndarray, spectrum: numpy.ndarray, x: float | numpy.ndarray, z: float | numpy.ndarray, t: float | numpy.ndarray, depth: float, second_order: bool = False, random_seed: Optional[int] = None) ‑> Tuple[float | numpy.ndarray, float | numpy.ndarray]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the 2D velocity field (horizontal and vertical) from a given spectrum.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>periods</code></strong> :&ensp;<code>numpy array</code></dt>
+<dd>The periods corresponding to the spectrum values [s].</dd>
+<dt><strong><code>spectrum</code></strong> :&ensp;<code>numpy array</code></dt>
+<dd>The amplitude spectrum values [m²·s].</dd>
+<dt><strong><code>x</code></strong> :&ensp;<code>float</code> or <code>numpy array-like</code></dt>
+<dd>The horizontal spatial position(s) [m].</dd>
+<dt><strong><code>z</code></strong> :&ensp;<code>float</code> or <code>numpy array-like</code></dt>
+<dd>The vertical position(s) relative to the still water surface (z=0).
+Negative values are below the surface.</dd>
+<dt><strong><code>t</code></strong> :&ensp;<code>float</code> or <code>numpy array-like</code></dt>
+<dd>The time(s) [s].</dd>
+<dt><strong><code>depth</code></strong> :&ensp;<code>float</code></dt>
+<dd>The water depth (positive value) [m].</dd>
+<dt><strong><code>second_order</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>If True, includes second-order wave theory corrections. <em>NOTE</em>: Not tested! By default False.</dd>
+<dt><strong><code>random_seed</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Seed for reproducible random phase generation. By default None.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple</code> of <code>(u, w)</code></dt>
+<dd>u : float or numpy array
+The horizontal velocity component [m/s].
+w : float or numpy array
+The vertical velocity component [m/s].</dd>
+</dl>
+<h2 id="notes">Notes</h2>
+<p>Uses first-order (Airy) wave theory by default:</p>
+<p><span><span class="MathJax_Preview"> u(x, z, t) = \sum_n A_n \omega_n \frac{\cosh(k_n(z+h))}{\sinh(k_n h)}
+\cos(k_n x - \omega_n t + \phi_n) </span><script type="math/tex; mode=display"> u(x, z, t) = \sum_n A_n \omega_n \frac{\cosh(k_n(z+h))}{\sinh(k_n h)}
+\cos(k_n x - \omega_n t + \phi_n) </script></span></p>
+<p><span><span class="MathJax_Preview"> w(x, z, t) = \sum_n A_n \omega_n \frac{\sinh(k_n(z+h))}{\sinh(k_n h)}
+\sin(k_n x - \omega_n t + \phi_n) </span><script type="math/tex; mode=display"> w(x, z, t) = \sum_n A_n \omega_n \frac{\sinh(k_n(z+h))}{\sinh(k_n h)}
+\sin(k_n x - \omega_n t + \phi_n) </script></span></p>
+<p>where <span><span class="MathJax_Preview"> h </span><script type="math/tex"> h </script></span> is the water depth, <span><span class="MathJax_Preview"> z </span><script type="math/tex"> z </script></span> is the elevation relative to
+the still water surface, and other symbols have their usual meanings.</p>
+<p>Second-order theory includes corrections from the Stokes expansion.</p></div>
+</dd>
+<dt id="pydsphtools.waves.wavelength2wavenumber"><code class="name flex">
+<span>def <span class="ident">wavelength2wavenumber</span></span>(<span>wavelength: float | Sequence[float]) ‑> float | Sequence[float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Transforms wavelength to wavenumber (k = 2π / Λ).</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>wavelength</code></strong> :&ensp;<code>float</code> or <code>array-like</code></dt>
+<dd>The wavelength or array of wavelengths.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>float</code> or <code>array-like</code></dt>
+<dd>The wavenumber or array of wavenumbers for each wavelength.</dd>
+</dl></div>
+</dd>
 <dt id="pydsphtools.waves.wavemaker_transfer_func"><code class="name flex">
 <span>def <span class="ident">wavemaker_transfer_func</span></span>(<span>wavenumber: float | numpy.ndarray, depth: float, wv_type: str = 'flap', hinge: Optional[float] = None) ‑> float | numpy.ndarray</span>
 </code></dt>
@@ -282,6 +470,22 @@ with the same dimensions.</dd>
 <p>where <span><span class="MathJax_Preview"> k </span><script type="math/tex"> k </script></span> is the wavenumber, <span><span class="MathJax_Preview"> h </span><script type="math/tex"> h </script></span> is the depth and <span><span class="MathJax_Preview"> d </span><script type="math/tex"> d </script></span>
 is the hinge.</p></div>
 </dd>
+<dt id="pydsphtools.waves.wavenumber2wavelength"><code class="name flex">
+<span>def <span class="ident">wavenumber2wavelength</span></span>(<span>wavenumber: float | Sequence[float]) ‑> float | Sequence[float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Transforms wavenumber to wavelength (Λ = 2π / k).</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>wavenumber</code></strong> :&ensp;<code>float</code> or <code>array-like</code></dt>
+<dd>The wavenumber or array of wavenumbers.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>float</code> or <code>array-like</code></dt>
+<dd>The wavelength or array of wavelengths for each wavenumber.</dd>
+</dl></div>
+</dd>
 </dl>
 </section>
 <section>
@@ -301,11 +505,19 @@ is the hinge.</p></div>
 <ul class="">
 <li><code><a title="pydsphtools.waves.find_celerity" href="#pydsphtools.waves.find_celerity">find_celerity</a></code></li>
 <li><code><a title="pydsphtools.waves.find_wavenumber" href="#pydsphtools.waves.find_wavenumber">find_wavenumber</a></code></li>
+<li><code><a title="pydsphtools.waves.free_surface_elevation" href="#pydsphtools.waves.free_surface_elevation">free_surface_elevation</a></code></li>
 <li><code><a title="pydsphtools.waves.generate_ricker_signal" href="#pydsphtools.waves.generate_ricker_signal">generate_ricker_signal</a></code></li>
+<li><code><a title="pydsphtools.waves.jonswap_spectrum_frequency" href="#pydsphtools.waves.jonswap_spectrum_frequency">jonswap_spectrum_frequency</a></code></li>
+<li><code><a title="pydsphtools.waves.jonswap_spectrum_period" href="#pydsphtools.waves.jonswap_spectrum_period">jonswap_spectrum_period</a></code></li>
+<li><code><a title="pydsphtools.waves.omega2period" href="#pydsphtools.waves.omega2period">omega2period</a></code></li>
+<li><code><a title="pydsphtools.waves.period2omega" href="#pydsphtools.waves.period2omega">period2omega</a></code></li>
 <li><code><a title="pydsphtools.waves.ricker_spectrum" href="#pydsphtools.waves.ricker_spectrum">ricker_spectrum</a></code></li>
 <li><code><a title="pydsphtools.waves.ricker_spectrum_simple" href="#pydsphtools.waves.ricker_spectrum_simple">ricker_spectrum_simple</a></code></li>
 <li><code><a title="pydsphtools.waves.ricker_wavelet_simple" href="#pydsphtools.waves.ricker_wavelet_simple">ricker_wavelet_simple</a></code></li>
+<li><code><a title="pydsphtools.waves.velocity_2d" href="#pydsphtools.waves.velocity_2d">velocity_2d</a></code></li>
+<li><code><a title="pydsphtools.waves.wavelength2wavenumber" href="#pydsphtools.waves.wavelength2wavenumber">wavelength2wavenumber</a></code></li>
 <li><code><a title="pydsphtools.waves.wavemaker_transfer_func" href="#pydsphtools.waves.wavemaker_transfer_func">wavemaker_transfer_func</a></code></li>
+<li><code><a title="pydsphtools.waves.wavenumber2wavelength" href="#pydsphtools.waves.wavenumber2wavelength">wavenumber2wavelength</a></code></li>
 </ul>
 </li>
 </ul>
