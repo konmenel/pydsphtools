@@ -473,7 +473,7 @@ def jonswap_spectrum_frequency(
     nfreqs: int = 100,
     gamma: float = 3.3,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """Calculates the JONSWAP spectrum in the frequency domain for a given 
+    """Calculates the JONSWAP spectrum in the frequency domain for a given
     significant wave height and peak frequency.
 
     Parameters
@@ -507,7 +507,7 @@ def jonswap_spectrum_frequency(
         freqs = np.asarray(freqs)
 
     # alpha = 0.0081
-    alpha = 1.0 # Does not matter since it is scaled at the end
+    alpha = 1.0  # Does not matter since it is scaled at the end
     sigma = np.where(freqs <= fp, 0.07, 0.09)
     r = np.exp(-((freqs - fp) ** 2) / (2.0 * sigma**2 * fp**2))
 
@@ -534,7 +534,7 @@ def jonswap_spectrum_period(
     nperiods: int = 100,
     gamma: float = 3.3,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """Calculates the JONSWAP spectrum in the period domain for a given 
+    """Calculates the JONSWAP spectrum in the period domain for a given
     significant wave height and peak period.
 
     Parameters
@@ -571,7 +571,7 @@ def jonswap_spectrum_period(
     fp = 1.0 / Tp
 
     # alpha = 0.0081
-    alpha = 1.0 # Does not matter since it is scaled at the end
+    alpha = 1.0  # Does not matter since it is scaled at the end
     sigma = np.where(freqs <= fp, 0.07, 0.09)
     r = np.exp(-((freqs - fp) ** 2) / (2.0 * sigma**2 * fp**2))
 
@@ -580,7 +580,7 @@ def jonswap_spectrum_period(
         * np.exp(-1.25 * (fp / freqs) ** 4)
         * gamma**r
     )
-    
+
     # Transform Spectral Density to Period domain: S(T) = S(f) * f^2
     spectrum = spectrum_f * (freqs**2)
 
@@ -590,6 +590,141 @@ def jonswap_spectrum_period(
     spectrum = spectrum * (m0_target / m0_calculated)
 
     return periods, spectrum
+
+
+def tma_spectrum_frequency(
+    Hs: float,
+    fp: float,
+    depth: float,
+    freqs: Optional[np.ndarray] = None,
+    freq_range: Optional[Tuple[float, float]] = None,
+    nfreqs: int = 100,
+    gamma: float = 3.3,
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Calculates the TAM spectrum in the frequency domain for a given
+    significant wave height and peak frequency.
+
+    Parameters
+    ----------
+    Hs : float
+        The significant wave height [m].
+    fp : float
+        The peak frequency [Hz].
+    depth : float
+        The water depth in [m]
+    freqs : numpy array-like, optional
+        The frequencies at which to evaluate the spectrum. If None, `freq_range` and
+        `nfreqs` are used to generate the frequency array.
+    freq_range : tuple, optional
+        A tuple (f_min, f_max) defining the frequency range. If None, default is (0.2*fp, 5.0*fp).
+    nfreqs : int, optional
+        The number of frequency points to generate if `freqs` is None. Default is 100.
+    gamma : float, optional
+        The peak enhancement factor. Default is 3.3.
+
+    Returns
+    -------
+    np.ndarray
+        The array of frequencies.
+    np.ndarray
+        The spectral density values for each frequency (S(f)).
+    """
+    freqs, spectrum = jonswap_spectrum_frequency(
+        Hs, fp, freqs, freq_range, nfreqs, gamma
+    )
+    omegas = 2 * np.pi * freqs
+    omegas_h = omegas * np.sqrt(depth / 9.81)
+    acoeff = (
+        1.0
+        + 0.6522 * omegas_h**2
+        + 0.4622 * omegas_h**4
+        + 0.0864 * omegas_h**8
+        + 0.0675 * omegas_h**10
+    )
+    bcoeff = (
+        0.6522 * omegas_h
+        + 0.9244 * omegas_h**3
+        + 0.3456 * omegas_h**7
+        + 0.3375 * omegas_h**9
+    )
+    phi = (
+        1.0
+        - 0.5
+        * (bcoeff * omegas_h**3 + 3 * acoeff * omegas_h**2 + 2.0)
+        / (acoeff * omegas_h**2 + 1.0) ** 2
+    )
+
+    spectrum = spectrum * phi
+
+    return freqs, spectrum
+
+
+def tma_spectrum_period(
+    Hs: float,
+    Tp: float,
+    depth: float,
+    periods: Optional[np.ndarray] = None,
+    period_range: Optional[Tuple[float, float]] = None,
+    nperiods: int = 100,
+    gamma: float = 3.3,
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Calculates the TAM spectrum in the frequency domain for a given
+    significant wave height and peak frequency.
+
+    Parameters
+    ----------
+    Hs : float
+        The significant wave height [m].
+    Tp : float
+        The peak period [s].
+    depth : float
+        The water depth in [m]
+    periods : numpy array-like, optional
+        The periods at which to evaluate the spectrum. If None, `period_range` and
+        `nperiods` are used to generate the periods.
+    period_range : tuple, optional
+        A tuple (T_min, T_max) defining the period range. If None, default is (0.2*Tp, 25*Tp).
+    nperiods : int, optional
+        The number of period points to generate if `periods` is None. Default is 100.
+    gamma : float, optional
+        The peak enhancement factor. Default is 3.3.
+
+    Returns
+    -------
+    np.ndarray
+        The array of frequencies.
+    np.ndarray
+        The spectral density values for each frequency (S(f)).
+    """
+    freqs, spectrum = jonswap_spectrum_period(
+        Hs, Tp, periods, period_range, nperiods, gamma
+    )
+    omegas = 2 * np.pi * freqs
+    omegas_h = omegas * np.sqrt(depth / 9.81)
+    acoeff = (
+        1.0
+        + 0.6522 * omegas_h**2
+        + 0.4622 * omegas_h**4
+        + 0.0864 * omegas_h**8
+        + 0.0675 * omegas_h**10
+    )
+    bcoeff = (
+        0.6522 * omegas_h
+        + 0.9244 * omegas_h**3
+        + 0.3456 * omegas_h**7
+        + 0.3375 * omegas_h**9
+    )
+    phi = (
+        1.0
+        - 0.5
+        * (bcoeff * omegas_h**3 + 3 * acoeff * omegas_h**2 + 2.0)
+        / (acoeff * omegas_h**2 + 1.0) ** 2
+    )
+
+    spectrum = spectrum * phi
+
+    return freqs, spectrum
+
 
 def free_surface_elevation(
     periods: np.ndarray,
@@ -654,10 +789,10 @@ def free_surface_elevation(
     # Convert coordinates to arrays and map out clean 2D meshes
     x = np.asarray(x)
     t = np.asarray(t)
-    xv, tv = np.meshgrid(x, t, indexing='ij')
+    xv, tv = np.meshgrid(x, t, indexing="ij")
 
     eta = np.zeros_like(xv, dtype=np.float64)
-    
+
     # First-order elevation
     for omega_i, k_i, amp_i, phase_i in zip(omega, wavenumbers, amplitudes, phases):
         eta += amp_i * np.cos(k_i * xv - omega_i * tv + phase_i)
@@ -669,8 +804,9 @@ def free_surface_elevation(
             # Asymptotic stable form for deep water / short periods
             if kh > 20.0:
                 second_order_amp = (
-                    0.5 * (k_i * amp_i) ** 2 
-                    * (np.exp(-kh) + np.exp(-5.0 * kh)) 
+                    0.5
+                    * (k_i * amp_i) ** 2
+                    * (np.exp(-kh) + np.exp(-5.0 * kh))
                     / (1.0 - np.exp(-2.0 * kh)) ** 3
                 )
             else:
@@ -682,9 +818,7 @@ def free_surface_elevation(
                     / np.sinh(k_i * depth) ** 2
                 )
 
-            eta += second_order_amp * np.cos(
-                2.0 * (k_i * xv - omega_i * tv + phase_i)
-            )
+            eta += second_order_amp * np.cos(2.0 * (k_i * xv - omega_i * tv + phase_i))
 
     if eta.size == 1:
         return float(eta.flat[0])
@@ -766,7 +900,7 @@ def velocity_2d(
     x = np.asarray(x)
     z = np.asarray(z)
     t = np.asarray(t)
-    xv, zv, tv = np.meshgrid(x, z, t, indexing='ij')
+    xv, zv, tv = np.meshgrid(x, z, t, indexing="ij")
 
     # Convert z coordinates relative to the ocean bed
     z_bottom = zv + depth
@@ -781,8 +915,12 @@ def velocity_2d(
 
         # Asymptotic stable form for deep water / short periods
         if kh > 20.0:
-            u_ratio = (np.exp(k_i * zv) + np.exp(-k_i * (zv + 2.0 * depth))) / (1.0 - np.exp(-2.0 * kh))
-            w_ratio = (np.exp(k_i * zv) - np.exp(-k_i * (zv + 2.0 * depth))) / (1.0 - np.exp(-2.0 * kh))
+            u_ratio = (np.exp(k_i * zv) + np.exp(-k_i * (zv + 2.0 * depth))) / (
+                1.0 - np.exp(-2.0 * kh)
+            )
+            w_ratio = (np.exp(k_i * zv) - np.exp(-k_i * (zv + 2.0 * depth))) / (
+                1.0 - np.exp(-2.0 * kh)
+            )
         else:
             sinh_kh = np.sinh(kh)
             u_ratio = np.cosh(k_i * z_bottom) / sinh_kh
@@ -800,19 +938,37 @@ def velocity_2d(
             # Asymptotic stable form for deep water / short periods
             if kh > 20.0:
                 u_2nd_factor = (
-                    3.0 * (k_i * amp_i) ** 2 
-                    * (np.exp(2.0 * k_i * zv - 2.0 * kh) + np.exp(-2.0 * k_i * zv - 6.0 * kh)) 
+                    3.0
+                    * (k_i * amp_i) ** 2
+                    * (
+                        np.exp(2.0 * k_i * zv - 2.0 * kh)
+                        + np.exp(-2.0 * k_i * zv - 6.0 * kh)
+                    )
                     / (1.0 - np.exp(-2.0 * kh)) ** 4
                 )
                 w_2nd_factor = (
-                    3.0 * (k_i * amp_i) ** 2 
-                    * (np.exp(2.0 * k_i * zv - 2.0 * kh) - np.exp(-2.0 * k_i * zv - 6.0 * kh)) 
+                    3.0
+                    * (k_i * amp_i) ** 2
+                    * (
+                        np.exp(2.0 * k_i * zv - 2.0 * kh)
+                        - np.exp(-2.0 * k_i * zv - 6.0 * kh)
+                    )
                     / (1.0 - np.exp(-2.0 * kh)) ** 4
                 )
             else:
                 sinh_kh = np.sinh(kh)
-                u_2nd_factor = (3.0 / 8.0) * (k_i * amp_i) ** 2 * np.cosh(2.0 * k_i * z_bottom) / sinh_kh**4
-                w_2nd_factor = (3.0 / 8.0) * (k_i * amp_i) ** 2 * np.sinh(2.0 * k_i * z_bottom) / sinh_kh**4
+                u_2nd_factor = (
+                    (3.0 / 8.0)
+                    * (k_i * amp_i) ** 2
+                    * np.cosh(2.0 * k_i * z_bottom)
+                    / sinh_kh**4
+                )
+                w_2nd_factor = (
+                    (3.0 / 8.0)
+                    * (k_i * amp_i) ** 2
+                    * np.sinh(2.0 * k_i * z_bottom)
+                    / sinh_kh**4
+                )
 
             u += u_2nd_factor * np.cos(arg)
             w += w_2nd_factor * np.sin(arg)

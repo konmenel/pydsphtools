@@ -335,7 +335,7 @@ def example_wave_energy():
     periods, spec = jonswap_spectrum_period(Hs=Hs, Tp=Tp, nperiods=500, gamma=3.3)
 
     # Convert to spectral moment
-    m0 = np.trapezoid(spec, periods)
+    _m0 = np.trapezoid(spec, periods)
 
     # Calculate cumulative energy
     cum_spec = np.cumsum(spec) / np.sum(spec) * 100

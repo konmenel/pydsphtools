@@ -19,6 +19,8 @@ from ._waves import (
     generate_ricker_signal,
     jonswap_spectrum_frequency,
     jonswap_spectrum_period,
+    tma_spectrum_frequency,
+    tma_spectrum_period,
     free_surface_elevation,
     velocity_2d,
 )
@@ -37,6 +39,8 @@ __all__ = [
     "generate_ricker_signal",
     "jonswap_spectrum_frequency",
     "jonswap_spectrum_period",
+    "tma_spectrum_frequency",
+    "tma_spectrum_period",
     "free_surface_elevation",
     "velocity_2d",
 ]
