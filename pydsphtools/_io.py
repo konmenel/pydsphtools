@@ -514,7 +514,7 @@ class Value:
         return f"{self.name}: {self.value}"
     
     def __repr__(self) -> str:
-        return f"Value(name={self.name}, value={self.value})"
+        return f"Value(name='{self.name}', value={self.value})"
 
 
 class Item:
