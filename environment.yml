@@ -1,4 +1,4 @@
-name: pdsh-dev
+name: pdsph-dev
 channels:
   - defaults
 dependencies:
