@@ -6,7 +6,7 @@ Classes
 -------
 
 `Array(name: str, hide: bool, array_type: DataType, count: int, array_size: int, data: np.ndarray)`
-:   Class that represents the a bi4 array.
+:   Class that represents a bi4 array.
     
     Attributes
     ----------
@@ -189,13 +189,13 @@ Classes
         Returns
         -------
         type
-            The follow mapping is used:\
-            - "null" => `None`\
-            - "text", "char", "uchar" => `str`\
-            - "bool" => `bool`\
-            - "short", "ushort", "int", "uint", "long" "ulong" => `int`\
-            - "float", "double" => `float`\
-            - "int3", "uint3", "float3", "double3" => tuple\
+            The follow mapping is used:
+            - "null" => `None`
+            - "text", "char", "uchar" => `str`
+            - "bool" => `bool`
+            - "short", "ushort", "int", "uint", "long" "ulong" => `int`
+            - "float", "double" => `float`
+            - "int3", "uint3", "float3", "double3" => tuple
 
 `Endianness(*values)`
 :   Enum that represents the endianness.

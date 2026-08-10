@@ -86,7 +86,7 @@ Functions
     Raises
     ------
     NotFoundInOutput
-        If the either the chorno section or a chrono body with the
+        If the either the chrono section or a chrono body with the
         specified name doesn't exist.
 
 `get_chrono_mass(dirout: str | pathlib.Path, bname: str) ‑> float`
@@ -107,7 +107,7 @@ Functions
     Raises
     ------
     NotFoundInOutput
-        If the either the chorno section or a chrono body with the
+        If the either the chrono section or a chrono body with the
         specified name doesn't exist.
 
 `get_chrono_property(dirout: str | pathlib.Path, bname: str, pname: str) ‑> float | numpy.ndarray | str`
@@ -133,7 +133,7 @@ Functions
     Raises
     ------
     NotFoundInOutput
-        If the either the chorno section or a chrono body with the specified name
+        If the either the chrono section or a chrono body with the specified name
         or property with the specified name doesn't exist.
 
 `get_dp(dirout: str | pathlib.Path) ‑> float`
@@ -179,7 +179,7 @@ Functions
         The total number of `Part_xxxx.bi4` files in the `data` directory.
 
 `get_partfiles(diroutdata: str | pathlib.Path) ‑> list[str]`
-:   Returns a list of all `Part_xxxx.bi4` files in the `data` directory.
+:   Returns a list of all `Part_xxxx.bi4` files in the given directory.
     
     Parameters
     ----------
@@ -188,21 +188,24 @@ Functions
     
     Returns
     -------
-    int
-        The total number of `Part_xxxx.bi4` files in the `data` directory.
+    list[str]
+        A sorted list of file paths to `Part_xxxx.bi4` files.
 
-`get_times_of_partfiles(dirout: str | pathlib.Path) ‑> list[tuple[int, float]]`
-:   Reads the times of each part file in output directory from the `Run.out` file.
+`get_times_of_partfiles(dirout: str | pathlib.Path, accurate: bool = False) ‑> list[tuple[int, float]]`
+:   Reads the times of each part file in output directory using Bi4 files or `Run.out` file.
     
     Parameters
     ----------
     dirout : Union[str, pathlib.Path]
-        The output directory of the simulations
+        The output directory of the simulation.
+    accurate : bool
+        If loads time from Bi4 files to get more accurate times, but it is slower
+        for large Bi4 files or large number of Bi4 files. By default `False`.
     
     Returns
     -------
     list[tuple[int, float]]
-        A list of the part number and the corresponding time.
+        A list of tuples containing (part_number, time).
 
 `get_usr_def_var(dirout: str | pathlib.Path, var: str, dtype: Callable[[str], ~_R] = builtins.float) ‑> ~_R`
 :   Finds and parses the value of any user defined variable from the simulation
@@ -238,7 +241,7 @@ Functions
     dirout : str, path object or file-like object
         The output directory of the simulation.
     var: str
-        The name of the varible in `Run.csv` or `Run.out`.
+        The name of the variable in `Run.csv` or `Run.out`.
     dtype : Callable[[str], R], optional
         The return type of the function. The return type will be the same as the
         return type of the callable passed. The callable should accept a string as
@@ -253,7 +256,7 @@ Functions
     Raises
     ------
     NotFoundInOutput
-        If `Dp` is not pressent in `Run.out`.
+        If variable is not present in `Run.out` or `Run.csv`.
 
 `read_and_fix_csv(dirout: str | pathlib.Path) ‑> _io.StringIO`
 :   Fixed the bug with the csv where if shifting is present in the `Run.csv` it has
@@ -396,20 +399,20 @@ Functions
         If a binary path is not passed and an environment variable "DUALSPH_HOME"
         doesn't exist.
 
-`xml_get_or_create_subelement(parent_elem: xml.etree.ElementTree.Element, child: str)`
-:   Get or created a subelement of an "xml" element.
+`xml_get_or_create_subelement(parent: xml.etree.ElementTree.Element, tag: str) ‑> xml.etree.ElementTree.Element`
+:   Gets or creates a subelement in an XML tree element.
     
     Parameters
     ----------
-    parent_elem : xml.etree.ET.Element
-        The parent element
-    child : str
-        The name of the child element
+    parent : ET.Element
+        The parent XML element.
+    tag : str
+        The tag name of the subelement.
     
     Returns
     -------
-    xml.etree.ET.SubElement
-        The child element if it exist or a new child element.
+    ET.Element
+        The found or created subelement.
 
 Classes
 -------

@@ -143,7 +143,7 @@ and <code>DUALSPH_HOME2</code> are undefined.</dd>
 <h2 id="raises">Raises</h2>
 <dl>
 <dt><code>NotFoundInOutput</code></dt>
-<dd>If the either the chorno section or a chrono body with the
+<dd>If the either the chrono section or a chrono body with the
 specified name doesn't exist.</dd>
 </dl></div>
 </dd>
@@ -167,7 +167,7 @@ specified name doesn't exist.</dd>
 <h2 id="raises">Raises</h2>
 <dl>
 <dt><code>NotFoundInOutput</code></dt>
-<dd>If the either the chorno section or a chrono body with the
+<dd>If the either the chrono section or a chrono body with the
 specified name doesn't exist.</dd>
 </dl></div>
 </dd>
@@ -197,7 +197,7 @@ In any other case it will return the <code>str</code> of the property</dd>
 <h2 id="raises">Raises</h2>
 <dl>
 <dt><code>NotFoundInOutput</code></dt>
-<dd>If the either the chorno section or a chrono body with the specified name
+<dd>If the either the chrono section or a chrono body with the specified name
 or property with the specified name doesn't exist.</dd>
 </dl></div>
 </dd>
@@ -256,7 +256,7 @@ are undefined.</dd>
 <span>def <span class="ident">get_partfiles</span></span>(<span>diroutdata: str | pathlib.Path) ‑> list[str]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a list of all <code>Part_xxxx.bi4</code> files in the <code>data</code> directory.</p>
+<div class="desc"><p>Returns a list of all <code>Part_xxxx.bi4</code> files in the given directory.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>diroutdata</code></strong> :&ensp;<code>Union[str, pathlib.Path]</code></dt>
@@ -264,24 +264,27 @@ are undefined.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>int</code></dt>
-<dd>The total number of <code>Part_xxxx.bi4</code> files in the <code>data</code> directory.</dd>
+<dt><code>list[str]</code></dt>
+<dd>A sorted list of file paths to <code>Part_xxxx.bi4</code> files.</dd>
 </dl></div>
 </dd>
 <dt id="pydsphtools.get_times_of_partfiles"><code class="name flex">
-<span>def <span class="ident">get_times_of_partfiles</span></span>(<span>dirout: str | pathlib.Path) ‑> list[tuple[int, float]]</span>
+<span>def <span class="ident">get_times_of_partfiles</span></span>(<span>dirout: str | pathlib.Path, accurate: bool = False) ‑> list[tuple[int, float]]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Reads the times of each part file in output directory from the <code>Run.out</code> file.</p>
+<div class="desc"><p>Reads the times of each part file in output directory using Bi4 files or <code>Run.out</code> file.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>dirout</code></strong> :&ensp;<code>Union[str, pathlib.Path]</code></dt>
-<dd>The output directory of the simulations</dd>
+<dd>The output directory of the simulation.</dd>
+<dt><strong><code>accurate</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If loads time from Bi4 files to get more accurate times, but it is slower
+for large Bi4 files or large number of Bi4 files. By default <code>False</code>.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>list[tuple[int, float]]</code></dt>
-<dd>A list of the part number and the corresponding time.</dd>
+<dd>A list of tuples containing (part_number, time).</dd>
 </dl></div>
 </dd>
 <dt id="pydsphtools.get_usr_def_var"><code class="name flex">
@@ -323,7 +326,7 @@ the input. E.g. if <code>int</code> is used the return type will be in <code>int
 <dt><strong><code>dirout</code></strong> :&ensp;<code>str, path object</code> or <code>file-like object</code></dt>
 <dd>The output directory of the simulation.</dd>
 <dt><strong><code>var</code></strong> :&ensp;<code>str</code></dt>
-<dd>The name of the varible in <code>Run.csv</code> or <code>Run.out</code>.</dd>
+<dd>The name of the variable in <code>Run.csv</code> or <code>Run.out</code>.</dd>
 <dt><strong><code>dtype</code></strong> :&ensp;<code>Callable[[str], R]</code>, optional</dt>
 <dd>The return type of the function. The return type will be the same as the
 return type of the callable passed. The callable should accept a string as
@@ -338,7 +341,7 @@ the input. E.g. if <code>int</code> is used the return type will be in <code>int
 <h2 id="raises">Raises</h2>
 <dl>
 <dt><code>NotFoundInOutput</code></dt>
-<dd>If <code>Dp</code> is not pressent in <code>Run.out</code>.</dd>
+<dd>If variable is not present in <code>Run.out</code> or <code>Run.csv</code>.</dd>
 </dl></div>
 </dd>
 <dt id="pydsphtools.read_and_fix_csv"><code class="name flex">
@@ -485,21 +488,21 @@ doesn't exist.</dd>
 </dl></div>
 </dd>
 <dt id="pydsphtools.xml_get_or_create_subelement"><code class="name flex">
-<span>def <span class="ident">xml_get_or_create_subelement</span></span>(<span>parent_elem: xml.etree.ElementTree.Element, child: str)</span>
+<span>def <span class="ident">xml_get_or_create_subelement</span></span>(<span>parent: xml.etree.ElementTree.Element, tag: str) ‑> xml.etree.ElementTree.Element</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get or created a subelement of an "xml" element.</p>
+<div class="desc"><p>Gets or creates a subelement in an XML tree element.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>parent_elem</code></strong> :&ensp;<code>xml.etree.ET.Element</code></dt>
-<dd>The parent element</dd>
-<dt><strong><code>child</code></strong> :&ensp;<code>str</code></dt>
-<dd>The name of the child element</dd>
+<dt><strong><code>parent</code></strong> :&ensp;<code>ET.Element</code></dt>
+<dd>The parent XML element.</dd>
+<dt><strong><code>tag</code></strong> :&ensp;<code>str</code></dt>
+<dd>The tag name of the subelement.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>xml.etree.ET.SubElement</code></dt>
-<dd>The child element if it exist or a new child element.</dd>
+<dt><code>ET.Element</code></dt>
+<dd>The found or created subelement.</dd>
 </dl></div>
 </dd>
 </dl>
@@ -523,7 +526,6 @@ large.</p></div>
     &#34;&#34;&#34;
 
     # pattern to capture any number (eg 1.23, -1523, -12.3e-45)
-    # NUMBER = r&#34;[\-\+]?\d+\.?\d*[Ee]?[\+\-]?\d*&#34;
     NUMBER = r&#34;[-+]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d*)?(?:[Ee][+-]?\d*)?&#34;
     # Pattern to captures the chrono floating section of the output. Returns the
     # &#34;ID&#34; and &#34;name&#34; of the chorno object floating

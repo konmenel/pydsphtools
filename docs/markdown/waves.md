@@ -145,7 +145,7 @@ Functions
         - An unknown wavemaker type is passed to `wv_type`.
 
 `jonswap_spectrum_frequency(Hs: float, fp: float, freqs: Optional[numpy.ndarray] = None, freq_range: Optional[Tuple[float, float]] = None, nfreqs: int = 100, gamma: float = 3.3) ‑> Tuple[numpy.ndarray, numpy.ndarray]`
-:   Calculates the JONSWAP spectrum in the frequency domain for a given 
+:   Calculates the JONSWAP spectrum in the frequency domain for a given
     significant wave height and peak frequency.
     
     Parameters
@@ -172,7 +172,7 @@ Functions
         The spectral density values for each frequency (S(f)).
 
 `jonswap_spectrum_period(Hs: float, Tp: float, periods: Optional[numpy.ndarray] = None, period_range: Optional[Tuple[float, float]] = None, nperiods: int = 100, gamma: float = 3.3) ‑> Tuple[numpy.ndarray, numpy.ndarray]`
-:   Calculates the JONSWAP spectrum in the period domain for a given 
+:   Calculates the JONSWAP spectrum in the period domain for a given
     significant wave height and peak period.
     
     Parameters
@@ -304,6 +304,64 @@ Functions
     -------
     float or numpy array
         The shape of the wavelet.
+
+`tma_spectrum_frequency(Hs: float, fp: float, depth: float, freqs: Optional[numpy.ndarray] = None, freq_range: Optional[Tuple[float, float]] = None, nfreqs: int = 100, gamma: float = 3.3) ‑> Tuple[numpy.ndarray, numpy.ndarray]`
+:   Calculates the TAM spectrum in the frequency domain for a given
+    significant wave height and peak frequency.
+    
+    Parameters
+    ----------
+    Hs : float
+        The significant wave height [m].
+    fp : float
+        The peak frequency [Hz].
+    depth : float
+        The water depth in [m]
+    freqs : numpy array-like, optional
+        The frequencies at which to evaluate the spectrum. If None, `freq_range` and
+        `nfreqs` are used to generate the frequency array.
+    freq_range : tuple, optional
+        A tuple (f_min, f_max) defining the frequency range. If None, default is (0.2*fp, 5.0*fp).
+    nfreqs : int, optional
+        The number of frequency points to generate if `freqs` is None. Default is 100.
+    gamma : float, optional
+        The peak enhancement factor. Default is 3.3.
+    
+    Returns
+    -------
+    np.ndarray
+        The array of frequencies.
+    np.ndarray
+        The spectral density values for each frequency (S(f)).
+
+`tma_spectrum_period(Hs: float, Tp: float, depth: float, periods: Optional[numpy.ndarray] = None, period_range: Optional[Tuple[float, float]] = None, nperiods: int = 100, gamma: float = 3.3) ‑> Tuple[numpy.ndarray, numpy.ndarray]`
+:   Calculates the TAM spectrum in the frequency domain for a given
+    significant wave height and peak frequency.
+    
+    Parameters
+    ----------
+    Hs : float
+        The significant wave height [m].
+    Tp : float
+        The peak period [s].
+    depth : float
+        The water depth in [m]
+    periods : numpy array-like, optional
+        The periods at which to evaluate the spectrum. If None, `period_range` and
+        `nperiods` are used to generate the periods.
+    period_range : tuple, optional
+        A tuple (T_min, T_max) defining the period range. If None, default is (0.2*Tp, 25*Tp).
+    nperiods : int, optional
+        The number of period points to generate if `periods` is None. Default is 100.
+    gamma : float, optional
+        The peak enhancement factor. Default is 3.3.
+    
+    Returns
+    -------
+    np.ndarray
+        The array of frequencies.
+    np.ndarray
+        The spectral density values for each frequency (S(f)).
 
 `velocity_2d(periods: numpy.ndarray, spectrum: numpy.ndarray, x: float | numpy.ndarray, z: float | numpy.ndarray, t: float | numpy.ndarray, depth: float, second_order: bool = False, random_seed: Optional[int] = None) ‑> Tuple[float | numpy.ndarray, float | numpy.ndarray]`
 :   Calculates the 2D velocity field (horizontal and vertical) from a given spectrum.

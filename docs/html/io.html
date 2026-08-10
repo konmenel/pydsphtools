@@ -43,7 +43,7 @@ hljs.highlightAll();
 <span>(</span><span>name: str, hide: bool, array_type: <a title="pydsphtools.io.DataType" href="#pydsphtools.io.DataType">DataType</a>, count: int, array_size: int, data: np.ndarray)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class that represents the a bi4 array.</p>
+<div class="desc"><p>Class that represents a bi4 array.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
@@ -64,7 +64,7 @@ hljs.highlightAll();
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Array:
-    &#34;&#34;&#34;Class that represents the a bi4 array.
+    &#34;&#34;&#34;Class that represents a bi4 array.
 
     Attributes
     ----------
@@ -116,7 +116,7 @@ hljs.highlightAll();
 
     @classmethod
     def from_stream(
-        cls: Array, byte_stream: io.BytesIO, endianness: Endianness
+        cls: type[Array], byte_stream: io.BytesIO, endianness: Endianness
     ) -&gt; Array:
         &#34;&#34;&#34;Constructor from bytes.
 
@@ -144,7 +144,7 @@ hljs.highlightAll();
         assert array_str == &#34;\nARRAY&#34;, f&#34;Expected &#39;\nARRAY&#39; but found&#39;{array_str}&#39;&#34;
         name_size: int = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
         name: str = stream.read(name_size).decode(&#34;utf-8&#34;)
-        hide: bool = bool.from_bytes(stream.read(UINT_SIZE), endianness.name)
+        hide: bool = bool(int.from_bytes(stream.read(UINT_SIZE), endianness.name))
         array_type: DataType = DataType.from_bytes(stream.read(INT_SIZE), endianness)
         count: int = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
         array_size: int = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
@@ -163,7 +163,7 @@ hljs.highlightAll();
         return cls(name, hide, array_type, count, array_size, data)
 
     @classmethod
-    def from_bytes(cls: Array, bytes: bytes, endianness: Endianness) -&gt; Array:
+    def from_bytes(cls: type[Array], bytes: bytes, endianness: Endianness) -&gt; Array:
         &#34;&#34;&#34;Constructor from bytes.
 
         Parameters
@@ -211,11 +211,9 @@ hljs.highlightAll();
         return self.pretty_print()
 
     def __getitem__(self, key: NDIndex):
-        &#34;&#34;&#34;Allows indexing/slicing directly on the Array object.&#34;&#34;&#34;
         return self._data[key]
 
     def __len__(self) -&gt; int:
-        &#34;&#34;&#34;Returns the number of elements (count).&#34;&#34;&#34;
         return self._count
 
     def pretty_print(self, indent=0, indent_str=&#34;  &#34;) -&gt; str:
@@ -410,6 +408,8 @@ def name(self) -&gt; str:
     filepath: str | os.PathLike
     title: str
 
+    __slots__ = (&#34;_filepath&#34;, &#34;_title&#34;, &#34;_main_item&#34;)
+
     def __init__(self, filepath: str | os.PathLike) -&gt; None:
         with open(filepath, &#34;rb&#34;) as file:
             title = file.read(60).strip(b&#34;\0&#34;).strip().decode(&#34;utf-8&#34;)
@@ -418,6 +418,7 @@ def name(self) -&gt; str:
             main_item = Item.from_stream(file, byteorder)
         self._filepath = filepath
         self._title = title
+        self._main_item = main_item
 
         super().__init__(
             item_size=main_item.item_size,
@@ -536,7 +537,9 @@ def title(self) -&gt; str:
     double3 = 23
 
     @classmethod
-    def from_bytes(cls: DataType, bytes: bytes, endianness: Endianness) -&gt; DataType:
+    def from_bytes(
+        cls: type[DataType], bytes: bytes, endianness: Endianness
+    ) -&gt; DataType:
         &#34;&#34;&#34;Constructor from bytes.
 
         Parameters
@@ -559,13 +562,13 @@ def title(self) -&gt; str:
         Returns
         -------
         type
-            The follow mapping is used:\\
-            - &#34;null&#34; =&gt; `None`\\
-            - &#34;text&#34;, &#34;char&#34;, &#34;uchar&#34; =&gt; `str`\\
-            - &#34;bool&#34; =&gt; `bool`\\
-            - &#34;short&#34;, &#34;ushort&#34;, &#34;int&#34;, &#34;uint&#34;, &#34;long&#34; &#34;ulong&#34; =&gt; `int`\\
-            - &#34;float&#34;, &#34;double&#34; =&gt; `float`\\
-            - &#34;int3&#34;, &#34;uint3&#34;, &#34;float3&#34;, &#34;double3&#34; =&gt; tuple\\
+            The follow mapping is used:
+            - &#34;null&#34; =&gt; `None`
+            - &#34;text&#34;, &#34;char&#34;, &#34;uchar&#34; =&gt; `str`
+            - &#34;bool&#34; =&gt; `bool`
+            - &#34;short&#34;, &#34;ushort&#34;, &#34;int&#34;, &#34;uint&#34;, &#34;long&#34; &#34;ulong&#34; =&gt; `int`
+            - &#34;float&#34;, &#34;double&#34; =&gt; `float`
+            - &#34;int3&#34;, &#34;uint3&#34;, &#34;float3&#34;, &#34;double3&#34; =&gt; tuple
         &#34;&#34;&#34;
         if self == DataType.null:
             return type(None)
@@ -706,13 +709,13 @@ def title(self) -&gt; str:
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>type</code></dt>
-<dd>The follow mapping is used:\
-- "null" =&gt; <code>None</code>\
-- "text", "char", "uchar" =&gt; <code>str</code>\
-- "bool" =&gt; <code>bool</code>\
-- "short", "ushort", "int", "uint", "long" "ulong" =&gt; <code>int</code>\
-- "float", "double" =&gt; <code>float</code>\
-- "int3", "uint3", "float3", "double3" =&gt; tuple\</dd>
+<dd>The follow mapping is used:
+- "null" =&gt; <code>None</code>
+- "text", "char", "uchar" =&gt; <code>str</code>
+- "bool" =&gt; <code>bool</code>
+- "short", "ushort", "int", "uint", "long" "ulong" =&gt; <code>int</code>
+- "float", "double" =&gt; <code>float</code>
+- "int3", "uint3", "float3", "double3" =&gt; tuple</dd>
 </dl></div>
 </dd>
 </dl>
@@ -747,7 +750,7 @@ def title(self) -&gt; str:
         Endianness
             The new object
         &#34;&#34;&#34;
-        return cls(int.from_bytes(bytes))</code></pre>
+        return cls(int.from_bytes(bytes, &#34;little&#34;))</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -853,7 +856,7 @@ def title(self) -&gt; str:
 
     @classmethod
     def from_stream(
-        cls: Item, bytes_stream: io.BytesIO, endianness: Endianness
+        cls: type[Item], bytes_stream: io.BytesIO, endianness: Endianness
     ) -&gt; Item:
         item_size = int.from_bytes(bytes_stream.read(4), endianness.name)
         buff = bytes_stream.read(item_size)
@@ -864,8 +867,8 @@ def title(self) -&gt; str:
         assert item_str == &#34;\nITEM\n&#34;, f&#34;Expected &#39;\\nITEM\\n&#39; but found &#39;{item_str}&#39;&#34;
         name_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
         name = stream.read(name_size).decode(&#34;utf-8&#34;)
-        hide = bool.from_bytes(stream.read(UINT_SIZE), endianness.name)
-        hide_values = bool.from_bytes(stream.read(UINT_SIZE), endianness.name)
+        hide = bool(int.from_bytes(stream.read(UINT_SIZE), endianness.name))
+        hide_values = bool(int.from_bytes(stream.read(UINT_SIZE), endianness.name))
         fmt_float_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
         fmt_float = stream.read(fmt_float_size).decode(&#34;utf-8&#34;)
         fmt_double_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
@@ -912,7 +915,7 @@ def title(self) -&gt; str:
         )
 
     @classmethod
-    def from_bytes(cls: Item, bytes: bytes, endianness: Endianness) -&gt; Item:
+    def from_bytes(cls: type[Item], bytes: bytes, endianness: Endianness) -&gt; Item:
         return cls.from_stream(io.BytesIO(bytes), endianness)
 
     @property
@@ -1030,14 +1033,15 @@ def title(self) -&gt; str:
         return None
 
     def get_item_by_name(self, name: str) -&gt; Item | None:
+        # Fixed recursive traversal bug
         for item in self.items:
             if item.name == name:
                 return item
 
         for item in self.items:
-            array = item.get_item_by_name(name)
-            if array is not None:
-                return array
+            found_item = item.get_item_by_name(name)
+            if found_item is not None:
+                return found_item
 
         return None
 
@@ -1293,7 +1297,7 @@ def values(self) -&gt; list[Value]:
 
     @classmethod
     def from_stream(
-        cls: Value,
+        cls: type[Value],
         stream: io.BytesIO,
         endianness: Endianness,
     ) -&gt; Value:
@@ -1313,7 +1317,7 @@ def values(self) -&gt; list[Value]:
             case DataType.short | DataType.ushort:
                 data = int.from_bytes(stream.read(SHORT_SIZE), endianness.name)
             case DataType.bool:
-                data = bool.from_bytes(stream.read(INT_SIZE), endianness.name)
+                data = bool(int.from_bytes(stream.read(INT_SIZE), endianness.name))
             case DataType.int | DataType.uint:
                 data = int.from_bytes(stream.read(INT_SIZE), endianness.name)
             case DataType.llong | DataType.ullong:
@@ -1341,7 +1345,7 @@ def values(self) -&gt; list[Value]:
         return cls(name, data_type, data)
 
     @classmethod
-    def from_bytes(cls: Value, bytes: bytes, endianness: Endianness) -&gt; Value:
+    def from_bytes(cls: type[Value], bytes: bytes, endianness: Endianness) -&gt; Value:
         return cls.from_stream(io.BytesIO(bytes), endianness)
 
     @property
@@ -1370,7 +1374,10 @@ def values(self) -&gt; list[Value]:
         return f&#34;{indent_str * indent}{self}&#34;
 
     def __str__(self) -&gt; str:
-        return f&#34;{self.name}: {self.value}&#34;</code></pre>
+        return f&#34;{self.name}: {self.value}&#34;
+
+    def __repr__(self) -&gt; str:
+        return f&#34;Value(name=&#39;{self.name}&#39;, value={self.value})&#34;</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>

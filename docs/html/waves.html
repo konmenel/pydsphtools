@@ -356,6 +356,70 @@ e^\frac{-\omega^2}{\omega_p^2} </script></span></p></div>
 <dd>The shape of the wavelet.</dd>
 </dl></div>
 </dd>
+<dt id="pydsphtools.waves.tma_spectrum_frequency"><code class="name flex">
+<span>def <span class="ident">tma_spectrum_frequency</span></span>(<span>Hs: float, fp: float, depth: float, freqs: Optional[numpy.ndarray] = None, freq_range: Optional[Tuple[float, float]] = None, nfreqs: int = 100, gamma: float = 3.3) ‑> Tuple[numpy.ndarray, numpy.ndarray]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the TAM spectrum in the frequency domain for a given
+significant wave height and peak frequency.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>Hs</code></strong> :&ensp;<code>float</code></dt>
+<dd>The significant wave height [m].</dd>
+<dt><strong><code>fp</code></strong> :&ensp;<code>float</code></dt>
+<dd>The peak frequency [Hz].</dd>
+<dt><strong><code>depth</code></strong> :&ensp;<code>float</code></dt>
+<dd>The water depth in [m]</dd>
+<dt><strong><code>freqs</code></strong> :&ensp;<code>numpy array-like</code>, optional</dt>
+<dd>The frequencies at which to evaluate the spectrum. If None, <code>freq_range</code> and
+<code>nfreqs</code> are used to generate the frequency array.</dd>
+<dt><strong><code>freq_range</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>A tuple (f_min, f_max) defining the frequency range. If None, default is (0.2<em>fp, 5.0</em>fp).</dd>
+<dt><strong><code>nfreqs</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The number of frequency points to generate if <code>freqs</code> is None. Default is 100.</dd>
+<dt><strong><code>gamma</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>The peak enhancement factor. Default is 3.3.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>np.ndarray</code></dt>
+<dd>The array of frequencies.</dd>
+<dt><code>np.ndarray</code></dt>
+<dd>The spectral density values for each frequency (S(f)).</dd>
+</dl></div>
+</dd>
+<dt id="pydsphtools.waves.tma_spectrum_period"><code class="name flex">
+<span>def <span class="ident">tma_spectrum_period</span></span>(<span>Hs: float, Tp: float, depth: float, periods: Optional[numpy.ndarray] = None, period_range: Optional[Tuple[float, float]] = None, nperiods: int = 100, gamma: float = 3.3) ‑> Tuple[numpy.ndarray, numpy.ndarray]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the TAM spectrum in the frequency domain for a given
+significant wave height and peak frequency.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>Hs</code></strong> :&ensp;<code>float</code></dt>
+<dd>The significant wave height [m].</dd>
+<dt><strong><code>Tp</code></strong> :&ensp;<code>float</code></dt>
+<dd>The peak period [s].</dd>
+<dt><strong><code>depth</code></strong> :&ensp;<code>float</code></dt>
+<dd>The water depth in [m]</dd>
+<dt><strong><code>periods</code></strong> :&ensp;<code>numpy array-like</code>, optional</dt>
+<dd>The periods at which to evaluate the spectrum. If None, <code>period_range</code> and
+<code>nperiods</code> are used to generate the periods.</dd>
+<dt><strong><code>period_range</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>A tuple (T_min, T_max) defining the period range. If None, default is (0.2<em>Tp, 25</em>Tp).</dd>
+<dt><strong><code>nperiods</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The number of period points to generate if <code>periods</code> is None. Default is 100.</dd>
+<dt><strong><code>gamma</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>The peak enhancement factor. Default is 3.3.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>np.ndarray</code></dt>
+<dd>The array of frequencies.</dd>
+<dt><code>np.ndarray</code></dt>
+<dd>The spectral density values for each frequency (S(f)).</dd>
+</dl></div>
+</dd>
 <dt id="pydsphtools.waves.velocity_2d"><code class="name flex">
 <span>def <span class="ident">velocity_2d</span></span>(<span>periods: numpy.ndarray, spectrum: numpy.ndarray, x: float | numpy.ndarray, z: float | numpy.ndarray, t: float | numpy.ndarray, depth: float, second_order: bool = False, random_seed: Optional[int] = None) ‑> Tuple[float | numpy.ndarray, float | numpy.ndarray]</span>
 </code></dt>
@@ -514,6 +578,8 @@ is the hinge.</p></div>
 <li><code><a title="pydsphtools.waves.ricker_spectrum" href="#pydsphtools.waves.ricker_spectrum">ricker_spectrum</a></code></li>
 <li><code><a title="pydsphtools.waves.ricker_spectrum_simple" href="#pydsphtools.waves.ricker_spectrum_simple">ricker_spectrum_simple</a></code></li>
 <li><code><a title="pydsphtools.waves.ricker_wavelet_simple" href="#pydsphtools.waves.ricker_wavelet_simple">ricker_wavelet_simple</a></code></li>
+<li><code><a title="pydsphtools.waves.tma_spectrum_frequency" href="#pydsphtools.waves.tma_spectrum_frequency">tma_spectrum_frequency</a></code></li>
+<li><code><a title="pydsphtools.waves.tma_spectrum_period" href="#pydsphtools.waves.tma_spectrum_period">tma_spectrum_period</a></code></li>
 <li><code><a title="pydsphtools.waves.velocity_2d" href="#pydsphtools.waves.velocity_2d">velocity_2d</a></code></li>
 <li><code><a title="pydsphtools.waves.wavelength2wavenumber" href="#pydsphtools.waves.wavelength2wavenumber">wavelength2wavenumber</a></code></li>
 <li><code><a title="pydsphtools.waves.wavemaker_transfer_func" href="#pydsphtools.waves.wavemaker_transfer_func">wavemaker_transfer_func</a></code></li>
