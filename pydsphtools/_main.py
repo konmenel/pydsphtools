@@ -26,6 +26,7 @@ from .exceptions import (
     UnsupportedPlatform,
     DSPHBinaryNotFound,
 )
+from ._io import Bi4File
 
 __all__ = [
     "DEG2RAD",
@@ -64,7 +65,6 @@ class RE_PATTERNS:
     """
 
     # pattern to capture any number (eg 1.23, -1523, -12.3e-45)
-    # NUMBER = r"[\-\+]?\d+\.?\d*[Ee]?[\+\-]?\d*"
     NUMBER = r"[-+]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d*)?(?:[Ee][+-]?\d*)?"
     # Pattern to captures the chrono floating section of the output. Returns the
     # "ID" and "name" of the chorno object floating
@@ -155,7 +155,7 @@ def get_binary_path(name: str, binpath: str = None) -> str:
                 "DUALSPH_HOME",
                 message=(
                     "Root directory of DualSPHysics not found. Either specify the "
-                    'environment variable "DUALSPH_HOMe" or use `binpath`.',
+                    'environment variable "DUALSPH_HOME" or use `binpath`.',
                 ),
             )
         binpath = f"{dsph_root}/bin"
@@ -179,7 +179,7 @@ def get_binary_path(name: str, binpath: str = None) -> str:
 
 
 def get_partfiles(diroutdata: Union[str, pathlib.Path]) -> list[str]:
-    """Returns a list of all `Part_xxxx.bi4` files in the `data` directory.
+    """Returns a list of all `Part_xxxx.bi4` files in the given directory.
 
     Parameters
     ----------
@@ -188,11 +188,13 @@ def get_partfiles(diroutdata: Union[str, pathlib.Path]) -> list[str]:
 
     Returns
     -------
-    int
-        The total number of `Part_xxxx.bi4` files in the `data` directory.
+    list[str]
+        A sorted list of file paths to `Part_xxxx.bi4` files.
     """
-    pattern = re.compile(r"Part_\d*.bi4")
+    pattern = re.compile(r"Part_\d*\.bi4", re.IGNORECASE)
     diroutdata = Path(diroutdata)
+    if not diroutdata.is_dir():
+        return []
     return sorted(
         [
             str(partfile.absolute())
@@ -218,22 +220,60 @@ def get_number_of_partfiles(diroutdata: Union[str, pathlib.Path]) -> int:
     return len(get_partfiles(diroutdata))
 
 
-def get_times_of_partfiles(dirout: Union[str, pathlib.Path]) -> list[tuple[int, float]]:
-    """Reads the times of each part file in output directory from the `Run.out` file.
+def get_times_of_partfiles(
+    dirout: Union[str, pathlib.Path], accurate: bool = False
+) -> list[tuple[int, float]]:
+    """Reads the times of each part file in output directory using Bi4 files or `Run.out` file.
 
     Parameters
     ----------
     dirout : Union[str, pathlib.Path]
-        The output directory of the simulations
+        The output directory of the simulation.
+    accurate : bool
+        If loads time from Bi4 files to get more accurate times, but it is slower
+        for large Bi4 files or large number of Bi4 files. By default `False`.
 
     Returns
     -------
     list[tuple[int, float]]
-        A list of the part number and the corresponding time.
+        A list of tuples containing (part_number, time).
     """
+    dirout_path = Path(dirout)
+
+    if accurate:
+        # Search for Part files in 'data' directory or directly in 'dirout'
+        data_dir = dirout_path / "data"
+        search_dir = data_dir if data_dir.is_dir() else dirout_path
+        part_files = get_partfiles(search_dir)
+
+        if part_files:
+            times_list = []
+            try:
+                for pfile in part_files:
+                    print(pfile)
+                    bi4 = Bi4File(pfile)
+                    part_num = bi4.get_value_by_name("Cpart")
+                    time_val = bi4.get_value_by_name("TimeStep")
+                    if (
+                        part_num is not None
+                        and part_num.value is not None
+                        and time_val is not None
+                        and time_val.value is not None
+                    ):
+                        times_list.append((part_num.value, time_val.value))
+                if times_list:
+                    return sorted(times_list, key=lambda x: x[0])
+            except Exception:
+                pass  # Fallback to Run.out if reading Bi4 files fails
+
+    # If no accurate or fallback to parsing Run.out
+    run_out_path = dirout_path / "Run.out"
+    if not run_out_path.exists():
+        return []
+
     parts = []
     times = []
-    with open(f"{dirout}/Run.out", "r") as file:
+    with open(run_out_path, "r") as file:
         # Skip useless header and `Part_0000 section`.
         for line in file:
             if line.startswith("[Initialising simulation"):
@@ -251,7 +291,10 @@ def get_times_of_partfiles(dirout: Union[str, pathlib.Path]) -> list[tuple[int, 
                 if part not in parts:
                     parts.append(part)
                     times.append(time)
-    return [(parts[0]-1, 0.0), *list(zip(parts, times))]
+
+    if not parts:
+        return []
+    return [(parts[0] - 1, 0.0), *list(zip(parts, times))]
 
 
 def get_dp(dirout: Union[str, pathlib.Path]) -> float:
@@ -298,7 +341,7 @@ def get_var(
     dirout : str, path object or file-like object
         The output directory of the simulation.
     var: str
-        The name of the varible in `Run.csv` or `Run.out`.
+        The name of the variable in `Run.csv` or `Run.out`.
     dtype : Callable[[str], R], optional
         The return type of the function. The return type will be the same as the
         return type of the callable passed. The callable should accept a string as
@@ -313,12 +356,12 @@ def get_var(
     Raises
     ------
     NotFoundInOutput
-        If `Dp` is not pressent in `Run.out`.
+        If variable is not present in `Run.out` or `Run.csv`.
     """
     try:
         stream = read_and_fix_csv(dirout)
         df = pd.read_csv(stream, sep=";")
-        return dtype(df[var])
+        return dtype(df[var][0])
 
     except (FileNotFoundError, KeyError):
         with open(f"{dirout}/Run.out") as file:
@@ -328,6 +371,8 @@ def get_var(
                 if match:
                     value = match.group(1) or match.group(2)
                     return dtype(value)
+
+        raise NotFoundInOutput(f"Variable `{var}`")
 
 
 def get_usr_def_var(
@@ -361,38 +406,43 @@ def get_usr_def_var(
     # TODO: implement str vars.
     casename = get_var(dirout, "CaseName")
     casename = re.sub(r"_vres\d+$", "", casename)
-    with open(f"{dirout}/{casename}.out") as file:
-        for line in file:
-            if not line.startswith("List of available variables:"):
-                continue
+    try:
+        with open(f"{dirout}/{casename}.out") as file:
+            for line in file:
+                if not line.startswith("List of available variables:"):
+                    continue
 
-            pattern = r"{0}=({1})".format(var, RE_PATTERNS.NUMBER)
-            match = re.search(pattern, line)
-            if match:
-                return dtype(match.group(1))
+                pattern = r"{0}=({1})".format(var, RE_PATTERNS.NUMBER)
+                match = re.search(pattern, line)
+                if match:
+                    return dtype(match.group(1))
+    except FileNotFoundError:
+        pass
 
-    with open(f"{dirout}/Run.out") as file:
-        for line in file:
-            if not line.startswith("XML-Vars (uservars + ctes):"):
-                continue
+    try:
+        with open(f"{dirout}/Run.out") as file:
+            for line in file:
+                if not line.startswith("XML-Vars (uservars + ctes):"):
+                    continue
 
-            pattern = r"{0}=\[({1})\]".format(var, RE_PATTERNS.NUMBER)
-            match = re.search(pattern, line)
-            if match:
-                return dtype(match.group(1))
+                pattern = r"{0}=\[({1})\]".format(var, RE_PATTERNS.NUMBER)
+                match = re.search(pattern, line)
+                if match:
+                    return dtype(match.group(1))
+    except FileNotFoundError:
+        pass
 
-    tree = ET.parse(f"{dirout}/{casename}.xml")
-
-    root = tree.getroot()
-
-    # XPath to find: case/execution/uservars/varnum[@name="var"]
-    xpath_expr = f".//execution/uservars/varnum[@name='{var}']"
-
-    elem = root.find(xpath_expr)
-    if elem is not None:
-        val = elem.get("value")
-        if val is not None:
-            return dtype(val)
+    try:
+        tree = ET.parse(f"{dirout}/{casename}.xml")
+        root = tree.getroot()
+        xpath_expr = f".//execution/uservars/varnum[@name='{var}']"
+        elem = root.find(xpath_expr)
+        if elem is not None:
+            val = elem.get("value")
+            if val is not None:
+                return dtype(val)
+    except FileNotFoundError:
+        pass
 
     raise NotFoundInOutput(
         f"User defined variable `{var}`",
@@ -420,7 +470,7 @@ def get_chrono_mass(dirout: Union[str, pathlib.Path], bname: str) -> float:
     Raises
     ------
     NotFoundInOutput
-        If the either the chorno section or a chrono body with the
+        If the either the chrono section or a chrono body with the
         specified name doesn't exist.
     """
     FLOATING_RE = re.compile(RE_PATTERNS.FLOATING)
@@ -460,7 +510,7 @@ def get_chrono_inertia(dirout: Union[str, pathlib.Path], bname: str) -> np.ndarr
     Raises
     ------
     NotFoundInOutput
-        If the either the chorno section or a chrono body with the
+        If the either the chrono section or a chrono body with the
         specified name doesn't exist.
     """
     FLOATING_RE = re.compile(RE_PATTERNS.FLOATING)
@@ -479,7 +529,7 @@ def get_chrono_inertia(dirout: Union[str, pathlib.Path], bname: str) -> np.ndarr
             if inertia:
                 return np.array([float(i) for i in inertia.groups()])
 
-    raise NotFoundInOutput(f'Chrono floating mass for "{bname}"')
+    raise NotFoundInOutput(f'Chrono floating inertia for "{bname}"')
 
 
 def get_chrono_property(
@@ -507,11 +557,11 @@ def get_chrono_property(
     Raises
     ------
     NotFoundInOutput
-        If the either the chorno section or a chrono body with the specified name
+        If the either the chrono section or a chrono body with the specified name
         or property with the specified name doesn't exist.
     """
     FLOATING_RE = re.compile(RE_PATTERNS.FLOATING)
-    PATTERN = r"{0}\.*: (.+)".format(pname)
+    PATTERN = r"{0}\.*: (.+)".format(re.escape(pname))
     ELEM_PAT = r"\(({0}),({0}),({0})\)".format(RE_PATTERNS.NUMBER)
 
     with open(f"{dirout}/Run.out") as file:
@@ -530,14 +580,38 @@ def get_chrono_property(
                     return float(value)
 
                 except ValueError:
-                    if value[0] == "(":
+                    if value.startswith("("):
                         elems = re.search(ELEM_PAT, value)
-                        elems = elems.groups()
-                        return np.array([float(i) for i in elems])
+                        if elems:
+                            return np.array([float(i) for i in elems.groups()])
 
                     return value
 
     raise NotFoundInOutput(f'Property "{pname}" for chrono body "{bname}"')
+
+
+def _run_and_capture_measuretool(cmd: list[str]) -> None:
+    """Helper function to run measuretool process and stream stdout logs."""
+    line_re = re.compile(r"LoadData>|Save.*>")
+    with subprocess.Popen(
+        cmd,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        text=True,
+        universal_newlines=True,
+        bufsize=1,
+    ) as process:
+        while process.poll() is None:
+            line = process.stdout.readline()
+            if line_re.match(line):
+                print(line, end="", flush=True)
+
+        for line in process.stdout.readlines():
+            if line_re.match(line):
+                print(line, end="", flush=True)
+
+        if process.returncode != 0:
+            raise subprocess.CalledProcessError(process.returncode, process.args)
 
 
 def run_measuretool(
@@ -713,16 +787,13 @@ def run_measuretool(
     elif plat == "Windows":
         dirbin = binpath / "windows"
         binary = dirbin / "MeasureTool_win64"
+    else:
+        raise UnsupportedPlatform(plat)
 
-    # If `options` is specified run use those.
     if options is not None:
         if print_options:
             print(f'Running MeasureTool with options: "{options}"')
-        # subprocess.run([binary, *options.split(" ")])
-        return _run_and_capture_measuretool([binary, *options.split(" ")])
-    else:
-        # just because pylance is active wierd without the else
-        pass
+        return _run_and_capture_measuretool([str(binary), *options.split(" ")])
 
     if dirout is None:
         dirout = dirin / "measuretool"
@@ -746,7 +817,6 @@ def run_measuretool(
         files_to_str = ",".join(map(str, file_nums))
         opts.append(f"-files:{files_to_str}")
 
-    # Save options
     if savecsv is not None:
         opts.extend(("-savecsv", str(dirout / savecsv)))
 
@@ -757,7 +827,7 @@ def run_measuretool(
         opts.extend(("-saveascii", str(dirout / saveascii)))
 
     if csvsep is not None:
-        opts.append(f"-csvsep:{int(savecsv)}")
+        opts.append(f"-csvsep:{int(csvsep)}")
 
     # Point definitions options
     if pt_list is not None:
@@ -808,7 +878,7 @@ def run_measuretool(
         opts.append(pointsdef)
 
     if points_file is not None:
-        opts.extend(("-points", points_file))
+        opts.extend(("-points", str(points_file)))
 
     # Interpolation options
     if kclimit is not None:
@@ -883,65 +953,30 @@ def run_measuretool(
         hvars_to_str = "-hvars:" + ",".join(hvars)
         opts.append(hvars_to_str)
 
+    cmd = [str(binary), *opts]
     if print_options:
-        print(f'Running MeasureTool with options: "{" ".join(opts)}"')
-    _run_and_capture_measuretool([binary, *opts])
+        print("Running MeasureTool with command:")
+        print(" ".join(cmd))
+
+    _run_and_capture_measuretool(cmd)
 
 
-def _run_and_capture_measuretool(cmd) -> None:
-    """Runs MeasureTool and captures stdout.
-
-    Parameters
-    ----------
-    cmd : List[str]
-        The command list to be passed to `subprocess.Popen`
-
-    Raises
-    ------
-    subprocess.CalledProcessError
-        If the exitcode is not 0
-    """
-    line_re = re.compile("LoadData>|Save.*>")
-    with subprocess.Popen(
-        cmd,
-        stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        text=True,
-        universal_newlines=True,
-        bufsize=1,
-    ) as process:
-        while process.poll() is None:
-            line = process.stdout.readline()
-
-            # print(line)
-            if line_re.match(line):
-                print(line, end="", flush=True)
-
-        for _ in process.stdout.readlines():
-            if line_re.match(line):
-                print(line, end="", flush=True)
-
-        if process.returncode != 0:
-            raise subprocess.CalledProcessError(process.returncode, process.args)
-
-
-def xml_get_or_create_subelement(parent_elem: ET.Element, child: str):
-    """Get or created a subelement of an "xml" element.
+def xml_get_or_create_subelement(parent: ET.Element, tag: str) -> ET.Element:
+    """Gets or creates a subelement in an XML tree element.
 
     Parameters
     ----------
-    parent_elem : xml.etree.ET.Element
-        The parent element
-    child : str
-        The name of the child element
+    parent : ET.Element
+        The parent XML element.
+    tag : str
+        The tag name of the subelement.
 
     Returns
     -------
-    xml.etree.ET.SubElement
-        The child element if it exist or a new child element.
+    ET.Element
+        The found or created subelement.
     """
-    child_elem = parent_elem.find(child)
-    if child_elem is None:
-        child_elem = ET.SubElement(parent_elem, child)
-
-    return child_elem
+    elem = parent.find(tag)
+    if elem is None:
+        elem = ET.SubElement(parent, tag)
+    return elem

@@ -114,7 +114,9 @@ class DataType(Enum):
     double3 = 23
 
     @classmethod
-    def from_bytes(cls: DataType, bytes: bytes, endianness: Endianness) -> DataType:
+    def from_bytes(
+        cls: type[DataType], bytes: bytes, endianness: Endianness
+    ) -> DataType:
         """Constructor from bytes.
 
         Parameters
@@ -137,13 +139,13 @@ class DataType(Enum):
         Returns
         -------
         type
-            The follow mapping is used:\\
-            - "null" => `None`\\
-            - "text", "char", "uchar" => `str`\\
-            - "bool" => `bool`\\
-            - "short", "ushort", "int", "uint", "long" "ulong" => `int`\\
-            - "float", "double" => `float`\\
-            - "int3", "uint3", "float3", "double3" => tuple\\
+            The follow mapping is used:
+            - "null" => `None`
+            - "text", "char", "uchar" => `str`
+            - "bool" => `bool`
+            - "short", "ushort", "int", "uint", "long" "ulong" => `int`
+            - "float", "double" => `float`
+            - "int3", "uint3", "float3", "double3" => tuple
         """
         if self == DataType.null:
             return type(None)
@@ -187,11 +189,11 @@ class Endianness(Enum):
         Endianness
             The new object
         """
-        return cls(int.from_bytes(bytes))
+        return cls(int.from_bytes(bytes, "little"))
 
 
 class Array:
-    """Class that represents the a bi4 array.
+    """Class that represents a bi4 array.
 
     Attributes
     ----------
@@ -243,7 +245,7 @@ class Array:
 
     @classmethod
     def from_stream(
-        cls: Array, byte_stream: io.BytesIO, endianness: Endianness
+        cls: type[Array], byte_stream: io.BytesIO, endianness: Endianness
     ) -> Array:
         """Constructor from bytes.
 
@@ -271,7 +273,7 @@ class Array:
         assert array_str == "\nARRAY", f"Expected '\nARRAY' but found'{array_str}'"
         name_size: int = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
         name: str = stream.read(name_size).decode("utf-8")
-        hide: bool = bool.from_bytes(stream.read(UINT_SIZE), endianness.name)
+        hide: bool = bool(int.from_bytes(stream.read(UINT_SIZE), endianness.name))
         array_type: DataType = DataType.from_bytes(stream.read(INT_SIZE), endianness)
         count: int = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
         array_size: int = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
@@ -290,7 +292,7 @@ class Array:
         return cls(name, hide, array_type, count, array_size, data)
 
     @classmethod
-    def from_bytes(cls: Array, bytes: bytes, endianness: Endianness) -> Array:
+    def from_bytes(cls: type[Array], bytes: bytes, endianness: Endianness) -> Array:
         """Constructor from bytes.
 
         Parameters
@@ -338,11 +340,9 @@ class Array:
         return self.pretty_print()
 
     def __getitem__(self, key: NDIndex):
-        """Allows indexing/slicing directly on the Array object."""
         return self._data[key]
 
     def __len__(self) -> int:
-        """Returns the number of elements (count)."""
         return self._count
 
     def pretty_print(self, indent=0, indent_str="  ") -> str:
@@ -434,7 +434,7 @@ class Value:
 
     @classmethod
     def from_stream(
-        cls: Value,
+        cls: type[Value],
         stream: io.BytesIO,
         endianness: Endianness,
     ) -> Value:
@@ -454,7 +454,7 @@ class Value:
             case DataType.short | DataType.ushort:
                 data = int.from_bytes(stream.read(SHORT_SIZE), endianness.name)
             case DataType.bool:
-                data = bool.from_bytes(stream.read(INT_SIZE), endianness.name)
+                data = bool(int.from_bytes(stream.read(INT_SIZE), endianness.name))
             case DataType.int | DataType.uint:
                 data = int.from_bytes(stream.read(INT_SIZE), endianness.name)
             case DataType.llong | DataType.ullong:
@@ -482,7 +482,7 @@ class Value:
         return cls(name, data_type, data)
 
     @classmethod
-    def from_bytes(cls: Value, bytes: bytes, endianness: Endianness) -> Value:
+    def from_bytes(cls: type[Value], bytes: bytes, endianness: Endianness) -> Value:
         return cls.from_stream(io.BytesIO(bytes), endianness)
 
     @property
@@ -512,7 +512,7 @@ class Value:
 
     def __str__(self) -> str:
         return f"{self.name}: {self.value}"
-    
+
     def __repr__(self) -> str:
         return f"Value(name='{self.name}', value={self.value})"
 
@@ -576,7 +576,7 @@ class Item:
 
     @classmethod
     def from_stream(
-        cls: Item, bytes_stream: io.BytesIO, endianness: Endianness
+        cls: type[Item], bytes_stream: io.BytesIO, endianness: Endianness
     ) -> Item:
         item_size = int.from_bytes(bytes_stream.read(4), endianness.name)
         buff = bytes_stream.read(item_size)
@@ -587,8 +587,8 @@ class Item:
         assert item_str == "\nITEM\n", f"Expected '\\nITEM\\n' but found '{item_str}'"
         name_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
         name = stream.read(name_size).decode("utf-8")
-        hide = bool.from_bytes(stream.read(UINT_SIZE), endianness.name)
-        hide_values = bool.from_bytes(stream.read(UINT_SIZE), endianness.name)
+        hide = bool(int.from_bytes(stream.read(UINT_SIZE), endianness.name))
+        hide_values = bool(int.from_bytes(stream.read(UINT_SIZE), endianness.name))
         fmt_float_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
         fmt_float = stream.read(fmt_float_size).decode("utf-8")
         fmt_double_size = int.from_bytes(stream.read(UINT_SIZE), endianness.name)
@@ -635,7 +635,7 @@ class Item:
         )
 
     @classmethod
-    def from_bytes(cls: Item, bytes: bytes, endianness: Endianness) -> Item:
+    def from_bytes(cls: type[Item], bytes: bytes, endianness: Endianness) -> Item:
         return cls.from_stream(io.BytesIO(bytes), endianness)
 
     @property
@@ -753,14 +753,15 @@ class Item:
         return None
 
     def get_item_by_name(self, name: str) -> Item | None:
+        # Fixed recursive traversal bug
         for item in self.items:
             if item.name == name:
                 return item
 
         for item in self.items:
-            array = item.get_item_by_name(name)
-            if array is not None:
-                return array
+            found_item = item.get_item_by_name(name)
+            if found_item is not None:
+                return found_item
 
         return None
 
@@ -781,6 +782,8 @@ class Bi4File(Item):
     filepath: str | os.PathLike
     title: str
 
+    __slots__ = ("_filepath", "_title", "_main_item")
+
     def __init__(self, filepath: str | os.PathLike) -> None:
         with open(filepath, "rb") as file:
             title = file.read(60).strip(b"\0").strip().decode("utf-8")
@@ -789,6 +792,7 @@ class Bi4File(Item):
             main_item = Item.from_stream(file, byteorder)
         self._filepath = filepath
         self._title = title
+        self._main_item = main_item
 
         super().__init__(
             item_size=main_item.item_size,
